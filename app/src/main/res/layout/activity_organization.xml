@@ -104,6 +104,7 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/button_stroke"
+                        android:onClick="goToDonate"
                         android:text="Donate"
                         card_view:layout_constraintBottom_toBottomOf="@+id/info_text_1"
                         card_view:layout_constraintEnd_toEndOf="parent" />
