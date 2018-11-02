@@ -13,6 +13,8 @@ public class OrganizationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppThemeTranslucent_NoActionBar);
+        //getApplication().setTheme(R.style.MyLightTheme);
         setContentView(R.layout.activity_organization);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
