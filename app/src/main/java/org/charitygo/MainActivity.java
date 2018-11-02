@@ -17,4 +17,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
     }
+
+    protected void goToMain(View view){
+        Intent intent = new Intent(this, MainUI.class);
+        startActivity(intent);
+    }
 }
