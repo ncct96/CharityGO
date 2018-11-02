@@ -1,5 +1,6 @@
 package org.charitygo;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.hardware.Sensor;
@@ -39,6 +40,11 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState == null){
+            numSteps = Integer.parseInt(savedInstanceState.getString("Steps"));
+        }
+
         setContentView(R.layout.activity_main_ui);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,7 +83,11 @@ public class MainUI extends AppCompatActivity
 
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("Steps", (String)txtProgress.getText());
+    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
