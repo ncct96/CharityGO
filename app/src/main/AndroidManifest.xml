@@ -53,6 +53,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.OrganizationActivity" />
         </activity>
+        <activity
+            android:name=".OrganizationInfoActivity"
+            android:label="@string/title_activity_organization_info"
+            android:parentActivityName=".OrganizationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.charitygo.OrganizationActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package org.charitygo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,6 +19,9 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        EditText editText = (EditText)findViewById(R.id.donate_editText_amount);
+        editText.setFilters(new InputFilter[]{ new MinMaxFilter("1", "1890")});
+
         ImageButton btnPlus = (ImageButton) findViewById(R.id.donate_imageButton_add);
         btnPlus.setOnClickListener(this);
         ImageButton btnMinus = (ImageButton) findViewById(R.id.donate_imageButton_minus);
@@ -32,13 +36,19 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
             if(editText.getText().toString().equals("")){
                 points += 1;
             }
+            else if(editText.getText().toString().equals("1890")){
+                points = 1890;
+            }
             else {
                 points = Integer.parseInt(String.valueOf(editText.getText())) + 1;
             }
         }
         else if(v.getId() == R.id.donate_imageButton_minus){
-            if(editText.getText() == null){
-                points = 0;
+            if(editText.getText().toString().equals("")){
+                points = 1;
+            }
+            else if(editText.getText().toString().equals("1")){
+                points = 1;
             }
             else {
                 points = Integer.parseInt(String.valueOf(editText.getText())) - 1;

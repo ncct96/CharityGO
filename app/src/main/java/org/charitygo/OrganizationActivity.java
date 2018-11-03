@@ -1,12 +1,15 @@
 package org.charitygo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class OrganizationActivity extends AppCompatActivity {
 
@@ -20,10 +23,38 @@ public class OrganizationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        createViews();
     }
 
     protected void goToDonate(View view){
         Intent intent = new Intent(this, DonateActivity.class);
         startActivity(intent);
+    }
+
+    protected void goToOrganization(View view){
+        Intent intent = new Intent(this, OrganizationInfoActivity.class);
+        startActivity(intent);
+    }
+
+    protected void createViews(){
+
+        for(int i = 1; i < 6; i++) {
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.organization_linearLayout_cards);
+            View view = getLayoutInflater().inflate(R.layout.cards, linearLayout, false);
+            TextView textView = (TextView) view.findViewById(R.id.info_text);
+            textView.setText("Card " + i);
+            linearLayout.addView(view);
+
+//            LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            View v = layoutInflater.inflate(R.layout.cards, null);
+//
+//            TextView textView = (TextView) v.findViewById(R.id.info_text);
+//            textView.setText("Card 1");
+//            textView.setId(i);
+//
+//            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.organization_linearLayout_cards);
+//            linearLayout.addView(v, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        }
     }
 }
