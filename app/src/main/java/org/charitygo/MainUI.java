@@ -36,14 +36,11 @@ public class MainUI extends AppCompatActivity
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
     private int numSteps;
     private double progress;
+    private int progressCircle = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(savedInstanceState == null){
-            numSteps = Integer.parseInt(savedInstanceState.getString("Steps"));
-        }
 
         setContentView(R.layout.activity_main_ui);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -76,17 +73,29 @@ public class MainUI extends AppCompatActivity
         simpleStepDetector = new StepDetector();
         simpleStepDetector.registerListener(this);
 
-        txtProgress = findViewById(R.id.txtProgress);
-        progressBar = findViewById(R.id.progressBar);
-
         sensorManager.registerListener(MainUI.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
+        txtProgress = findViewById(R.id.numOfStep);
+        progressBar = findViewById(R.id.stepProgress);
+
+        txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("Steps", (String)txtProgress.getText());
+        outState.putInt("Steps", numSteps);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        numSteps = savedInstanceState.getInt("Steps");
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -106,7 +115,7 @@ public class MainUI extends AppCompatActivity
         numSteps++;
         String strProg = String.valueOf(numSteps);
         progress = (Double.parseDouble(strProg) / 1000) * 100;
-        int progressCircle = (int)progress;
+        progressCircle = (int)progress;
         progressBar.setProgress(progressCircle);
         txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
 
