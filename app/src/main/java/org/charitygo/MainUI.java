@@ -1,5 +1,6 @@
 package org.charitygo;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.hardware.Sensor;
@@ -34,11 +35,16 @@ public class MainUI extends AppCompatActivity
     private Sensor accel;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
     private int numSteps;
-    private int progress;
+    private double progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState == null){
+            numSteps = Integer.parseInt(savedInstanceState.getString("Steps"));
+        }
+
         setContentView(R.layout.activity_main_ui);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,7 +83,11 @@ public class MainUI extends AppCompatActivity
 
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("Steps", (String)txtProgress.getText());
+    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -94,9 +104,11 @@ public class MainUI extends AppCompatActivity
     @Override
     public void step(long timeNs) {
         numSteps++;
-        progress = (numSteps/100) * 100;
-        progressBar.setProgress(progress);
-        txtProgress.setText(TEXT_NUM_STEPS + numSteps + " " + progress);
+        String strProg = String.valueOf(numSteps);
+        progress = (Double.parseDouble(strProg) / 1000) * 100;
+        int progressCircle = (int)progress;
+        progressBar.setProgress(progressCircle);
+        txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
 
     }
 
@@ -144,7 +156,7 @@ public class MainUI extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
