@@ -9,7 +9,7 @@
     tools:showIn="@layout/app_bar_main_ui">
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/stepProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="500dp"
         android:layout_height="250dp"
@@ -31,15 +31,15 @@
 
 
     <TextView
-        android:id="@+id/txtProgress"
+        android:id="@+id/numOfStep"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/progressBar"
+        android:layout_alignBottom="@+id/stepProgress"
         android:layout_centerInParent="true"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
-        app:layout_constraintEnd_toEndOf="@+id/progressBar"
-        app:layout_constraintStart_toStartOf="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="@+id/progressBar" />
+        app:layout_constraintBottom_toBottomOf="@+id/stepProgress"
+        app:layout_constraintEnd_toEndOf="@+id/stepProgress"
+        app:layout_constraintStart_toStartOf="@+id/stepProgress"
+        app:layout_constraintTop_toTopOf="@+id/stepProgress" />
 
 </android.support.constraint.ConstraintLayout>
