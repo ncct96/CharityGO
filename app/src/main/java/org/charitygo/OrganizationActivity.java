@@ -45,16 +45,6 @@ public class OrganizationActivity extends AppCompatActivity {
             TextView textView = (TextView) view.findViewById(R.id.info_text);
             textView.setText("Card " + i);
             linearLayout.addView(view);
-
-//            LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            View v = layoutInflater.inflate(R.layout.cards, null);
-//
-//            TextView textView = (TextView) v.findViewById(R.id.info_text);
-//            textView.setText("Card 1");
-//            textView.setId(i);
-//
-//            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.organization_linearLayout_cards);
-//            linearLayout.addView(v, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         }
     }
 }
