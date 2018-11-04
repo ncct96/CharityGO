@@ -25,5 +25,21 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <!--Organization Info-->
     <string name="title_activity_organization_info">Organization Info</string>
+    <string name="info_title_background">Background</string>
+    <string name="info_text_background">info_text_background</string>
+    <string name="info_title_about">What they do</string>
+    <string name="info_text_about">info_text_about</string>
+    <string name="info_title_contact">Channels</string>
+    <string name="info_text_contact">info_text_contact</string>
+
+    <!--Donate-->
+    <string name="donate_title_user">You Have:</string>
+    <string name="donate_points_default">donate_points_default</string>
+    <string name="donate_title_donate">Donate:</string>
+    <string name="donate_editText_amount">Enter amount</string>
+    <string name="donate_title_org">They Need:</string>
+    <string name="donate_button_donate">Donate Points!</string>
 </resources>
