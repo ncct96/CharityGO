@@ -254,6 +254,7 @@ public class MainUI extends AppCompatActivity
 
             drawerLayout.closeDrawers();
     }
+
     //Remove Added Menu back to default before user logged in
     private void removeLoginMenu(){
         NavigationView navigationView = findViewById(R.id.nav_view);
