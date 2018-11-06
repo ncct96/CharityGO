@@ -44,8 +44,8 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".ProfileActivity"/>
-            android:name=".OrganizationActivity"
+        <activity
+            android:name=".ProfileActivity"
             android:label="@string/title_activity_organization"
             android:parentActivityName=".MainUI"
             android:theme="@style/AppTheme.NoActionBar">

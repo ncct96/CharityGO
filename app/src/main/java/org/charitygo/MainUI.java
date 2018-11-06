@@ -264,7 +264,7 @@ public class MainUI extends AppCompatActivity
             menu.removeItem(i);
         }
         SubMenu rem = menu.addSubMenu(Menu.NONE, 0, Menu.NONE, "Account");
-        rem.add(Menu.NONE,1,Menu.NONE, "Login").setIcon(R.drawable.ic_lock_open_black_24dp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        rem.add(Menu.NONE,1,Menu.NONE, "Login").setIcon(R.drawable.ic_action_lock).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
