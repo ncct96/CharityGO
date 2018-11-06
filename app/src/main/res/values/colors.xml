@@ -2,9 +2,8 @@
 <resources>
     <color name="colorPrimary">#2977ff</color>
     <color name="colorTextPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#3342cc</color>
+    <color name="colorPrimaryDark">#2e65ec</color>
     <color name="colorAccent">#2977ff</color>
-
     <color name="address">#2F7092</color>
     <color name="followers">#0D5D98</color>
     <color name="headings">#3797CF</color>

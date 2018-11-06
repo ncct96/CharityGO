@@ -45,6 +45,32 @@
             android:label="@string/title_activity_login" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ProfileActivity"/>
+            android:name=".OrganizationActivity"
+            android:label="@string/title_activity_organization"
+            android:parentActivityName=".MainUI"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.charitygo.MainUI" />
+        </activity>
+        <activity
+            android:name=".DonateActivity"
+            android:label="@string/title_activity_donate"
+            android:parentActivityName=".OrganizationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.charitygo.OrganizationActivity" />
+        </activity>
+        <activity
+            android:name=".OrganizationInfoActivity"
+            android:label="@string/title_activity_organization_info"
+            android:parentActivityName=".OrganizationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.charitygo.OrganizationActivity" />
+        </activity>
     </application>
 
 </manifest>

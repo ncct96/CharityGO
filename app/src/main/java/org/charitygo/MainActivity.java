@@ -22,4 +22,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainUI.class);
         startActivity(intent);
     }
+
+    protected void goToOrganizations(View view){
+        Intent intent = new Intent(this, OrganizationActivity.class);
+        startActivity(intent);
+    }
 }
