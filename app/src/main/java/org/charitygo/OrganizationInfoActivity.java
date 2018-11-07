@@ -13,7 +13,6 @@ public class OrganizationInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.AppThemeTranslucent_NoActionBar);
         setContentView(R.layout.activity_organization_info);
 
         String organizationID = getIntent().getStringExtra("EXTRA_ID");
