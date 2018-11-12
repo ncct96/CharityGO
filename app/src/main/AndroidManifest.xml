@@ -42,7 +42,7 @@
             android:name=".OrganizationActivity"
             android:label="@string/title_activity_organization"
             android:parentActivityName=".MainUI"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppThemeTranslucent.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.MainUI" />
@@ -68,7 +68,7 @@
             android:name=".OrganizationInfoActivity"
             android:label="@string/title_activity_organization_info"
             android:parentActivityName=".OrganizationActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppThemeTranslucent.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.OrganizationActivity" />
