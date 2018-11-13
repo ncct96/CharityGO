@@ -2,6 +2,7 @@ package org.charitygo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 public class DonateActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int points = 0;
-    private final int minPoints = 1, step = 1;
+    private final int minPoints = 0, step = 1;
     private static int maxPoints;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,8 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         int userPoints = 0, orgPoints = 0;
 
         //Get points from database here
-        userPoints = 15000;
-        orgPoints = 6000000;
+        userPoints = 1500;
+        orgPoints = 1000000;
 
         if(userPoints > orgPoints)
             maxPoints = orgPoints;
@@ -91,6 +92,10 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
 
         if(editPoints.getText().toString().equals("")){
             editPoints.requestFocus();
+        }
+        else if(editPoints.getText().toString().equals("0")){
+            Snackbar.make(view, "You cannot donate nothing!", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         }
         else{
             int points = Integer.parseInt(editPoints.getText().toString());

@@ -59,7 +59,7 @@ public class OrganizationActivity extends AppCompatActivity {
             open.setId(i);
 
             TextView textPoints = (TextView) view.findViewById(R.id.info_points);
-            textPoints.setText(i + "0000 points more");
+            textPoints.setText(i + "000000 points more");
 
             linearLayout.addView(view);
         }
