@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--LeaderBoard-->
+<resources>
+    <string-array name="user_array">
+        <item>Nicholas</item>
+        <item>Chuah</item>
+        <item>Chong</item>
+        <item>Teik</item>
+        <item>Neoh</item>
+        <item>Chen</item>
+        <item>Kang</item>
+        <item>Chiu</item>
+        <item>Peeng</item>
+    </string-array>
+</resources>
