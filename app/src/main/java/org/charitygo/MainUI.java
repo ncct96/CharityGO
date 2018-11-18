@@ -347,4 +347,16 @@ public class MainUI extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
         startActivity(intent);
     }
+    public void goToOrganizations(MenuItem menuItem){
+        Intent intent = new Intent (getApplicationContext(), OrganizationActivity.class);
+        startActivity(intent);
+    }
+    public void goToLeaderBoard(MenuItem menuItem){
+        Intent intent = new Intent (getApplicationContext(), Leaderboard.class);
+        startActivity(intent);
+    }
+    public void goToAbout(MenuItem menuItem){
+        Intent intent = new Intent (getApplicationContext(), AboutActivity.class);
+        startActivity(intent);
+    }
 }
