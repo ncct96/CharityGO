@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <!--<group android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
@@ -20,9 +20,9 @@
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Tools" />
-    </group>-->
+    </group>
 
-    <!--<item android:title="Communicate">
+    <item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -35,28 +35,20 @@
                 android:title="Send"
                 />
         </menu>
-    </item>-->
-    <!--<item android:title="Account" android:id="@+id/AccountSub">
+    </item>
+    <item android:title="Account" android:id="@+id/AccountSub">
         <menu>
-            <item
-                android:id="@+id/nav_login"
-                android:icon="@drawable/ic_action_lock"
-                android:onClick="loginPage"
-                android:title="Login"
-                android:visible="true" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_action_lock"
                 android:onClick="logOut"
-                android:title="Logout"
-                android:visible="false"/>
+                android:title="Logout" />
             <item
                 android:id="@+id/nav_profile"
                 android:icon="@drawable/ic_action_profile"
                 android:onClick="profile"
-                android:title="Profile"
-                android:visible="false"/>
+                android:title="Profile" />
         </menu>
-    </item>-->
+    </item>
 
 </menu>
