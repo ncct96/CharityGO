@@ -41,7 +41,6 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
@@ -145,17 +144,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="#FF0000"
-        android:src="@drawable/ic_mail" />
+        android:src="@drawable/ic_mail"
+        app:backgroundTint="#FF0000" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/info_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="85dp"
         android:layout_gravity="top|end"
-        app:backgroundTint="#00CC00"
+        android:layout_marginBottom="85dp"
         android:src="@drawable/ic_phone"
+        app:backgroundTint="#00CC00"
         app:layout_anchor="@id/info_email"
         app:layout_anchorGravity="top" />
 

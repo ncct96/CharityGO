@@ -22,7 +22,7 @@ public class OrganizationInfoActivity extends AppCompatActivity {
         initializeActionWidgets();
     }
 
-    protected void initializeUIValues(String id){
+    protected void initializeUIValues(String id) {
 
         //Get info from database here
 
@@ -36,7 +36,7 @@ public class OrganizationInfoActivity extends AppCompatActivity {
         contact.setText("Email: info@mail.noreply.com");
     }
 
-    protected void initializeActionWidgets(){
+    protected void initializeActionWidgets() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

@@ -17,6 +17,7 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
     private int points = 0;
     private final int minPoints = 0, step = 1;
     private static int maxPoints;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,16 +63,14 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         EditText editPoints = (EditText) findViewById(R.id.donate_editText_amount);
         Button donateButton = (Button) findViewById(R.id.donate_button_donate);
 
-        if(editPoints.getText().toString().equals("")){
+        if (editPoints.getText().toString().equals("")) {
             donateButton.setEnabled(false);
             donateButton.setBackgroundColor(Color.DKGRAY);
             editPoints.requestFocus();
-        }
-        else if(Integer.parseInt(editPoints.getText().toString()) == 0){
+        } else if (Integer.parseInt(editPoints.getText().toString()) == 0) {
             donateButton.setEnabled(false);
             donateButton.setBackgroundColor(Color.DKGRAY);
-        }
-        else{
+        } else {
             donateButton.setEnabled(true);
             donateButton.setBackgroundColor(Color.parseColor("#2977ff"));
         }
@@ -84,13 +83,13 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         userPoints = 1500;
         orgPoints = 1000000;
 
-        if(userPoints > orgPoints)
+        if (userPoints > orgPoints)
             maxPoints = orgPoints;
         else
             maxPoints = userPoints;
 
-        EditText setPoints = (EditText)findViewById(R.id.donate_editText_amount);
-        setPoints.setFilters(new InputFilter[]{ new MinMaxFilter(minPoints, maxPoints)});
+        EditText setPoints = (EditText) findViewById(R.id.donate_editText_amount);
+        setPoints.setFilters(new InputFilter[]{new MinMaxFilter(minPoints, maxPoints)});
 
         TextView textUserPoints = (TextView) findViewById(R.id.donate_points_user);
         textUserPoints.setText(userPoints + " points");
@@ -104,29 +103,24 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
 
         EditText editPoints = (EditText) findViewById(R.id.donate_editText_amount);
 
-        if(v.getId() == R.id.donate_imageButton_add){
-            if(editPoints.getText().toString().equals("")){
+        if (v.getId() == R.id.donate_imageButton_add) {
+            if (editPoints.getText().toString().equals("")) {
                 points += step;
-            }
-            else if(Integer.parseInt(editPoints.getText().toString()) >= maxPoints){
+            } else if (Integer.parseInt(editPoints.getText().toString()) >= maxPoints) {
                 points = maxPoints;
-            }
-            else {
+            } else {
                 points = Integer.parseInt(String.valueOf(editPoints.getText())) + step;
             }
-        }
-        else if(v.getId() == R.id.donate_imageButton_minus){
-            if(editPoints.getText().toString().equals("")){
+        } else if (v.getId() == R.id.donate_imageButton_minus) {
+            if (editPoints.getText().toString().equals("")) {
                 points = minPoints;
-            }
-            else if(Integer.parseInt(editPoints.getText().toString()) <= minPoints){
+            } else if (Integer.parseInt(editPoints.getText().toString()) <= minPoints) {
                 points = minPoints;
-            }
-            else {
+            } else {
                 points = Integer.parseInt(String.valueOf(editPoints.getText())) - step;
             }
         }
-        editPoints.setText(""+points);
+        editPoints.setText("" + points);
     }
 
     public void donateTransaction(View view) {
