@@ -1,5 +1,6 @@
 package org.charitygo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,12 +20,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void goToMain(View view){
-        Intent intent = new Intent(this, MainUI.class);
-        startActivity(intent);
+        boolean isLog = getLoggedStatus(getApplicationContext());
+        if(isLog){
+            Intent intent = new Intent(this, MainUI.class);
+            startActivity(intent);
+        } else {
+            Intent intent1 = new Intent(this, LoginActivity.class);
+            startActivity(intent1);
+        }
+
     }
 
     protected void goToOrganizations(View view){
         Intent intent = new Intent(this, OrganizationActivity.class);
         startActivity(intent);
+    }
+
+    public static boolean getLoggedStatus(Context context){
+        return LoginActivity.getPreference(context).getBoolean(LoginActivity.Logged_IN,false);
     }
 }
