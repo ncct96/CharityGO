@@ -70,4 +70,5 @@
     <string name="donate_button_donate">Donate Points!</string>
     <string name="donate_conversion_rate_steps">500 steps = 1 point</string>
     <string name="donate_conversion_rate_points">1 point = RM0.10</string>
+
 </resources>
