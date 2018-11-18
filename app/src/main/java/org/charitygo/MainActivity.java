@@ -20,15 +20,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void goToMain(View view){
-        boolean isLog = getLoggedStatus(getApplicationContext());
-        if(isLog){
-            Intent intent = new Intent(this, MainUI.class);
-            startActivity(intent);
-        } else {
-            Intent intent1 = new Intent(this, LoginActivity.class);
-            startActivity(intent1);
-        }
-
+        // FOR LOGIN, COMMENTED OUT TO ENABLE QUICKER TESTING AND DEBUGS
+//        boolean isLog = getLoggedStatus(getApplicationContext());
+//        if(isLog){
+//
+//        } else {
+//            Intent intent1 = new Intent(this, LoginActivity.class);
+//            startActivity(intent1);
+//        }
+        Intent intent = new Intent(this, MainUI.class);
+        startActivity(intent);
     }
 
     protected void goToOrganizations(View view){
