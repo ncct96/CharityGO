@@ -79,7 +79,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/donate_cardView_points"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_margin="16dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -103,51 +103,57 @@
                     android:textAlignment="center"
                     android:textSize="24sp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/donate_editText_amount"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/donate_imageButton_minus"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@android:drawable/dialog_holo_light_frame"
-                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_margin="8dp"
+                    android:background="@color/colorPrimary"
                     android:foreground="?android:attr/selectableItemBackground"
+                    android:text="-"
+                    android:textSize="28sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/donate_editText_amount"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/donate_title_donate"
-                    app:srcCompat="@drawable/ic_minus" />
+                    app:layout_constraintTop_toBottomOf="@+id/donate_title_donate" />
 
                 <EditText
                     android:id="@+id/donate_editText_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
-                    android:layout_marginTop="8dp"
-                    android:ems="10"
+                    android:layout_margin="8dp"
                     android:hint="@string/donate_editText_amount"
                     android:inputType="number"
+                    android:padding="8dp"
                     android:singleLine="true"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
+                    android:textSize="20dp"
+                    android:ems="10"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/donate_title_donate" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/donate_imageButton_add"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@android:drawable/dialog_holo_light_frame"
-                    android:backgroundTint="@color/colorAccent"
+                    android:layout_margin="8dp"
+                    android:background="@color/colorAccent"
                     android:foreground="?android:attr/selectableItemBackground"
+                    android:text="+"
+                    android:textSize="28sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/donate_editText_amount"
-                    app:layout_constraintTop_toBottomOf="@+id/donate_title_donate"
-                    app:srcCompat="@drawable/ic_add" />
-            </android.support.constraint.ConstraintLayout>
+                    app:layout_constraintTop_toBottomOf="@+id/donate_title_donate" />
+    </android.support.constraint.ConstraintLayout>
 
         </android.support.v7.widget.CardView>
 
