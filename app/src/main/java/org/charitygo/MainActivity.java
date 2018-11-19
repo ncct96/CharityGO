@@ -53,4 +53,9 @@ public class MainActivity extends AppCompatActivity {
     public static boolean getLoggedStatus(Context context){
         return LoginActivity.getPreference(context).getBoolean(LoginActivity.Logged_IN,false);
     }
+
+    public void goToSponsor(View view) {
+        Intent intent = new Intent(this, SpnsorActivity.class);
+        startActivity(intent);
+    }
 }

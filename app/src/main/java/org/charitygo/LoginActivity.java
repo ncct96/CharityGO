@@ -279,6 +279,10 @@ public class LoginActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    public void forgotPassword(View view) {
+
+    }
+
     /*@Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
