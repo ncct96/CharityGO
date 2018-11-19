@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#2977ff</color>
     <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorTextPrimaryDark">#000000</color>
     <color name="colorPrimaryDark">#2e65ec</color>
     <color name="colorAccent">#2977ff</color>
     <color name="address">#2F7092</color>
@@ -14,6 +15,7 @@
     <color name="followersBg">#65DCE5</color>
     <color name="followingBg">#49BEFF</color>
     <color name="grey">#E5E5E5</color>
+    <color name="bkg_card">#8C9EFF</color>
 
     <color name="white">#FFFFFF</color>
 </resources>

@@ -51,6 +51,7 @@ public class MainUI extends AppCompatActivity
     private Sensor accel;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
     private int numSteps;
+    private static int savedNumSteps;
     private double progress;
     private int progressCircle = 0;
 
@@ -91,12 +92,13 @@ public class MainUI extends AppCompatActivity
 
         sensorManager.registerListener(MainUI.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
-        //CK CHANGES
-        listMenu = new ArrayList<>();
         txtProgress = findViewById(R.id.numOfStep);
         progressBar = findViewById(R.id.stepProgress);
 
-        txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
+        txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
+
+        //CK CHANGES
+        listMenu = new ArrayList<>();
     }
 
     @Override
@@ -108,6 +110,7 @@ public class MainUI extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("Steps", numSteps);
+        savedNumSteps = numSteps;
     }
 
     @Override
@@ -132,7 +135,7 @@ public class MainUI extends AppCompatActivity
     public void step(long timeNs) {
         numSteps++;
         String strProg = String.valueOf(numSteps);
-        progress = (Double.parseDouble(strProg) / 1000) * 100;
+        progress = (Double.parseDouble(strProg) / 100) * 100;
         progressCircle = (int)progress;
         progressBar.setProgress(progressCircle);
         txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
@@ -345,6 +348,18 @@ public class MainUI extends AppCompatActivity
         * INSERT CODES TO START PROFILE ACTIVITY HERE
         * */
         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+        startActivity(intent);
+    }
+    public void goToOrganizations(MenuItem menuItem){
+        Intent intent = new Intent (getApplicationContext(), OrganizationActivity.class);
+        startActivity(intent);
+    }
+    public void goToLeaderBoard(MenuItem menuItem){
+        Intent intent = new Intent (getApplicationContext(), Leaderboard.class);
+        startActivity(intent);
+    }
+    public void goToAbout(MenuItem menuItem){
+        Intent intent = new Intent (getApplicationContext(), AboutActivity.class);
         startActivity(intent);
     }
 }

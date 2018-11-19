@@ -25,24 +25,24 @@ public class OrganizationActivity extends AppCompatActivity {
         createViews();
     }
 
-    protected void goToDonate(View view){
+    protected void goToDonate(View view) {
         Intent intent = new Intent(this, DonateActivity.class);
         intent.putExtra("EXTRA_ID", String.valueOf(view.getId()));
         startActivity(intent);
     }
 
-    protected void goToOrganization(View view){
+    protected void goToOrganization(View view) {
         Intent intent = new Intent(this, OrganizationInfoActivity.class);
         intent.putExtra("EXTRA_ID", String.valueOf(view.getId()));
         startActivity(intent);
     }
 
-    protected void createViews(){
+    protected void createViews() {
 
         //Get info from database here
 
         //Adds cards.xml n number of times
-        for(int i = 1; i < 6; i++) {
+        for (int i = 1; i < 6; i++) {
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.organization_linearLayout_cards);
             View view = getLayoutInflater().inflate(R.layout.cards, linearLayout, false);
             TextView textName = (TextView) view.findViewById(R.id.info_text);
