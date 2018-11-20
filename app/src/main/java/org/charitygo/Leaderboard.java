@@ -64,7 +64,7 @@ public class Leaderboard extends AppCompatActivity {
         int rankSize = 10;
 
         for (int i = 0; i < rankSize; i++) {
-            LeaderInfo li = new LeaderInfo(i, nameArray[i], 1000);
+            LeaderInfo li = new LeaderInfo(i + 1, nameArray[i], 1000);
             leaderList.add(li);
         }
     }
