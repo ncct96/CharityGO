@@ -72,7 +72,15 @@ public class LoginActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login_ui);
+
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+        initializeOnClick();
+    }
+
+    protected void initializeOnClick(){
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.usernameBtn);
         /*populateAutoComplete();*/
@@ -97,14 +105,21 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
-        mForgotText = (TextView) findViewById(R.id.forgotText);
-        mForgotText.setOnClickListener(new View.OnClickListener() {
+        TextView forgotPw = (TextView) findViewById(R.id.forgotText);
+        forgotPw.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                createDialog();
+                Intent intent = new Intent(LoginActivity.this, PopUp.class);
+                startActivity(intent);
+            }
+        });
+
+        Button signup = (Button) findViewById(R.id.sign_up_button);
+        signup.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -230,33 +245,6 @@ public class LoginActivity extends AppCompatActivity{
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
-    }
-
-
-    public void registerPage(View view) {
-        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-        startActivity(intent);
-    }
-
-    public void createDialog(){
-        AlertDialog ad = new AlertDialog.Builder(LoginActivity.this)
-                .setCancelable(true)
-                .setTitle("Confirm Order")
-                .setMessage("Are you sure?")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        View view = getLayoutInflater().inflate(R.layout.popupforgot,null);
-                        Intent intent = new Intent(LoginActivity.this, PopUp.class);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
     }
 }
 
