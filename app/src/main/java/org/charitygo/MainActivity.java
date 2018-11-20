@@ -32,6 +32,19 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    protected void goToLeader(View view){
+        // FOR LOGIN, COMMENTED OUT TO ENABLE QUICKER TESTING AND DEBUGS
+//        boolean isLog = getLoggedStatus(getApplicationContext());
+//        if(isLog){
+//
+//        } else {
+//            Intent intent1 = new Intent(this, LoginActivity.class);
+//            startActivity(intent1);
+//        }
+        Intent intent = new Intent(this, Leaderboard.class);
+        startActivity(intent);
+    }
+
     protected void goToOrganizations(View view){
         Intent intent = new Intent(this, OrganizationActivity.class);
         startActivity(intent);
