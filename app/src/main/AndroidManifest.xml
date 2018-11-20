@@ -36,15 +36,20 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".RegisterActivity"
             android:label="Register"
-            android:parentActivityName=".LoginActivity" />
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/AppThemeLight.NoActionBar"/>
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="org.charitygo.LoginActivity" />
+
+        <activity android:name=".PopUp"
+            android:theme="@style/CustomTheme"></activity>
 
         <activity
             android:name=".OrganizationActivity"

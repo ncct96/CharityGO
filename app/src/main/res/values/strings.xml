@@ -48,6 +48,8 @@
     <string name="hint_email">Email</string>
     <string name="action_signup">Sign Up Now!</string>
     <string name="label_register">Register An Account</string>
+    <string name="label_forgot">Password Recovery</string>
+    <string name="hint_code">Code</string>
 
     <string name="title_activity_organization">Organizations</string>
     <string name="title_activity_donate">Donate</string>
