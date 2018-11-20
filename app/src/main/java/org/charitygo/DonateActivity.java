@@ -15,7 +15,7 @@ import android.widget.TextView;
 public class DonateActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int points = 0;
-    private final int minPoints = 0, step = 1;
+    private final int minPoints = 0, step = 5;
     private static int maxPoints;
 
     @Override
@@ -37,17 +37,15 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         EditText editPoints = (EditText) findViewById(R.id.donate_editText_amount);
         final Button donateButton = (Button) findViewById(R.id.donate_button_donate);
         donateButton.setEnabled(false);
-        donateButton.setBackgroundColor(Color.DKGRAY);
+        donateButton.setBackgroundColor(Color.LTGRAY);
 
         editPoints.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -65,11 +63,11 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
 
         if (editPoints.getText().toString().equals("")) {
             donateButton.setEnabled(false);
-            donateButton.setBackgroundColor(Color.DKGRAY);
+            donateButton.setBackgroundColor(Color.LTGRAY);
             editPoints.requestFocus();
         } else if (Integer.parseInt(editPoints.getText().toString()) == 0) {
             donateButton.setEnabled(false);
-            donateButton.setBackgroundColor(Color.DKGRAY);
+            donateButton.setBackgroundColor(Color.LTGRAY);
         } else {
             donateButton.setEnabled(true);
             donateButton.setBackgroundColor(Color.parseColor("#2977ff"));
@@ -106,7 +104,7 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         if (v.getId() == R.id.donate_imageButton_add) {
             if (editPoints.getText().toString().equals("")) {
                 points += step;
-            } else if (Integer.parseInt(editPoints.getText().toString()) >= maxPoints) {
+            } else if (Integer.parseInt(editPoints.getText().toString()) + step >= maxPoints) {
                 points = maxPoints;
             } else {
                 points = Integer.parseInt(String.valueOf(editPoints.getText())) + step;
@@ -114,7 +112,7 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         } else if (v.getId() == R.id.donate_imageButton_minus) {
             if (editPoints.getText().toString().equals("")) {
                 points = minPoints;
-            } else if (Integer.parseInt(editPoints.getText().toString()) <= minPoints) {
+            } else if (Integer.parseInt(editPoints.getText().toString()) - step <= minPoints) {
                 points = minPoints;
             } else {
                 points = Integer.parseInt(String.valueOf(editPoints.getText())) - step;

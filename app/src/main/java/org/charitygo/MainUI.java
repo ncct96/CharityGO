@@ -92,7 +92,6 @@ public class MainUI extends AppCompatActivity
         sensorManager.registerListener(MainUI.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
         //CK CHANGES
-        listMenu = new ArrayList<>();
         txtProgress = findViewById(R.id.numOfStep);
         progressBar = findViewById(R.id.stepProgress);
 
@@ -177,104 +176,6 @@ public class MainUI extends AppCompatActivity
 
         return super.onPrepareOptionsMenu(menu);
     }
-
-    //Add menu item into the navigation bar if the user is logged in
-    private List<String> listMenu;
-//    private void addLoginMenu(){
-//            NavigationView navigationView = findViewById(R.id.nav_view);
-//            //navigationView.setNavigationItemSelectedListener(this);
-//            final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//            Menu menu = navigationView.getMenu();
-//
-//            //Account Section
-//            SubMenu Account = menu.addSubMenu(Menu.NONE, 0 ,Menu.NONE , "Account");
-//            Account.add(Menu.NONE, 1, Menu.NONE,"Profile").setIcon(R.drawable.ic_action_profile).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    Toast.makeText(MainUI.this, "Profile Selected.",Toast.LENGTH_LONG).show();
-//                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-//                    startActivity(intent);
-//                    return false;
-//                }
-//            });
-//            Account.add(Menu.NONE, 2, Menu.NONE,"Logout").setIcon(R.drawable.ic_action_lock).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    logOut(item);
-//                    return false;
-//                }
-//            });
-//
-//            //First Section
-//            SubMenu first_section = menu.addSubMenu(Menu.NONE, 3,Menu.NONE,"First Section");
-//            first_section.add(Menu.NONE, 4, Menu.NONE,"Home").setIcon(R.drawable.ic_home_black_24dp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    Toast.makeText(MainUI.this, "Home Selected.",Toast.LENGTH_LONG).show();
-//                    return false;
-//                }
-//            });
-//            first_section.add(Menu.NONE, 5,Menu.NONE,"Gallery").setIcon(R.drawable.ic_action_profile).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    Toast.makeText(MainUI.this, "Gallery Selected.",Toast.LENGTH_LONG).show();
-//                    return false;
-//                }
-//            });
-//            first_section.add(Menu.NONE, 6,Menu.NONE,"Slideshow").setIcon(R.drawable.ic_menu_slideshow).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    Toast.makeText(MainUI.this, "Slideshow Selected.",Toast.LENGTH_LONG).show();
-//                    return false;
-//                }
-//            });
-//            first_section.add(Menu.NONE, 7,Menu.NONE,"Tools").setIcon(R.drawable.ic_menu_manage).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    Toast.makeText(MainUI.this, "Tools Selected.",Toast.LENGTH_LONG).show();
-//                    return false;
-//                }
-//            });
-//
-//            //Second Section
-//            SubMenu second_section = menu.addSubMenu(Menu.NONE, 8,Menu.NONE,"Second Section");
-//            second_section.add(Menu.NONE, 9,Menu.NONE,"Share").setIcon(R.drawable.ic_menu_share).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    Toast.makeText(MainUI.this, "Share Selected.",Toast.LENGTH_LONG).show();
-//                    return false;
-//                }
-//            });
-//            second_section.add(Menu.NONE, 10,Menu.NONE,"Send").setIcon(R.drawable.ic_menu_send).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    Toast.makeText(MainUI.this, "Send Selected.",Toast.LENGTH_LONG).show();
-//                    return false;
-//                }
-//            });
-//
-//            drawerLayout.closeDrawers();
-//    }
-
-    //Remove Added Menu back to default before user logged in
-//    private void removeLoginMenu(){
-//        NavigationView navigationView = findViewById(R.id.nav_view);
-//        //navigationView.setNavigationItemSelectedListener(this);
-//        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        Menu menu = navigationView.getMenu();
-//        for(int i = 0; i <= menu.size(); i++){
-//            menu.removeItem(i);
-//        }
-//        SubMenu rem = menu.addSubMenu(Menu.NONE, 0, Menu.NONE, "Account");
-//        rem.add(Menu.NONE,1,Menu.NONE, "Login").setIcon(R.drawable.ic_action_lock).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-//                startActivity(intent);
-//                return false;
-//            }
-//        });
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
