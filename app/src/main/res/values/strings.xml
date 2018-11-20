@@ -35,7 +35,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="no_account">Do Not Have An Account?</string>
     <string name="action_register">Register</string>
+    <string name="sponsor_label">Sponsors</string>
     <string name="action_cancel">Cancel</string>
     <string name="hint_retype">Retype Password</string>
     <string name="hint_password">Password</string>
@@ -43,8 +46,10 @@
     <string name="hint_phone">Contact Number</string>
     <string name="hint_gender">Gender</string>
     <string name="hint_email">Email</string>
-    <string name="action_signup">Sign Up</string>
+    <string name="action_signup">Sign Up Now!</string>
     <string name="label_register">Register An Account</string>
+    <string name="label_forgot">Password Recovery</string>
+    <string name="hint_code">Code</string>
 
     <string name="title_activity_organization">Organizations</string>
     <string name="title_activity_donate">Donate</string>

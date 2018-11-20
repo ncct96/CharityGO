@@ -18,28 +18,30 @@
 
     <item android:id="@android:id/progress">
 
-<rotate android:fromDegrees="270"
-    android:pivotX="50%"
-    android:pivotY="50%"
-    android:toDegrees="270" >
-    <shape
-        android:innerRadiusRatio="6"
-        android:shape="ring"
-        android:thicknessRatio="20.0"
-        android:useLevel="true">
-        <rotate android:fromDegrees="0"
+        <rotate
+            android:fromDegrees="270"
             android:pivotX="50%"
             android:pivotY="50%"
-            android:toDegrees="360" />
-        <gradient
-            android:centerY="0.5"
-            android:centerColor="#00FF00"
-            android:endColor="#00FF00"
-            android:startColor="#00FF00"
-            android:type="sweep"
-            android:useLevel="false" />
-    </shape>
+            android:toDegrees="270">
+            <shape
+                android:innerRadiusRatio="6"
+                android:shape="ring"
+                android:thicknessRatio="20.0"
+                android:useLevel="true">
+                <rotate
+                    android:fromDegrees="0"
+                    android:pivotX="50%"
+                    android:pivotY="50%"
+                    android:toDegrees="360" />
+                <gradient
+                    android:centerColor="#00FF00"
+                    android:centerY="0.5"
+                    android:endColor="#00FF00"
+                    android:startColor="#00FF00"
+                    android:type="sweep"
+                    android:useLevel="false" />
+            </shape>
 
-</rotate>
+        </rotate>
     </item>
 </layer-list>
