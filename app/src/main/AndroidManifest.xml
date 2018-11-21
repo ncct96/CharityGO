@@ -36,8 +36,21 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity android:name=".RegisterActivity" />
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".RegisterActivity"
+            android:label="Register"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/AppThemeLight.NoActionBar"/>
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="org.charitygo.LoginActivity" />
+
+        <activity android:name=".PopUp"
+            android:theme="@style/CustomTheme"></activity>
+
         <activity
             android:name=".OrganizationActivity"
             android:label="@string/title_activity_organization"
@@ -81,7 +94,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.MainUI" />
         </activity>
-
+        <activity
+            android:name=".SpnsorActivity"
+            android:label="@string/sponsor_label"
+            android:parentActivityName=".MainUI"
+            android:theme="@style/AppThemeTranslucent.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.charitygo.MainUI" />
+        </activity>
+        <activity android:name=".SponsorInfoActivity"
+            android:label="Sponsor's Information"
+            android:parentActivityName=".SpnsorActivity"
+            android:theme="@style/AppThemeTranslucent.NoActionBar"></activity>
     </application>
 
 </manifest>
