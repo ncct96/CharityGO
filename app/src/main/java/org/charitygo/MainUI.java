@@ -95,9 +95,6 @@ public class MainUI extends AppCompatActivity
         progressBar = findViewById(R.id.stepProgress);
 
         txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
-
-        //CK CHANGES
-        listMenu = new ArrayList<>();
     }
 
     @Override
