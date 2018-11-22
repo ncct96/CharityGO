@@ -320,6 +320,8 @@
         android:layout_marginBottom="10dp"
         android:clickable="true"
         android:focusable="auto"
-        app:srcCompat="@android:drawable/ic_menu_preferences" />
+        app:backgroundTint="@color/colorTextPrimary"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/pencil_edit" />
 
 </RelativeLayout>

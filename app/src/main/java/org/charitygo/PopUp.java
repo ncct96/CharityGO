@@ -140,7 +140,7 @@ public class PopUp extends AppCompatActivity {
     }
 
     public void createDialogEmail(final String email){
-        AlertDialog ad = new AlertDialog.Builder(PopUp.this)
+        AlertDialog ad = new AlertDialog.Builder(PopUp.this,R.style.AlertDialogStyle)
                 .setCancelable(true)
                 .setTitle("Send Email")
                 .setMessage("Are you sure to send to this email?")

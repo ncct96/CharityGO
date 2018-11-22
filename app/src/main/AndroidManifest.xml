@@ -35,19 +35,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/CustomTheme.NoActionBar"/>
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".RegisterActivity"
-            android:label="Register"
+            android:label="@string/action_register"
             android:parentActivityName=".LoginActivity"
-            android:theme="@style/AppThemeLight.NoActionBar"/>
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="org.charitygo.LoginActivity" />
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.charitygo.LoginActivity" />
+        </activity>
 
         <activity android:name=".PopUp"
             android:theme="@style/PopUpTheme"></activity>
@@ -66,8 +67,9 @@
         </activity>
         <activity
             android:name=".ProfileActivity"
+            android:label="@string/title_profile"
             android:parentActivityName=".MainUI"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.MainUI" />
