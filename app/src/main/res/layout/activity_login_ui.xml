@@ -25,8 +25,7 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:theme="@style/CustomTheme">
+        android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/email_login_form"
@@ -104,7 +103,6 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/button_bg"
-                android:onClick="registerPage"
                 android:shadowColor="#0A0A0A"
                 android:shadowDx="0"
                 android:shadowDy="0"
