@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "124341666441",
+    "firebase_url": "https://charitygo-297da.firebaseio.com",
+    "project_id": "charitygo-297da",
+    "storage_bucket": "charitygo-297da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124341666441:android:d1fdb10f061e64ca",
+        "android_client_info": {
+          "package_name": "org.charitygo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124341666441-pb3cri36u7m5np1go96mn7cb0gevufu8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.charitygo",
+            "certificate_hash": "0ae361ff440f66316f556791a3fab8bb5d850638"
+          }
+        },
+        {
+          "client_id": "124341666441-pft1gum94kctqr5pbqelbk6oqef3j7bj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.charitygo",
+            "certificate_hash": "c54167a9340f0b4cf92b332cf27e22f9acc7732b"
+          }
+        },
+        {
+          "client_id": "124341666441-44f6s63ef4ipphdcesao2nh857s6203e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHMkh0-34PNVtBwkOxnLRZmJNtioylHM4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124341666441-44f6s63ef4ipphdcesao2nh857s6203e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
