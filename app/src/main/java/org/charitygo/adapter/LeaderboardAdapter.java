@@ -37,19 +37,19 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     @Override
     public void onBindViewHolder(LeaderboardHolder leaderboardHolder, int i) {
         LeaderInfo lb = leaderList.get(i);
-        leaderboardHolder.leaderRank.setText(String.valueOf(lb.getRank()));
+        leaderboardHolder.leaderRank.setImageResource(lb.getRank());
         leaderboardHolder.leaderName.setText(lb.getName());
         leaderboardHolder.leaderSteps.setText(String.valueOf(lb.getSteps()));
     }
 
     public static class LeaderboardHolder extends RecyclerView.ViewHolder {
-        protected TextView leaderRank;
+        protected ImageView leaderRank;
         protected TextView leaderName;
         protected TextView leaderSteps;
 
         public LeaderboardHolder(View v) {
             super(v);
-            leaderRank = (TextView) v.findViewById(R.id.leaderRank);
+            leaderRank = (ImageView) v.findViewById(R.id.leaderRank);
             leaderName = (TextView) v.findViewById(R.id.leaderName);
             leaderSteps = (TextView) v.findViewById(R.id.leaderSteps);
         }
