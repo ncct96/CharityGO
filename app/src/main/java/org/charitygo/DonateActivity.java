@@ -70,7 +70,7 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
             donateButton.setBackgroundColor(Color.LTGRAY);
         } else {
             donateButton.setEnabled(true);
-            donateButton.setBackgroundColor(Color.parseColor("#2977ff"));
+            donateButton.setBackgroundColor(Color.parseColor("#00b0ff"));
         }
     }
 
