@@ -95,7 +95,8 @@ public class MainUI extends AppCompatActivity
         txtProgress = findViewById(R.id.numOfStep);
         progressBar = findViewById(R.id.stepProgress);
 
-        txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
+        //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
+        txtProgress.setText(TEXT_NUM_STEPS +  "\n" + numSteps);
     }
 
     @Override
@@ -135,8 +136,8 @@ public class MainUI extends AppCompatActivity
         progress = (Double.parseDouble(strProg) / 100) * 100;
         progressCircle = (int)progress;
         progressBar.setProgress(progressCircle);
-        txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
-
+        //txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
+        txtProgress.setText(TEXT_NUM_STEPS +  "\n" + numSteps);
     }
 
     @Override

@@ -23,7 +23,7 @@
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/city" />
         <!--Swap this in for a gradient overlay instead-->
-        <!--android:foreground="@drawable/gradient_overlay"-->
+        <!--android:foreground="@drawable/gradient_overlay_gray"-->
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
