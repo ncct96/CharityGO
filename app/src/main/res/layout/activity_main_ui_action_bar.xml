@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view" android:layout_height="20dp" android:layout_width="20dp">
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_action_profile"
+        android:onClick="profile"
+        android:title="Profile" />
+    <item
+        android:id="@+id/nav_organizations"
+        android:icon="@drawable/ic_organizations"
+        android:onClick="goToOrganizations"
+        android:title="Organizations" />
+    <item
+        android:id="@+id/nav_leaderBoard"
+        android:icon="@drawable/ic_star"
+        android:onClick="goToLeaderBoard"
+        android:title="Leaderboard" />
+    <item
+        android:id="@+id/nav_about"
+        android:icon="@drawable/ic_info"
+        android:onClick="goToAbout"
+        android:title="About Us" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:onClick="logOut"
+        android:title="Logout" />
+</menu>
