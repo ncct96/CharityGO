@@ -258,6 +258,7 @@ public class MainUI extends AppCompatActivity
     public void goToAbout(MenuItem menuItem){
         Intent intent = new Intent (getApplicationContext(), AboutActivity.class);
         startActivity(intent);
+//        startActivity(new Intent(getApplicationContext(), SpnsorActivity.class));
     }
 
     public void goToOrganizations(View view){

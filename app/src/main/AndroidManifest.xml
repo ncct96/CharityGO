@@ -101,11 +101,11 @@
         <activity
             android:name=".SpnsorActivity"
             android:label="@string/sponsor_label"
-            android:parentActivityName=".MainUI"
+            android:parentActivityName=".AboutActivity"
             android:theme="@style/AppThemeTranslucent.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.charitygo.MainUI" />
+                android:value="org.charitygo.AboutActivity" />
         </activity>
         <activity android:name=".SponsorInfoActivity"
             android:label="Sponsor's Information"
