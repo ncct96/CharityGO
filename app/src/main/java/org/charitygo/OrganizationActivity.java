@@ -31,7 +31,7 @@ public class OrganizationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void goToOrganization(View view) {
+    public void goToOrganization(View view) {
         Intent intent = new Intent(this, OrganizationInfoActivity.class);
         intent.putExtra("EXTRA_ID", String.valueOf(view.getId()));
         startActivity(intent);

@@ -144,6 +144,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/action_register"
+                android:textColor="@color/colorTextPrimaryDark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/labelGender" />
@@ -157,6 +158,7 @@
                 android:layout_marginBottom="8dp"
                 android:onClick="cancelRegister"
                 android:text="@string/action_cancel"
+                android:textColor="@color/colorTextPrimaryDark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/labelGender" />
