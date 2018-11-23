@@ -15,16 +15,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-        </activity>
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".MainUI"
             android:theme="@style/AppThemeTranslucent.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.charitygo.MainActivity" />
+                android:value="org.charitygo.MainUI" />
         </activity>
         <activity
             android:name=".MainUI"

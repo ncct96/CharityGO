@@ -71,8 +71,7 @@ public class MainUI extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                goToOrganizations(view);
             }
         });
 
@@ -181,7 +180,7 @@ public class MainUI extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.activity_main_ui_drawer, menu);
+        getMenuInflater().inflate(R.menu.main_ui, menu);
 
         return true;
     }
@@ -258,6 +257,11 @@ public class MainUI extends AppCompatActivity
     }
     public void goToAbout(MenuItem menuItem){
         Intent intent = new Intent (getApplicationContext(), AboutActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToOrganizations(View view){
+        Intent intent = new Intent (this, OrganizationActivity.class);
         startActivity(intent);
     }
 }

@@ -1,3 +1,4 @@
+/*
 package org.charitygo;
 
 import android.content.Context;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void goToOrganizations(View view){
+    public void goToOrganizations(View view){
         Intent intent = new Intent(this, OrganizationActivity.class);
         startActivity(intent);
     }
@@ -59,3 +60,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
+*/
