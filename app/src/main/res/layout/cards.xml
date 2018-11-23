@@ -21,7 +21,7 @@
             android:foreground="?android:attr/selectableItemBackground"
             android:onClick="goToOrganization"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/valkyria" />
+            app:srcCompat="@drawable/city" />
         <!--Swap this in for a gradient overlay instead-->
         <!--android:foreground="@drawable/gradient_overlay"-->
 
