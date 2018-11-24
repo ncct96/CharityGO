@@ -112,7 +112,7 @@
                 android:value="org.charitygo.AboutActivity" />
         </activity>
         <activity android:name=".SponsorInfoActivity"
-            android:label="Sponsor's Information"
+            android:label="About Sponsors"
             android:parentActivityName=".SpnsorActivity"
             android:theme="@style/AppThemeTranslucent.NoActionBar"></activity>
     </application>

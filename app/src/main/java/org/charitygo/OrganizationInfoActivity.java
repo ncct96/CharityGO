@@ -40,7 +40,7 @@ public class OrganizationInfoActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton email = (FloatingActionButton) findViewById(R.id.info_email);
+        FloatingActionButton email = (FloatingActionButton) findViewById(R.id.spon_email);
         email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -10,7 +10,7 @@
 
     <ScrollView
         android:id="@+id/registerScroll"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -92,7 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_phone"
-                    android:inputType="phone"/>
+                    android:inputType="phone" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -113,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_password"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -133,35 +133,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_retype"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/buttonReg"
+                android:id="@+id/buttonCancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/action_register"
+                android:text="@string/action_cancel"
                 android:textColor="@color/colorTextPrimaryDark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/labelGender" />
 
             <Button
-                android:id="@+id/buttonCancel"
+                android:id="@+id/buttonReg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:onClick="cancelRegister"
-                android:text="@string/action_cancel"
+                android:text="@string/action_register"
                 android:textColor="@color/colorTextPrimaryDark"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/labelGender" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <RadioGroup
                 android:id="@+id/radioGroupGender"
@@ -184,7 +182,7 @@
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="1"
-                    android:text="Male" />
+                    android:text="@string/gender_male" />
 
                 <RadioButton
                     android:id="@+id/radioButtonFemale"
@@ -193,7 +191,7 @@
                     android:layout_gravity="end"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="1"
-                    android:text="Female" />
+                    android:text="@string/gender_female" />
             </RadioGroup>
 
             <TextView
