@@ -75,7 +75,7 @@
                 android:paddingTop="8dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="16dp"
-                android:text="@string/info_text_background"
+                android:text="@string/info_text_sponBackground"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="28dp"
                 android:paddingBottom="8dp"
-                android:text="@string/info_title_about"
+                android:text="@string/info_text_donation"
                 android:textAlignment="center"
                 android:textSize="28sp"
                 android:textStyle="bold"
@@ -101,8 +101,22 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="8dp"
                 android:paddingRight="16dp"
-                android:paddingBottom="28dp"
-                android:text="@string/info_text_about"
+                android:paddingBottom="4dp"
+                android:text="Last Funded on 24/11/2018: RM1000"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/info_text_about2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingTop="4dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="24dp"
+                android:text="Total Fundings: RM 5000"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -121,11 +135,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <fragment
-                android:id="@+id/youTubeVid"
-                android:name="org.charitygo.model.YoutubeFragment"
+            <TextView
+                android:id="@+id/info_text_contact"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="20dp"
+                android:text="@string/info_text_sponContact"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/youtubePlay"
@@ -133,14 +155,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:onClick="popUpYoutube"
-                android:text="Play Video"
+                android:text="@string/play_video"
                 android:textColor="@color/colorTextPrimaryDark" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/info_email"
+        android:id="@+id/spon_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -149,14 +171,14 @@
         app:backgroundTint="#FF0000" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/info_phone"
+        android:id="@+id/spon_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_marginBottom="85dp"
         android:src="@drawable/ic_phone"
         app:backgroundTint="#00CC00"
-        app:layout_anchor="@id/info_email"
+        app:layout_anchor="@id/spon_email"
         app:layout_anchorGravity="top" />
 
 </android.support.design.widget.CoordinatorLayout>

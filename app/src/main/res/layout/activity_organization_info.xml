@@ -140,7 +140,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/info_email"
+        android:id="@+id/spon_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -156,7 +156,7 @@
         android:layout_marginBottom="85dp"
         android:src="@drawable/ic_phone"
         app:backgroundTint="#00CC00"
-        app:layout_anchor="@id/info_email"
+        app:layout_anchor="@id/spon_email"
         app:layout_anchorGravity="top" />
 
 </android.support.design.widget.CoordinatorLayout>

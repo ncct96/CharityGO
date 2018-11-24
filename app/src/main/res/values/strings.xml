@@ -3,6 +3,7 @@
     <string name="app_name">Charity GO!</string>
 
     <!--About Us-->
+    <string name="view_btn">View Sponsors</string>
     <string name="title_activity_about">About Us</string>
     <string name="about_text_mission">To encourage Malaysians, regardless of ethnicity, gender or religion to stay healthy by walking and to help charitable organizations across the peninsular through the use of a singular, mobile application.</string>
     <string name="about_title_mission">Our Mission</string>
@@ -61,7 +62,20 @@
     <string name="title_profile">Profile</string>
     
     <!--Sponsor Info-->
-    <string name="info_"></string>
+    <string name="info_text_sponContact">Click on the button below to view their popular YouTube videos</string>
+    <string name="info_text_sponAbout">We develop softwares for Malaysia, businesses, gaming, you name it!</string>
+    <string name="info_text_sponBackground">Started on 1998, have been growing ever since, now becoming the sole software provider in Malaysia.</string>
+    <string name="play_video">Play Video</string>
+    <string name="info_text_donation">Total Fundings</string>
+    
+    <!--Profile Info-->
+    <string name="profile_name">Profile</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="send_btn">Send</string>
+    <string name="verify_btn">Verify</string>
+    <string name="recreate_label">Recreate Password</string>
+    <string name="save_btn">Save</string>
 
     <!--Organization Info-->
     <string name="title_activity_organization_info">Organization Info</string>

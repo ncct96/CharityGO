@@ -53,14 +53,12 @@
                 android:value="org.charitygo.LoginActivity" />
         </activity>
 
-        <activity
-            android:name=".PopUp"
+        <activity android:name=".PopUp"
             android:theme="@style/PopUpTheme"></activity>
 
-        <activity
-            android:name=".YoutubeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent.NoActionBar"></activity>
+        <activity android:name=".YoutubeActivity"
+            android:theme="@style/Theme.Transparent.NoActionBar">
+        </activity>
 
         <activity
             android:name=".PopUpCodeEnter"
@@ -126,9 +124,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.AboutActivity" />
         </activity>
-        <activity
-            android:name=".SponsorInfoActivity"
-            android:label="Sponsor's Information"
+
+        <activity android:name=".SponsorInfoActivity"
+            android:label="About Sponsors"
             android:parentActivityName=".SpnsorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent.NoActionBar"></activity>

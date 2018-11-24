@@ -22,7 +22,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         int width = dm.widthPixels; int height = dm.heightPixels;
-        getWindow().setLayout((int)(width*.8), (int)(height*.4));
+        getWindow().setLayout((int)(width*1), (int)(height*.4));
     }
 
     YouTubePlayerView mYouTubePlayerView;

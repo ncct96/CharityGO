@@ -196,7 +196,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="20dp"
                 android:onClick="goToSponsor"
-                android:text="View Sponsors"
+                android:text="@string/view_btn"
                 android:textColor="@color/colorTextPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
