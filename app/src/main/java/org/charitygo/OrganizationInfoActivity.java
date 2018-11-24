@@ -30,7 +30,7 @@ public class OrganizationInfoActivity extends AppCompatActivity {
         background.setText("Founded in 1678 by Richard B. Patterson, this organization has grown to over 50 branches acrross Malaysia.");
 
         TextView about = (TextView) findViewById(R.id.info_text_about);
-        about.setText("Sell stuff, I guess...");
+        about.setText("Sell stuff, I guess...\nI heard their cookies are nice. :)");
 
         TextView contact = (TextView) findViewById(R.id.info_text_contact);
         contact.setText("Email: info@mail.noreply.com");
