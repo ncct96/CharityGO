@@ -31,7 +31,7 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
-                app:srcCompat="@drawable/anime" />
+                app:srcCompat="@drawable/smashsubscribe" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/spon_toolbar"
