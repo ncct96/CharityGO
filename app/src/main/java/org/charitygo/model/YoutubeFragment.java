@@ -14,19 +14,15 @@ import org.charitygo.R;
 
 public class YoutubeFragment extends Fragment {
 
-    public YoutubeFragment() {
-
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //View listView = getActivity().findViewById(R.id.youTubeVid);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        YoutubeFragment fragment = (YoutubeFragment) getFragmentManager().findFragmentById(R.id.youTubeVid);
-        fragmentTransaction.replace(R.id.youTubeVid, fragment);
+        YoutubeFragment fragment = new YoutubeFragment();
+        fragmentTransaction.add(R.id.youTubeVid, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.activity_youtube, container, false);
     }
 }

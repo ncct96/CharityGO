@@ -121,11 +121,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <fragment
-                android:id="@+id/youTubeVid"
-                android:name="org.charitygo.model.YoutubeFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <!--<fragment-->
+                <!--android:id="@+id/youTubeVid"-->
+                <!--android:name="org.charitygo.model.YoutubeFragment"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content" />-->
 
             <Button
                 android:id="@+id/youtubePlay"
