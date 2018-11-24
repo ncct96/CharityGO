@@ -30,6 +30,6 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     public void goToSponsor(View view) {
-        startActivity(new Intent(getApplicationContext(), SpnsorActivity.class));
+        startActivity(new Intent(getApplicationContext(), SponsorActivity.class));
     }
 }

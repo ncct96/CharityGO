@@ -1,5 +1,6 @@
 package org.charitygo;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -169,7 +170,6 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     public void cancelRegister(View view) {
-        Intent intent = new Intent(getApplicationContext(), MainUI.class);
-        startActivity(intent);
+        this.finish();
     }
 }

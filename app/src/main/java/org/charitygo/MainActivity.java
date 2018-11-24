@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToSponsor(View view) {
-        Intent intent = new Intent(this, SpnsorActivity.class);
+        Intent intent = new Intent(this, SponsorActivity.class);
         startActivity(intent);
     }
 }
