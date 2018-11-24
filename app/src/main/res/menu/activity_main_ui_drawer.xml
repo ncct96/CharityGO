@@ -13,6 +13,11 @@
         android:onClick="goToOrganizations"
         android:title="Organizations" />
     <item
+        android:id="@+id/nav_sponsors"
+        android:icon="@drawable/ic_sponsors"
+        android:onClick="goToSponsors"
+        android:title="Sponsors" />
+    <item
         android:id="@+id/nav_leaderBoard"
         android:icon="@drawable/ic_star"
         android:onClick="goToLeaderBoard"
