@@ -8,12 +8,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SpnsorActivity extends AppCompatActivity {
+public class SponsorActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spnsor);
+        setContentView(R.layout.activity_sponsor);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.sponToolbar);
         setSupportActionBar(toolbar);
@@ -22,9 +22,9 @@ public class SpnsorActivity extends AppCompatActivity {
         createSponsors();
     }
 
-    protected void createSponsors(){
+    protected void createSponsors() {
 
-        for(int i = 0; i <= 3; i++){
+        for (int i = 0; i <= 3; i++) {
             LinearLayout spon = (LinearLayout) findViewById(R.id.sponsor_linear);
             View view = getLayoutInflater().inflate(R.layout.sponsor, spon, false);
 

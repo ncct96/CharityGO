@@ -39,7 +39,7 @@
         completions."
     </string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="no_account">Do Not Have An Account?</string>
+    <string name="no_account">Don\'t Have An Account?</string>
     <string name="action_register">Register</string>
     <string name="sponsor_label">Sponsors</string>
     <string name="action_cancel">Cancel</string>

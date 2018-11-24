@@ -115,7 +115,7 @@
                 android:value="org.charitygo.MainUI" />
         </activity>
         <activity
-            android:name=".SpnsorActivity"
+            android:name=".SponsorActivity"
             android:label="@string/sponsor_label"
             android:parentActivityName=".AboutActivity"
             android:screenOrientation="portrait"
@@ -127,7 +127,7 @@
 
         <activity android:name=".SponsorInfoActivity"
             android:label="About Sponsors"
-            android:parentActivityName=".SpnsorActivity"
+            android:parentActivityName=".SponsorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent.NoActionBar"></activity>
     </application>
