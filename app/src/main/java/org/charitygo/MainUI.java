@@ -96,7 +96,7 @@ public class MainUI extends AppCompatActivity
         progressBar = findViewById(R.id.stepProgress);
 
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
-        txtProgress.setText(TEXT_NUM_STEPS +  "\n" + numSteps);
+        txtProgress.setText(numSteps + "\nSTEPS");
     }
 
     @Override
@@ -137,7 +137,7 @@ public class MainUI extends AppCompatActivity
         progressCircle = (int)progress;
         progressBar.setProgress(progressCircle);
         //txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
-        txtProgress.setText(TEXT_NUM_STEPS +  "\n" + numSteps);
+        txtProgress.setText(numSteps + "\nSTEPS");
     }
 
     @Override
@@ -252,6 +252,10 @@ public class MainUI extends AppCompatActivity
     }
     public void goToOrganizations(MenuItem menuItem){
         Intent intent = new Intent (getApplicationContext(), OrganizationActivity.class);
+        startActivity(intent);
+    }
+    public void goToSponsors(MenuItem menuItem){
+        Intent intent = new Intent (getApplicationContext(), SpnsorActivity.class);
         startActivity(intent);
     }
     public void goToLeaderBoard(MenuItem menuItem){
