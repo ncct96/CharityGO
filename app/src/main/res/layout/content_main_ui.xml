@@ -10,13 +10,37 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="256dp"
+        android:layout_marginBottom="38dp"
         app:layout_constraintBottom_toTopOf="@+id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/lights" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/sea" />
+
+    <Button
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_vertical"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_bg_rounded"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Make a donation"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:theme="@style/AppTheme"
+        app:layout_constraintBottom_toBottomOf="@id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/divider" />
 
     <TextView
         android:id="@+id/numOfStep"
@@ -40,7 +64,7 @@
         android:id="@+id/stepProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
-        android:layout_height="282dp"
+        android:layout_height="254dp"
         android:layout_centerInParent="true"
         android:indeterminate="false"
         android:max="100"
@@ -54,8 +78,8 @@
 
     <View
         android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
         android:background="@android:color/holo_purple"
         app:layout_constraintTop_toBottomOf="@+id/stepProgress" />
 
@@ -63,11 +87,13 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingTop="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider">
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:id="@+id/linearLayout"
