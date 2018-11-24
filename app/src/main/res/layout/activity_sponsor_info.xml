@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".OrganizationInfoActivity">
+    tools:context=".SponsorInfoActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/sponappbar"
@@ -45,7 +45,7 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -121,19 +121,20 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/info_text_contact"
+            <fragment
+                android:id="@+id/youTubeVid"
+                android:name="org.charitygo.model.YoutubeFragment"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/youtubePlay"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingTop="8dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="16dp"
-                android:text="@string/info_text_contact"
-                android:textAlignment="center"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_gravity="center"
+                android:onClick="popUpYoutube"
+                android:text="Play Video"
+                android:textColor="@color/colorTextPrimaryDark" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

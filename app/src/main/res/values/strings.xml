@@ -12,6 +12,8 @@
     <string name="about_text_promise">All proceeds from our sponsors will be donated 100% to charitable organizations throughout Malaysia.</string>
     <string name="about_title_help">How You Can Help</string>
     <string name="about_text_help">Just by using this app and participating, you\'re already changing the lives of those in need across Malaysia. Want to do more? Contact the charitable organization of your liking and enquire for any voluntary positions!</string>
+    <string name="about_title_sponsor">How We Got Our Funds</string>
+    <string name="about_text_sponsor">We are a non-profit organizations, we got all our funds from sponsors all around Malaysia, thanks to them, we are able to make this happen. To know more about these lifesavers, click on the button to know more.</string>
 
     <!--Main Menu-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -57,6 +59,9 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_profile">Profile</string>
+    
+    <!--Sponsor Info-->
+    <string name="info_"></string>
 
     <!--Organization Info-->
     <string name="title_activity_organization_info">Organization Info</string>

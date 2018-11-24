@@ -1,5 +1,6 @@
 package org.charitygo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,4 +29,7 @@ public class AboutActivity extends AppCompatActivity {
 
     }
 
+    public void goToSponsor(View view) {
+        startActivity(new Intent(getApplicationContext(), SpnsorActivity.class));
+    }
 }
