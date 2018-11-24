@@ -10,7 +10,7 @@
         android:id="@+id/rank_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryLight"
+        android:background="@drawable/gradient_blue"
         android:clipToPadding="false"
         android:paddingBottom="8dp"
         android:scrollbars="vertical"
