@@ -51,6 +51,10 @@
         <activity android:name=".PopUp"
             android:theme="@style/PopUpTheme"></activity>
 
+        <activity android:name=".YoutubeActivity"
+            android:theme="@style/Theme.Transparent.NoActionBar">
+        </activity>
+
         <activity android:name=".PopUpCodeEnter"
             android:theme="@style/PopUpTheme"></activity>
 

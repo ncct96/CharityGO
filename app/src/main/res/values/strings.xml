@@ -59,6 +59,9 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_profile">Profile</string>
+    
+    <!--Sponsor Info-->
+    <string name="info_"></string>
 
     <!--Organization Info-->
     <string name="title_activity_organization_info">Organization Info</string>
