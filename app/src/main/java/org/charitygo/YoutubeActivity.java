@@ -33,7 +33,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 //FOR LOADING SINGLE VIDEO
-                youTubePlayer.loadVideo("6Dh-RL__uN4");
+                youTubePlayer.loadVideo("gPNVpzpraHk");
 
                 //FOR LOADING MULTIPLE VIDEOS
 //                List<String> videoList = new ArrayList<>();
