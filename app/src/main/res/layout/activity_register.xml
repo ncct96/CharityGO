@@ -5,17 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="24dp"
     tools:context=".RegisterActivity">
 
     <ScrollView
         android:id="@+id/registerScroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="match_parent"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -136,39 +132,6 @@
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/buttonCancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@android:color/darker_gray"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="cancelRegister"
-                android:text="@string/action_cancel"
-                android:textColor="@color/colorTextPrimaryDark"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/buttonReg"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/labelGender" />
-
-            <Button
-                android:id="@+id/buttonReg"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/colorAccent"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="registerAccount"
-                android:text="@string/action_register"
-                android:textColor="@color/colorTextPrimary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/buttonCancel" />
-
             <RadioGroup
                 android:id="@+id/radioGroupGender"
                 android:layout_width="0dp"
@@ -200,6 +163,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_weight="1"
                     android:text="@string/gender_female" />
+
             </RadioGroup>
 
             <TextView
@@ -214,6 +178,24 @@
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="@+id/radioGroupGender"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/buttonReg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/colorAccent"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:onClick="registerAccount"
+                android:text="@string/action_register"
+                android:textColor="@color/colorTextPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/labelGender" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
