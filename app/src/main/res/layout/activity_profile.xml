@@ -116,8 +116,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Email"
-                        android:textColor="@color/headings"
-                        android:textSize="13sp" />
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/email"
@@ -125,8 +126,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="kai_schulen@gmail.com"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
+                        android:textColor="@color/colorTextPrimaryDark"
+                        android:textSize="20sp" />
 
                     <EditText
                         android:id="@+id/editEmail"
@@ -156,8 +157,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Phone"
-                        android:textColor="@color/headings"
-                        android:textSize="13sp" />
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/contactnum"
@@ -165,8 +167,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="+60125566922"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
+                        android:textColor="@color/colorTextPrimaryDark"
+                        android:textSize="20sp" />
 
                     <EditText
                         android:id="@+id/editPhone"
@@ -196,8 +198,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Username"
-                        android:textColor="@color/headings"
-                        android:textSize="13sp" />
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/username"
@@ -205,8 +208,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="Kai Schulen"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
+                        android:textColor="@color/colorTextPrimaryDark"
+                        android:textSize="20sp" />
 
                     <EditText
                         android:id="@+id/editUsername"
@@ -222,7 +225,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="15dp"
-                        android:background="@color/circleBorder" />
+                        android:background="@color/grey" />
 
                 </LinearLayout>
 
@@ -236,8 +239,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="This Week Accumulated Points"
-                        android:textColor="@color/headings"
-                        android:textSize="13sp" />
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/points"
@@ -245,17 +249,17 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="1200 points"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
+                        android:textColor="@color/colorTextPrimaryDark"
+                        android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/expire"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
-                        android:text="Expired on 30/11/2018"
-                        android:textColor="#FF0000"
-                        android:textSize="12sp" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/expire"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:fontFamily="sans-serif-light"-->
+                        <!--android:text="Expired on 30/11/2018"-->
+                        <!--android:textColor="#FF0000"-->
+                        <!--android:textSize="12sp" />-->
 
                     <View
                         android:layout_width="match_parent"
@@ -276,8 +280,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Accumulated Points"
-                        android:textColor="@color/headings"
-                        android:textSize="13sp" />
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/totalpoints"
@@ -285,8 +290,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="9000"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
+                        android:textColor="@color/colorTextPrimaryDark"
+                        android:textSize="20sp" />
 
                     <View
                         android:layout_width="match_parent"

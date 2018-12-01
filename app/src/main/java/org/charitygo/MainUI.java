@@ -1,28 +1,13 @@
 package org.charitygo;
 
-import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.opengl.Visibility;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.MenuInflater;
-import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,9 +21,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener, StepListener {
@@ -255,7 +237,7 @@ public class MainUI extends AppCompatActivity
         startActivity(intent);
     }
     public void goToSponsors(MenuItem menuItem){
-        Intent intent = new Intent (getApplicationContext(), SpnsorActivity.class);
+        Intent intent = new Intent (getApplicationContext(), SponsorActivity.class);
         startActivity(intent);
     }
     public void goToLeaderBoard(MenuItem menuItem){
