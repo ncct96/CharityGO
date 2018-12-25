@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -11,6 +11,7 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
+import org.charitygo.R;
 import org.charitygo.adapter.LeaderboardAdapter;
 import org.charitygo.model.LeaderInfo;
 

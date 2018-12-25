@@ -1,10 +1,9 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +15,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.charitygo.R;
 import org.charitygo.model.GmailSender;
-import org.w3c.dom.Text;
 
-import java.net.URI;
 import java.util.Random;
 
 public class PopUp extends AppCompatActivity {

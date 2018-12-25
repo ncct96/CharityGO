@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.text.InputFilter;
 import android.text.Spanned;

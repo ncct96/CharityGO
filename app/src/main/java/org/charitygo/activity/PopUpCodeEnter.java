@@ -1,17 +1,17 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+
+import org.charitygo.R;
 
 public class PopUpCodeEnter extends AppCompatActivity {
     private AutoCompleteTextView password;

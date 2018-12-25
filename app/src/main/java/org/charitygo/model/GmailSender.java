@@ -1,12 +1,6 @@
 package org.charitygo.model;
 
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
-
-import org.charitygo.PopUp;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
