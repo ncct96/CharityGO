@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,8 +23,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.charitygo.R;
 import org.charitygo.StepService;
+import org.charitygo.model.StepHistory;
 
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener, StepListener {
@@ -44,6 +52,10 @@ public class MainUI extends AppCompatActivity
     private static int savedNumSteps;
     private double progress;
     private int progressCircle = 0;
+
+    //Firebase Reference
+    final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    final DatabaseReference ref = mDatabase.getReference("stepsHistory");
 
     //CK CHANGES
     private Menu menu;
@@ -94,12 +106,41 @@ public class MainUI extends AppCompatActivity
             isSensorPresent = false;
         }
 
+        //Firebase retrieve Steps Data
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StepHistory steps = dataSnapshot.getValue(StepHistory.class);
+                System.out.println(steps.getSteps());
+                txtProgress.setText(steps.getSteps() + "\nSTEPS");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);
 
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
-        txtProgress.setText(numSteps + "\nSTEPS");
+
     }
+
+    ValueEventListener stepsListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
+
 
     @Override
     protected void onResume() {
