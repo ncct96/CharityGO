@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 public interface StepListener {
 
