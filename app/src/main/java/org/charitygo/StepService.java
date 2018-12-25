@@ -28,11 +28,14 @@ public class StepService extends Service implements SensorEventListener {
     private Sensor mStepDetectorSensor;
     private final FirebaseDatabase mFirebase = FirebaseDatabase.getInstance();
     DatabaseReference ref = mFirebase.getReference();
+    DatabaseReference stepsRef = mFirebase.getReference("stepsHistory");
     private User user;
     private int stepCounts = 0;
 
     public StepService() {
+        //stepCounts = stepsRef.
     }
+
 
     @Override
     public void onCreate() {
@@ -56,6 +59,8 @@ public class StepService extends Service implements SensorEventListener {
         userRef.setValue(users);
 
     }
+
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -92,6 +97,5 @@ public class StepService extends Service implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 }
