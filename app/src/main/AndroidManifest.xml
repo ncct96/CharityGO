@@ -33,10 +33,10 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
@@ -52,19 +52,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.LoginActivity" />
         </activity>
-
-        <activity android:name=".PopUp"
-            android:theme="@style/PopUpTheme"></activity>
-
-        <activity android:name=".YoutubeActivity"
-            android:theme="@style/Theme.Transparent.NoActionBar">
-        </activity>
-
+        <activity
+            android:name=".PopUp"
+            android:theme="@style/PopUpTheme" />
+        <activity
+            android:name=".YoutubeActivity"
+            android:theme="@style/Theme.Transparent.NoActionBar" />
         <activity
             android:name=".PopUpCodeEnter"
             android:screenOrientation="portrait"
-            android:theme="@style/PopUpTheme"></activity>
-
+            android:theme="@style/PopUpTheme" />
         <activity
             android:name=".OrganizationActivity"
             android:label="@string/title_activity_organization"
@@ -124,12 +121,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.AboutActivity" />
         </activity>
-
-        <activity android:name=".SponsorInfoActivity"
+        <activity
+            android:name=".SponsorInfoActivity"
             android:label="About Sponsors"
             android:parentActivityName=".SponsorActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeTranslucent.NoActionBar"></activity>
+            android:theme="@style/AppThemeTranslucent.NoActionBar" />
+        <activity android:name=".TransactHistActivity" />
+        <activity android:name=".GoogleLoginActivity" />
     </application>
 
 </manifest>
