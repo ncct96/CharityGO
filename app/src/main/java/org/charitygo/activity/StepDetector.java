@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 public class StepDetector {
     private static final int ACCEL_RING_SIZE = 50;
@@ -18,7 +18,7 @@ public class StepDetector {
     private long lastStepTimeNs = 0;
     private float oldVelocityEstimate = 0;
 
-    private org.charitygo.StepListener listener;
+    private StepListener listener;
 
     public void registerListener(StepListener listener) {
         this.listener = listener;

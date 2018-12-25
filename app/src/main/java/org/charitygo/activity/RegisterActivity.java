@@ -1,27 +1,17 @@
-package org.charitygo;
+package org.charitygo.activity;
 
-import android.app.Activity;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.charitygo.R;
 
 public class RegisterActivity extends AppCompatActivity{
 

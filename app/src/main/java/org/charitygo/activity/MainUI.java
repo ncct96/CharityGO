@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +22,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.charitygo.R;
+import org.charitygo.StepService;
+
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener, StepListener {
 
@@ -32,6 +35,9 @@ public class MainUI extends AppCompatActivity
 
     private StepDetector simpleStepDetector;
     private SensorManager sensorManager;
+    private SensorManager mSensorManager;
+    private boolean isSensorPresent = false;
+    private Sensor mSensor;
     private Sensor accel;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
     private int numSteps;
@@ -59,7 +65,7 @@ public class MainUI extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -69,7 +75,7 @@ public class MainUI extends AppCompatActivity
         // Step counter
         // Get an instance of the SensorManager
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accel = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         simpleStepDetector = new StepDetector();
         simpleStepDetector.registerListener(this);
 
@@ -77,8 +83,31 @@ public class MainUI extends AppCompatActivity
         txtProgress = findViewById(R.id.numOfStep);
         progressBar = findViewById(R.id.stepProgress);
 
+        mSensorManager = (SensorManager)
+                this.getSystemService(Context.SENSOR_SERVICE);
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+                != null) {
+            mSensor =
+                    mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            isSensorPresent = true;
+        } else {
+            isSensorPresent = false;
+        }
+
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        startService(intent);
+
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
         txtProgress.setText(numSteps + "\nSTEPS");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isSensorPresent) {
+            mSensorManager.registerListener(this, mSensor,
+                    SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
@@ -116,21 +145,23 @@ public class MainUI extends AppCompatActivity
         numSteps++;
         String strProg = String.valueOf(numSteps);
         progress = (Double.parseDouble(strProg) / 100) * 100;
-        progressCircle = (int)progress;
+        progressCircle = (int) progress;
         progressBar.setProgress(progressCircle);
         //txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
         txtProgress.setText(numSteps + "\nSTEPS");
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        sensorManager.unregisterListener(MainUI.this);
+    protected void onPause() {
+        super.onPause();
+        if (isSensorPresent) {
+            mSensorManager.unregisterListener(this);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -140,8 +171,8 @@ public class MainUI extends AppCompatActivity
 
     //CK CHANGES
     //Get log in status
-    public static boolean getLoggedStatus(Context context){
-        return LoginActivity.getPreference(context).getBoolean(LoginActivity.Logged_IN,false);
+    public static boolean getLoggedStatus(Context context) {
+        return LoginActivity.getPreference(context).getBoolean(LoginActivity.Logged_IN, false);
     }
 
     //CK CHANGES
@@ -152,9 +183,9 @@ public class MainUI extends AppCompatActivity
         MenuItem profile = menu.findItem(R.id.nav_profile);*/
 
         boolean isLog = getLoggedStatus(getApplicationContext()); //Get current logged in user's status
-        if(isLog){
+        if (isLog) {
             //addLoginMenu();
-        }else{
+        } else {
             //removeLoginMenu();
         }
 
@@ -212,45 +243,50 @@ public class MainUI extends AppCompatActivity
     }
 
     //CK CHANGES
-    public void loginPage(MenuItem menuItem){
+    public void loginPage(MenuItem menuItem) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 
-    public void logOut(MenuItem menuItem){
+    public void logOut(MenuItem menuItem) {
         //removeLoginMenu();
         LoginActivity.getPreference(getApplicationContext()).edit().clear().apply();
-        Toast.makeText(MainUI.this, "Successfully Signed Out !",Toast.LENGTH_LONG).show();
-        Intent intent = new Intent (getApplicationContext(), GoogleLoginActivity.class);
+        Toast.makeText(MainUI.this, "Successfully Signed Out !", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
         finish();
     }
-    public void profile(MenuItem menuItem){
+
+    public void profile(MenuItem menuItem) {
         /*
-        * INSERT CODES TO START PROFILE ACTIVITY HERE
-        * */
+         * INSERT CODES TO START PROFILE ACTIVITY HERE
+         * */
         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
         startActivity(intent);
     }
-    public void goToOrganizations(MenuItem menuItem){
-        Intent intent = new Intent (getApplicationContext(), OrganizationActivity.class);
-        startActivity(intent);
-    }
-    public void goToSponsors(MenuItem menuItem){
-        Intent intent = new Intent (getApplicationContext(), SponsorActivity.class);
-        startActivity(intent);
-    }
-    public void goToLeaderBoard(MenuItem menuItem){
-        Intent intent = new Intent (getApplicationContext(), Leaderboard.class);
-        startActivity(intent);
-    }
-    public void goToAbout(MenuItem menuItem){
-        Intent intent = new Intent (getApplicationContext(), AboutActivity.class);
+
+    public void goToOrganizations(MenuItem menuItem) {
+        Intent intent = new Intent(getApplicationContext(), OrganizationActivity.class);
         startActivity(intent);
     }
 
-    public void goToOrganizations(View view){
-        Intent intent = new Intent (this, OrganizationActivity.class);
+    public void goToSponsors(MenuItem menuItem) {
+        Intent intent = new Intent(getApplicationContext(), SponsorActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToLeaderBoard(MenuItem menuItem) {
+        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+        startActivity(intent);
+    }
+
+    public void goToAbout(MenuItem menuItem) {
+        Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToOrganizations(View view) {
+        Intent intent = new Intent(this, OrganizationActivity.class);
         startActivity(intent);
     }
 }

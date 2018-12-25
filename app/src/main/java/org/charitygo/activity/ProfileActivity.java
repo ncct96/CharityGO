@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
@@ -8,6 +8,8 @@ import android.support.v7.view.menu.ActionMenuItemView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import org.charitygo.R;
 
 public class ProfileActivity extends AppCompatActivity {
 

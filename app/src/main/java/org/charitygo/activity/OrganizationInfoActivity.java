@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+
+import org.charitygo.R;
 
 public class OrganizationInfoActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -8,6 +8,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
+import org.charitygo.R;
 import org.charitygo.model.YoutubeConfig;
 
 public class YoutubeActivity extends YouTubeBaseActivity {
