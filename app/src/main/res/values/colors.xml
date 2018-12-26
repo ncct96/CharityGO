@@ -2,7 +2,7 @@
 <resources>
     <!--Main stuff do not touch-->
     <color name="colorPrimary">#007CB1</color>
-    <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorTextPrimary">#ffffff</color>
     <color name="colorTextPrimaryDark">#000000</color>
     <color name="colorPrimaryDark">#005E86</color>
     <color name="colorPrimaryLight">#69e2ff</color>

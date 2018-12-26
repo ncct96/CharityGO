@@ -165,17 +165,17 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/about_title_sponsor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="28dp"
-                android:paddingBottom="8dp"
-                android:text="@string/about_title_sponsor"
-                android:textAlignment="center"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+            android:id="@+id/about_title_sponsor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="28dp"
+            android:paddingBottom="8dp"
+            android:text="@string/about_title_sponsor"
+            android:textAlignment="center"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/about_text_sponsor"

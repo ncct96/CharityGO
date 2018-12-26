@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "124341666441-f3su9hvdpgq038assoihbc105i8o39fc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.charitygo",
+            "certificate_hash": "0076a4bee8d3a0a9d39d591dd97ae04df3546399"
+          }
+        },
+        {
           "client_id": "124341666441-44f6s63ef4ipphdcesao2nh857s6203e.apps.googleusercontent.com",
           "client_type": 3
         }
