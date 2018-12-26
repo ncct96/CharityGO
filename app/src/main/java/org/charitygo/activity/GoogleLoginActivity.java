@@ -79,15 +79,19 @@ public class GoogleLoginActivity extends AppCompatActivity {
 
     private void signIn() {
         if(currentUser != null){
-
+            Map<String, User> googleUsers = new HashMap<>();
+            DatabaseReference userRef = ref.child("users");
+            User user = new User(currentUser.getDisplayName(), currentUser.getEmail());
+            googleUsers.put(user.name, user);
+            userRef.child(currentUser.getUid()).setValue(googleUsers);
+            //recreate();
+        }else {
+            Intent signInIntent = googleSignClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
         }
-        User user = new User(currentUser.getDisplayName(), currentUser.getEmail());
-        Intent signInIntent = googleSignClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-        Map<String, User> users = new HashMap<>();
-        DatabaseReference userRef = ref.child("users");
-        userRef.child(currentUser.getUid()).setValue(user);
+    }
 
+    private void updateTextView(){
         usernameDisplay = findViewById(R.id.displayUsername);
         emailDisplay = findViewById(R.id.displayEmail);
         usernameDisplay.setText(currentUser.getDisplayName());
@@ -108,6 +112,13 @@ public class GoogleLoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+//    @Override
+//    public void recreate() {
+//        super.recreate();
+//        this.onCreate(null);
+//        updateTextView();
+//    }
 
     @Override
     public void onStart() {
