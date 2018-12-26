@@ -1,4 +1,4 @@
-package org.charitygo;
+package org.charitygo.activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -22,15 +23,29 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import org.charitygo.R;
+import org.charitygo.model.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GoogleLoginActivity extends AppCompatActivity {
 
     private static final String TAG = "GoogleActivity";
     private GoogleSignInClient googleSignClient;
     private static final int RC_SIGN_IN = 9001;
+
     private FirebaseAuth fireAuth;
+    private FirebaseUser currentUser;
     private SignInButton googleSignIn;
     private Button googleSignOut;
+    private final FirebaseDatabase instant = FirebaseDatabase.getInstance();
+    private DatabaseReference ref = instant.getReference();
+
+    private TextView usernameDisplay; private TextView emailDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +78,27 @@ public class GoogleLoginActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        if(currentUser != null){
+
+        }
+        User user = new User(currentUser.getDisplayName(), currentUser.getEmail());
         Intent signInIntent = googleSignClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        Map<String, User> users = new HashMap<>();
+        DatabaseReference userRef = ref.child("users");
+        userRef.child(currentUser.getUid()).setValue(user);
+
+        usernameDisplay = findViewById(R.id.displayUsername);
+        emailDisplay = findViewById(R.id.displayEmail);
+        usernameDisplay.setText(currentUser.getDisplayName());
+        emailDisplay.setText(currentUser.getEmail());
+        usernameDisplay.setVisibility(View.VISIBLE);
+        emailDisplay.setVisibility(View.VISIBLE);
     }
 
     private void signOut() {
         // Firebase sign out
         fireAuth.signOut();
-
         // Google sign out
         googleSignClient.signOut().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
@@ -85,7 +113,7 @@ public class GoogleLoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = fireAuth.getCurrentUser();
+        currentUser = fireAuth.getInstance().getCurrentUser();
         //updateUI(currentUser);
     }
 

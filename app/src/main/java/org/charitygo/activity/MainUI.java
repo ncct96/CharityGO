@@ -293,7 +293,7 @@ public class MainUI extends AppCompatActivity
         //removeLoginMenu();
         LoginActivity.getPreference(getApplicationContext()).edit().clear().apply();
         Toast.makeText(MainUI.this, "Successfully Signed Out !", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        Intent intent = new Intent(getApplicationContext(), GoogleLoginActivity.class);
         startActivity(intent);
         finish();
     }
