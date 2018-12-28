@@ -55,9 +55,8 @@ public class StepService extends Service implements SensorEventListener {
         DatabaseReference userRef = ref.child("users");
         Map<String, User> users = new HashMap<>();
         users.put(user.name, user);
-
-        userRef.setValue(users);
-
+        userRef.child("Nicholas").setValue(users);
+        //userRef.setValue(users);
     }
 
 
