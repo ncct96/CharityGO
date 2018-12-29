@@ -184,7 +184,6 @@ public class MainUI extends AppCompatActivity
             mNotificationManager.createNotificationChannel(mChannel);
         }
 
-        MyNotificationManager.getInstance(this).displayNotification("asdad","asdsad");
 
     }
 
@@ -329,6 +328,11 @@ public class MainUI extends AppCompatActivity
 
     public void goToLeaderBoard(MenuItem menuItem) {
         Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+        startActivity(intent);
+    }
+
+    public void goToRewards(MenuItem menuItem) {
+        Intent intent = new Intent(getApplicationContext(), RewardActivity.class);
         startActivity(intent);
     }
 

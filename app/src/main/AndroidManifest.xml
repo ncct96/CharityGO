@@ -139,6 +139,15 @@
             android:name=".StepService"
             android:enabled="true"
             android:exported="true" />
+        <activity
+            android:name=".activity.RewardActivity"
+            android:label="Rewards"
+            android:parentActivityName=".activity.MainUI"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.charitygo.activity.MainUI" />
+        </activity>
         <service android:name=".FirebaseCMSvc">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

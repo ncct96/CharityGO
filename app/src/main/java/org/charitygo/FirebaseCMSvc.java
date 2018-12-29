@@ -16,8 +16,9 @@ public class FirebaseCMSvc extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
 
         }
+        String title = remoteMessage.getNotification().getTitle();
         String message = remoteMessage.getNotification().getBody();
         Log.e("TAG", "Title" + remoteMessage.getNotification().getBody());
-        MyNotificationManager.getInstance(this).displayNotification("hi", "daad");
+        MyNotificationManager.getInstance(this).displayNotification(title, message);
     }
 }
