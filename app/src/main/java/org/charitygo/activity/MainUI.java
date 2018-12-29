@@ -1,7 +1,10 @@
 package org.charitygo.activity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -31,7 +34,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.charitygo.Constants;
+import org.charitygo.MyNotificationManager;
 import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.StepHistory;
@@ -40,7 +46,7 @@ import org.charitygo.model.User;
 import java.lang.reflect.Field;
 
 public class MainUI extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener, StepListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
 
     private TextView txtProgress;
     private ProgressBar progressBar;
@@ -92,12 +98,7 @@ public class MainUI extends AppCompatActivity
         // Create progress bar
         // Step counter
         // Get an instance of the SensorManager
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accel = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-        simpleStepDetector = new StepDetector();
-        simpleStepDetector.registerListener(this);
 
-        sensorManager.registerListener(MainUI.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
         txtProgress = findViewById(R.id.numOfStep);
         progressBar = findViewById(R.id.stepProgress);
 
@@ -150,6 +151,10 @@ public class MainUI extends AppCompatActivity
     }
 
 
+        FirebaseMessaging.getInstance().subscribeToTopic("reminder");
+        createNotificationChannel();
+
+
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);
 
@@ -157,18 +162,26 @@ public class MainUI extends AppCompatActivity
 
     }
 
-    ValueEventListener stepsListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+    public void createNotificationChannel() {
 
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+
+        {
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+            mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mNotificationManager.createNotificationChannel(mChannel);
         }
 
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        }
-    };
-
+    }
 
 
     @Override
@@ -176,49 +189,13 @@ public class MainUI extends AppCompatActivity
         super.onResume();
         if (isSensorPresent) {
             mSensorManager.registerListener(this, mSensor,
-                    SensorManager.SENSOR_DELAY_NORMAL);
+                    SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("Steps", numSteps);
-        savedNumSteps = numSteps;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        numSteps = savedInstanceState.getInt("Steps");
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            simpleStepDetector.updateAccel(
-                    event.timestamp, event.values[0], event.values[1], event.values[2]);
-        }
-    }
-
-    @Override
-    public void step(long timeNs) {
-        numSteps++;
-        String strProg = String.valueOf(numSteps);
-        progress = (Double.parseDouble(strProg) / 100) * 100;
-        progressCircle = (int) progress;
-        progressBar.setProgress(progressCircle);
-        //txtProgress.setText(TEXT_NUM_STEPS + numSteps + "\n" + "Progress: "+ progressCircle + "%");
-        txtProgress.setText(numSteps + "\nSTEPS");
     }
 
     @Override
@@ -358,5 +335,14 @@ public class MainUI extends AppCompatActivity
     public void goToOrganizations(View view) {
         Intent intent = new Intent(this, OrganizationActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }

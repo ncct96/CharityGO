@@ -12,6 +12,7 @@ import android.hardware.TriggerEventListener;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -45,20 +46,19 @@ public class StepService extends Service implements SensorEventListener {
                 this.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null) {
             mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 
-    public void initUser(){
-        user = new User("Nicholas","ncct96@gmail.com");
-
-        DatabaseReference userRef = ref.child("users");
+    public void initUser() {
+/*        user = new User("Nicholas", "ncct96@gmail.com");
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userRef = ref.child("stepsHistory/users/" + uid);
         Map<String, User> users = new HashMap<>();
         users.put(user.name, user);
-        userRef.child("Nicholas").setValue(users);
+        userRef.setValue(users);*/
         //userRef.setValue(users);
     }
-
 
 
     @Override
@@ -83,9 +83,10 @@ public class StepService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        DatabaseReference stepsRef = ref.child("stepsHistory");
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference stepsRef = ref.child("stepsHistory/users/" + uid);
 
-        if(event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR){
+        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             stepCounts++;
         }
 
