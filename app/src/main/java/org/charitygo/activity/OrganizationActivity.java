@@ -43,10 +43,10 @@ public class OrganizationActivity extends AppCompatActivity {
 
         //Get info from database here
 
-        //Adds cards.xml n number of times
+        //Adds organization_cardsization_cards.xml n number of times
         for (int i = 1; i < 6; i++) {
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.organization_linearLayout_cards);
-            View view = getLayoutInflater().inflate(R.layout.cards, linearLayout, false);
+            View view = getLayoutInflater().inflate(R.layout.organization_cards, linearLayout, false);
             TextView textName = (TextView) view.findViewById(R.id.info_text);
             textName.setText("Card " + i);
             textName.setId(i);
