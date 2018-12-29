@@ -38,6 +38,7 @@ dependencies {
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }
 
 apply plugin: 'com.google.gms.google-services'
