@@ -156,7 +156,6 @@ public class MainUI extends AppCompatActivity
             mNotificationManager.createNotificationChannel(mChannel);
         }
 
-        MyNotificationManager.getInstance(this).displayNotification("asdad","asdsad");
 
     }
 
