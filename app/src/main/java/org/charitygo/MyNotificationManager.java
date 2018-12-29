@@ -33,7 +33,7 @@ public class MyNotificationManager {
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(title)
-                        .setContentText(body);
+                        .setContentText(body).setPriority(NotificationCompat.PRIORITY_HIGH);
 
 
         /*

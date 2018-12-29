@@ -113,6 +113,12 @@ public class MainUI extends AppCompatActivity
             isSensorPresent = false;
         }
 
+
+        FirebaseMessaging.getInstance().subscribeToTopic("reminder");
+        Log.e("Tsaas", "afasfasf");
+        Toast.makeText(getApplicationContext(), "Subscribed", Toast.LENGTH_LONG);
+        createNotificationChannel();
+
         //Firebase retrieve Steps Data
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -151,8 +157,6 @@ public class MainUI extends AppCompatActivity
     }
 
 
-        FirebaseMessaging.getInstance().subscribeToTopic("reminder");
-        createNotificationChannel();
 
 
         Intent intent = new Intent(getApplicationContext(), StepService.class);
@@ -180,6 +184,7 @@ public class MainUI extends AppCompatActivity
             mNotificationManager.createNotificationChannel(mChannel);
         }
 
+        MyNotificationManager.getInstance(this).displayNotification("asdad","asdsad");
 
     }
 
