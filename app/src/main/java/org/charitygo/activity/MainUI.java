@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +35,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.StepHistory;
+import org.charitygo.model.User;
+
+import java.lang.reflect.Field;
 
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener, StepListener {
@@ -120,6 +126,29 @@ public class MainUI extends AppCompatActivity
 
             }
         });
+    if(FirebaseAuth.getInstance().getCurrentUser() != null){
+        // Retrieve data from gooogle user
+        FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("users").child(googleUser.getUid());
+        googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
+                    stepHistory.getUser();
+//                final User userClass = new User();
+//                final Field[] fields = userClass.getClass().getDeclaredFields();
+//                for(Field field : fields){
+//                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
+//                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);

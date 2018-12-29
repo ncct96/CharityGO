@@ -23,12 +23,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.R;
 import org.charitygo.model.User;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,16 +82,16 @@ public class GoogleLoginActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        Intent signInIntent = googleSignClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
         if(currentUser != null){
             Map<String, User> googleUsers = new HashMap<>();
             DatabaseReference userRef = ref.child("users");
-            User user = new User(currentUser.getDisplayName(), currentUser.getEmail());
-            googleUsers.put(user.name, user);
+            User userClass = new User(currentUser.getDisplayName(), currentUser.getEmail());
+            googleUsers.put(userClass.name, userClass);
             userRef.child(currentUser.getUid()).setValue(googleUsers);
-            //recreate();
-        }else {
-            Intent signInIntent = googleSignClient.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
+            Intent intent = new Intent(this, MainUI.class);
+            startActivity(intent);
         }
     }
 
@@ -100,6 +104,7 @@ public class GoogleLoginActivity extends AppCompatActivity {
         emailDisplay.setVisibility(View.VISIBLE);
     }
 
+
     private void signOut() {
         // Firebase sign out
         fireAuth.signOut();
@@ -108,7 +113,7 @@ public class GoogleLoginActivity extends AppCompatActivity {
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        //updateUI(null);
+                        currentUser.delete();
                     }
                 });
     }
@@ -158,7 +163,7 @@ public class GoogleLoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = fireAuth.getCurrentUser();
+                            currentUser = fireAuth.getCurrentUser();
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
