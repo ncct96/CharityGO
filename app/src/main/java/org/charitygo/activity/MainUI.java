@@ -27,6 +27,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +47,9 @@ import org.charitygo.MyNotificationManager;
 import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.StepHistory;
+import org.charitygo.model.User;
+
+import java.lang.reflect.Field;
 
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
@@ -66,6 +76,9 @@ public class MainUI extends AppCompatActivity
     final DatabaseReference ref = mDatabase.getReference("stepsHistory");
 
     //CK CHANGES
+    private FirebaseAuth userInstance = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = userInstance.getCurrentUser();
+    private FirebaseAuth.AuthStateListener authListener;
     private Menu menu;
 
     @Override
@@ -130,8 +143,28 @@ public class MainUI extends AppCompatActivity
             }
         });
 
-        MyNotificationManager.getInstance(this).displayNotification("sasasa","asdasd");
+    if(currentUser != null){
+        // Retrieve data from gooogle user
+        FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("users").child(googleUser.getUid());
+        googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
+                    stepHistory.getUser();
+//                final User userClass = new User();
+//                final Field[] fields = userClass.getClass().getDeclaredFields();
+//                for(Field field : fields){
+//                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
+//                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);
 
@@ -272,8 +305,22 @@ public class MainUI extends AppCompatActivity
         startActivity(intent);
     }
 
+    private GoogleSignInClient googleSignClient;
     public void logOut(MenuItem menuItem) {
         //removeLoginMenu();
+        FirebaseAuth.getInstance().signOut();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        googleSignClient = GoogleSignIn.getClient(this, gso);
+        googleSignClient.signOut().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
         LoginActivity.getPreference(getApplicationContext()).edit().clear().apply();
         Toast.makeText(MainUI.this, "Successfully Signed Out !", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getApplicationContext(), GoogleLoginActivity.class);
