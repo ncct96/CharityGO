@@ -23,9 +23,9 @@
                 android:layout_height="200dp"
                 android:fitsSystemWindows="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="goToOrganization"
+                android:onClick="goToVoucher"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/city" />
+                app:srcCompat="@drawable/borger" />
             <!--Swap this in for a gradient overlay instead-->
             <!--android:foreground="@drawable/gradient_overlay_gray"-->
 
