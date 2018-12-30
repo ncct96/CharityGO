@@ -35,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.charitygo.Constants;
+import org.charitygo.FirebaseCMSvc;
 import org.charitygo.MyNotificationManager;
 import org.charitygo.R;
 import org.charitygo.StepService;
@@ -129,7 +130,7 @@ public class MainUI extends AppCompatActivity
             }
         });
 
-
+        MyNotificationManager.getInstance(this).displayNotification("sasasa","asdasd");
 
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);
@@ -315,6 +316,11 @@ public class MainUI extends AppCompatActivity
 
     public void goToOrganizations(View view) {
         Intent intent = new Intent(this, OrganizationActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToSetting(MenuItem menuItem) {
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
     }
 
