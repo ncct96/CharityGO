@@ -5,8 +5,7 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never"
-        android:onClick="goToSetting"/>
+        app:showAsAction="never" />
     <item
         android:id="@+id/trans_history"
         android:orderInCategory="100"

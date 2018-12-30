@@ -170,9 +170,17 @@
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings" />
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activity.MainUI"></activity>
+            android:parentActivityName=".activity.MainUI" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
+
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="@string/title_activity_setting"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.MainUI"></activity>
     </application>
+
 </manifest>
