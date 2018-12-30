@@ -268,6 +268,8 @@ public class MainUI extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -363,11 +365,6 @@ public class MainUI extends AppCompatActivity
 
     public void goToOrganizations(View view) {
         Intent intent = new Intent(this, OrganizationActivity.class);
-        startActivity(intent);
-    }
-
-    public void goToSetting(MenuItem menuItem) {
-        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
     }
 

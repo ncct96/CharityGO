@@ -139,6 +139,7 @@
             android:name=".StepService"
             android:enabled="true"
             android:exported="true" />
+
         <activity
             android:name=".activity.RewardActivity"
             android:label="Rewards"
@@ -148,6 +149,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.activity.MainUI" />
         </activity>
+
         <service android:name=".FirebaseCMSvc">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -157,13 +159,17 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activity.MainUI"></activity>
-
+            android:parentActivityName=".activity.MainUI" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
-    </application>
 
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="@string/title_activity_setting"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.MainUI"></activity>
+    </application>
 
 </manifest>
