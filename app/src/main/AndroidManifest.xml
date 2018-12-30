@@ -155,9 +155,20 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
+      
         <activity
+            android:name=".activity.VoucherActivity"
+            android:label=""
+            android:parentActivityName=".activity.RewardActivity"
+            android:theme="@style/AppThemeTranslucent.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.charitygo.activity.RewardActivity" />
+        </activity>
+      
+      <activity
             android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_settings" />
             android:label="@string/title_activity_settings"
             android:parentActivityName=".activity.MainUI" />
 
