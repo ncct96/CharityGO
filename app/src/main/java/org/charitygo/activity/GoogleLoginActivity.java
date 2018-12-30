@@ -73,8 +73,6 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
         //Start initialize authentication
         fireAuth = FirebaseAuth.getInstance();
     }
-    boolean checkExist = false;
-
     private void signIn() {
         if(currentUser != null){
             Map<String, User> googleUsers = new HashMap<>();
@@ -82,7 +80,7 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
             User userClass = new User(currentUser.getDisplayName(), currentUser.getEmail());
             googleUsers.put(userClass.name, userClass);
             userRef.child(currentUser.getUid()).setValue(googleUsers);
-            ref.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            ref.child("users/"+currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()){
@@ -120,6 +118,8 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
         }
     }
     private User user1;
+    private boolean checkExist;
+
     private void updateUI(FirebaseUser user) {
         //hideProgressDialog();
         if (user != null ) {
@@ -132,20 +132,24 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
             findViewById(R.id.signInBtn).setVisibility(View.GONE);
             findViewById(R.id.signOutBtn).setVisibility(View.VISIBLE);
 
-            DatabaseReference dataRef = ref.child("users").child(currentUser.getUid());
-            ValueEventListener dataListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    user1 = dataSnapshot.getValue(User.class);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            };
-            dataRef.addListenerForSingleValueEvent(dataListener);
-            if(user1 != null){
+//            DatabaseReference dataRef = ref.child("users/"+currentUser.getUid());
+//            ValueEventListener dataListener = new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    if(dataSnapshot.exists()){
+//                        //Username exists in database
+//                        dataSnapshot.getValue();
+//                        checkExist = true;
+//                    }else{
+//                        checkExist = false;
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                }
+//            };
+//            dataRef.addListenerForSingleValueEvent(dataListener);
+            if(checkExist){
                 //Redirect to Main Page
                 Intent intent = new Intent(this, MainUI.class);
                 startActivity(intent);
