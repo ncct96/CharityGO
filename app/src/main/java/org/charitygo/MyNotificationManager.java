@@ -5,7 +5,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
+import com.google.android.youtube.player.internal.m;
 
 import org.charitygo.activity.MainUI;
 
@@ -35,8 +39,12 @@ public class MyNotificationManager {
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setColor(mCtx.getResources().getColor(R.color.colorPrimary))
                         .setContentTitle(title)
+                        .setAutoCancel(true)
                         .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                         .setContentText(body).setPriority(NotificationCompat.PRIORITY_HIGH);
+
+
 
         /*
          *  Clicking on the notification will take us to this intent
