@@ -124,11 +124,11 @@ public class MainUI extends AppCompatActivity
             isSensorPresent = false;
         }
 
+/*
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Boolean data = sharedPreferences.getBoolean("reminder", false);
+*/
 
-        Log.e("Tsaas", "afasfasf");
-        Toast.makeText(getApplicationContext(), "Subscribed", Toast.LENGTH_LONG);
         createNotificationChannel();
 
         //Firebase retrieve Steps Data
