@@ -42,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.charitygo.Constants;
+import org.charitygo.FirebaseCMSvc;
 import org.charitygo.MyNotificationManager;
 import org.charitygo.R;
 import org.charitygo.StepService;
@@ -274,6 +275,8 @@ public class MainUI extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+            startActivity(intent);
             return true;
         }
 
