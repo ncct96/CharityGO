@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -37,7 +38,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GoogleLoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class GoogleLoginActivity extends BaseActivity implements View.OnClickListener{
 
     private static final String TAG = "GoogleActivity";
     private GoogleSignInClient googleSignClient;
@@ -48,8 +49,10 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
     private FirebaseAuth.AuthStateListener authListener;
     private final FirebaseDatabase instant = FirebaseDatabase.getInstance();
     private DatabaseReference ref = instant.getReference();
-
+    private DatabaseReference dataRef;
+    private DatabaseReference dataRefStore;
     private TextView usernameDisplay; private TextView emailDisplay;
+    private String UID; private boolean checkExist;
 
 
     @Override
@@ -72,30 +75,58 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
         googleSignClient = GoogleSignIn.getClient(this, gso);
         //Start initialize authentication
         fireAuth = FirebaseAuth.getInstance();
+
+        //Get current uid of user, and add value event listener
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if(currentUser != null){
+                    Toast.makeText(GoogleLoginActivity.this, "Logged in Successful!", Toast.LENGTH_SHORT).show();
+
+                    UID = currentUser.getUid();
+                    dataRef = ref.child("users").child(UID);
+                    dataRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            showData(dataSnapshot);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }else{
+                    Toast.makeText(GoogleLoginActivity.this, "No User Logged In", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
     }
+
+    private void showData(DataSnapshot dataSnapshot){
+        for(DataSnapshot ds : dataSnapshot.getChildren()){
+            if(ds.exists()){
+                //loggedInUser = ds.child(currentUser.getUid()).getValue(User.class);
+                checkExist = true; break;
+            }
+        }
+        if(checkExist){
+            //Redirect to Main Page
+            //checkExist = false;
+            Intent intent = new Intent(this, MainUI.class);
+            startActivity(intent);
+        }else {
+            //Redirect to Register Page
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
+        }
+    }
+
     private void signIn() {
         if(currentUser != null){
-            Map<String, User> googleUsers = new HashMap<>();
-            DatabaseReference userRef = ref.child("users");
-            User userClass = new User(currentUser.getDisplayName(), currentUser.getEmail());
-            googleUsers.put(userClass.name, userClass);
-            userRef.child(currentUser.getUid()).setValue(googleUsers);
-            ref.child("users/"+currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
-                        //Username exists in database
-                        checkExist = true;
-                    }else{
-                        checkExist = false;
-                    }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
         }else{
             Intent signInIntent = googleSignClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -117,11 +148,9 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
                     });
         }
     }
-    private User user1;
-    private boolean checkExist;
 
     private void updateUI(FirebaseUser user) {
-        //hideProgressDialog();
+        hideProgressDialog();
         if (user != null ) {
             usernameDisplay.setText(user.getDisplayName());
             emailDisplay.setText(user.getEmail());
@@ -131,33 +160,6 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
 
             findViewById(R.id.signInBtn).setVisibility(View.GONE);
             findViewById(R.id.signOutBtn).setVisibility(View.VISIBLE);
-
-//            DatabaseReference dataRef = ref.child("users/"+currentUser.getUid());
-//            ValueEventListener dataListener = new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    if(dataSnapshot.exists()){
-//                        //Username exists in database
-//                        dataSnapshot.getValue();
-//                        checkExist = true;
-//                    }else{
-//                        checkExist = false;
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//                }
-//            };
-//            dataRef.addListenerForSingleValueEvent(dataListener);
-            if(checkExist){
-                //Redirect to Main Page
-                Intent intent = new Intent(this, MainUI.class);
-                startActivity(intent);
-            }else {
-                //Redirect to Register Page
-                Intent intent = new Intent(this, RegisterActivity.class);
-                startActivity(intent);
-            }
         } else {
 //            usernameDisplay.setText("Username Signed Out !");
 //            emailDisplay.setText("Email Signed Out !");
@@ -175,6 +177,7 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = fireAuth.getInstance().getCurrentUser();
+        fireAuth.addAuthStateListener(authListener);
         updateUI(currentUser);
     }
 
@@ -209,6 +212,15 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             currentUser = fireAuth.getCurrentUser();
+
+//                            //Suppose to be in register activity
+//                            Map<String, User> googleUsers = new HashMap<>();
+//                            User userClass = new User(currentUser.getDisplayName(), currentUser.getEmail());
+//                            googleUsers.put(userClass.name, userClass);
+//                            String uid = currentUser.getUid();
+//                            dataRefStore = ref.child("users");
+//                            dataRefStore.child(uid).setValue(googleUsers);
+
                             updateUI(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -216,7 +228,7 @@ public class GoogleLoginActivity extends AppCompatActivity implements View.OnCli
                             Snackbar.make(findViewById(R.id.coordinatorLayout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             updateUI(null);
                         }
-                        //hideProgressDialog();
+                        hideProgressDialog();
                     }
                 });
     }
