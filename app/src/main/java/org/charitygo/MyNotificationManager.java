@@ -1,5 +1,6 @@
 package org.charitygo;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -31,10 +32,11 @@ public class MyNotificationManager {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setColor(mCtx.getResources().getColor(R.color.colorPrimary))
                         .setContentTitle(title)
+                        .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
                         .setContentText(body).setPriority(NotificationCompat.PRIORITY_HIGH);
-
 
         /*
          *  Clicking on the notification will take us to this intent
