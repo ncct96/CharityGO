@@ -123,9 +123,9 @@ public class MainUI extends AppCompatActivity
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.getValue(StepHistory.class);
-                System.out.println(steps.getSteps());
-                txtProgress.setText(steps.getSteps() + "\nSTEPS");
+                //StepHistory steps = dataSnapshot.getValue(StepHistory.class);
+                //System.out.println(steps.getSteps());
+                //txtProgress.setText(steps.getSteps() + "\nSTEPS");
             }
 
             @Override
