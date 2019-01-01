@@ -138,7 +138,7 @@
                     android:singleLine="true"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/donate_imageButton_add"
                     app:layout_constraintStart_toEndOf="@+id/donate_imageButton_minus"

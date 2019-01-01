@@ -4,7 +4,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,8 +12,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -92,14 +89,6 @@ public class MainUI extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToOrganizations(view);
-            }
-        });
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -149,7 +138,7 @@ public class MainUI extends AppCompatActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 currentUser = firebaseAuth.getCurrentUser();
-                if(currentUser != null){
+                if (currentUser != null) {
                     // Retrieve data from gooogle user
 //        FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
@@ -318,6 +307,7 @@ public class MainUI extends AppCompatActivity
     }
 
     private GoogleSignInClient googleSignClient;
+
     public void logOut(MenuItem menuItem) {
         //removeLoginMenu();
         FirebaseAuth.getInstance().signOut();

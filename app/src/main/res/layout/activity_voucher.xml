@@ -134,6 +134,7 @@
             android:text="@string/donate_button_donate"
             android:textAllCaps="false"
             android:textSize="24sp"
+            android:onClick="confirmRedeem"
             app:layout_constraintBottom_toBottomOf="parent" />
     </android.support.constraint.ConstraintLayout>
 </android.support.design.widget.CoordinatorLayout>
