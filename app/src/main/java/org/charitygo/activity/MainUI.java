@@ -12,7 +12,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -90,14 +89,6 @@ public class MainUI extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToOrganizations(view);
-            }
-        });
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -122,10 +113,11 @@ public class MainUI extends AppCompatActivity
             isSensorPresent = false;
         }
 
+/*
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Boolean data = sharedPreferences.getBoolean("reminder", false);
+*/
 
-        FirebaseMessaging.getInstance().subscribeToTopic("reminder");
-        Log.e("Tsaas", "afasfasf");
-        Toast.makeText(getApplicationContext(), "Subscribed", Toast.LENGTH_LONG);
         createNotificationChannel();
 
         //Firebase retrieve Steps Data
@@ -146,7 +138,7 @@ public class MainUI extends AppCompatActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 currentUser = firebaseAuth.getCurrentUser();
-                if(currentUser != null){
+                if (currentUser != null) {
                     // Retrieve data from gooogle user
 //        FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
@@ -317,6 +309,7 @@ public class MainUI extends AppCompatActivity
     }
 
     private GoogleSignInClient googleSignClient;
+
     public void logOut(MenuItem menuItem) {
         //removeLoginMenu();
         FirebaseAuth.getInstance().signOut();
