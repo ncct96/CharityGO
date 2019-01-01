@@ -7,10 +7,27 @@
     android:layout_height="match_parent"
     tools:context=".activity.GoogleLoginActivity">
 
+    <ProgressBar
+        android:id="@+id/google_login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal"
+        android:max="100"
+        android:progress="0"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/google_login_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/status_textview"
             android:layout_width="wrap_content"
@@ -21,13 +38,18 @@
             android:id="@+id/signInBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="100dp"
-            android:paddingEnd="100dp" />
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="120dp" />
+
         <Button
-            android:layout_width="wrap_content"
+            android:id="@+id/signOutBtn"
+            android:layout_width="112dp"
             android:layout_height="wrap_content"
-            android:text="Sign Out"
-            android:id="@+id/signOutBtn"/>
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="120dp"
+            android:text="Sign Out" />
 
         <TextView
             android:id="@+id/displayUsername"
@@ -44,7 +66,8 @@
             android:layout_marginTop="20dp"
             android:visibility="gone"
             android:text="TextView" />
-    </LinearLayout>
 
+    </LinearLayout>
+</ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

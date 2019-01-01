@@ -76,9 +76,9 @@ public class MainUI extends AppCompatActivity
     final DatabaseReference ref = mDatabase.getReference("stepsHistory");
 
     //CK CHANGES
-    private FirebaseAuth userInstance = FirebaseAuth.getInstance();
-    private FirebaseUser currentUser = userInstance.getCurrentUser();
+    private FirebaseUser currentUser;
     private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseAuth fireAuth = FirebaseAuth.getInstance();
     private Menu menu;
 
     @Override
@@ -155,14 +155,12 @@ public class MainUI extends AppCompatActivity
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
                             stepHistory.getUser();
-
 //                final User userClass = new User();
 //                final Field[] fields = userClass.getClass().getDeclaredFields();
 //                for(Field field : fields){
 //                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
 //                }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -171,12 +169,16 @@ public class MainUI extends AppCompatActivity
                 }
             }
         };
-
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);
-
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = fireAuth.getInstance().getCurrentUser();
+        fireAuth.addAuthStateListener(authListener);
     }
 
     public void createNotificationChannel() {

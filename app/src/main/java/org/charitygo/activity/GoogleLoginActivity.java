@@ -1,13 +1,19 @@
 package org.charitygo.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +59,66 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     private DatabaseReference dataRefStore;
     private TextView usernameDisplay; private TextView emailDisplay;
     private String UID; private boolean checkExist;
+    private View progressView; private View loginView; private ProgressBar progressb;
+
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//            ObjectAnimator animation = ObjectAnimator.ofInt(progressb, "progress",0, 100);
+//            animation.setDuration(5000);
+//            animation.setInterpolator(new DecelerateInterpolator());
+//            animation.addListener(new Animator.AnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//                }
+//
+//                @Override
+//                public void onAnimationCancel(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animator animation) {
+//
+//                }
+//            });
+//            animation.start();
+
+
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            loginView.setVisibility(show ? View.GONE : View.VISIBLE);
+            loginView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    loginView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            loginView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
 
 
     @Override
@@ -63,6 +129,9 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
+        progressView = findViewById(R.id.google_login_progress);
+        loginView = findViewById(R.id.google_login_scroll);
 
         //Button Listeners
         findViewById(R.id.signInBtn).setOnClickListener(this);
@@ -115,10 +184,12 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         if(checkExist){
             //Redirect to Main Page
             //checkExist = false;
+            showProgress(true);
             Intent intent = new Intent(this, MainUI.class);
             startActivity(intent);
         }else {
             //Redirect to Register Page
+            showProgress(true);
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
         }
@@ -220,8 +291,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
 //                            String uid = currentUser.getUid();
 //                            dataRefStore = ref.child("users");
 //                            dataRefStore.child(uid).setValue(googleUsers);
-
-                            updateUI(currentUser);
+                            //updateUI(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

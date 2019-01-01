@@ -11,6 +11,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.charitygo.R;
 
 public class RegisterActivity extends AppCompatActivity{
@@ -24,6 +27,8 @@ public class RegisterActivity extends AppCompatActivity{
     private RadioButton femaleRadioBtn;
     private EditText email;
     private EditText contactNum;
+    private FirebaseAuth fireAuth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = fireAuth.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +42,8 @@ public class RegisterActivity extends AppCompatActivity{
                 registerAccount(v);
             }
         });
-    }
 
-    public void registerAccount(View view) {
+        email = findViewById(R.id.editEmail);
         username = findViewById(R.id.editUsername);
         password = findViewById(R.id.editPassword);
         retypePassword = findViewById(R.id.editRePassword);
@@ -47,8 +51,11 @@ public class RegisterActivity extends AppCompatActivity{
         gender = (RadioGroup) findViewById(R.id.radioGroupGender);
         maleRadioBtn = (RadioButton) findViewById(R.id.radioButtonMale);
         femaleRadioBtn = (RadioButton) findViewById(R.id.radioButtonFemale);
-        email = findViewById(R.id.editEmail);
 
+        email.setText(currentUser.getEmail());
+    }
+
+    public void registerAccount(View view) {
         String usern = username.getText().toString();
         String passw = password.getText().toString();
         String repassw = retypePassword.getText().toString();
