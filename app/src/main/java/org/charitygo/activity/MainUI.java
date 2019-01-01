@@ -77,7 +77,6 @@ public class MainUI extends AppCompatActivity
     //CK CHANGES
     private FirebaseAuth userInstance = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = userInstance.getCurrentUser();
-    private FirebaseAuth.AuthStateListener authListener;
     private Menu menu;
 
     @Override
@@ -134,35 +133,6 @@ public class MainUI extends AppCompatActivity
 
             }
         });
-        authListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                currentUser = firebaseAuth.getCurrentUser();
-                if (currentUser != null) {
-                    // Retrieve data from gooogle user
-//        FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
-                    DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
-                    googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
-                            stepHistory.getUser();
-
-//                final User userClass = new User();
-//                final Field[] fields = userClass.getClass().getDeclaredFields();
-//                for(Field field : fields){
-//                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
-//                }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            }
-        };
 
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);
