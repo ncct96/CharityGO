@@ -23,7 +23,7 @@ public class OrganizationInfoActivity extends AppCompatActivity {
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference ref = database.getReference();
-
+    private Organization organization = new Organization();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +32,11 @@ public class OrganizationInfoActivity extends AppCompatActivity {
 
         String organizationID = getIntent().getStringExtra("EXTRA_ID");
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         initializeUIValues(organizationID);
-        initializeActionWidgets();
     }
 
     protected void initializeUIValues(String id) {
@@ -42,7 +45,43 @@ public class OrganizationInfoActivity extends AppCompatActivity {
         organizationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Organization organization = dataSnapshot.getValue(Organization.class);
+                organization = dataSnapshot.getValue(Organization.class);
+
+                TextView name = (TextView) findViewById(R.id.info_name);
+                name.setText(organization.getName());
+
+                TextView description = (TextView) findViewById(R.id.info_description);
+                description.setText(organization.getDescription());
+
+                TextView address = (TextView) findViewById(R.id.info_address);
+                address.setText(organization.getAddress());
+
+                TextView phone = (TextView) findViewById(R.id.info_phone);
+                phone.setText(organization.getPhone());
+
+                TextView email = (TextView) findViewById(R.id.info_email);
+                email.setText(organization.getEmail());
+
+                FloatingActionButton sendMail = (FloatingActionButton) findViewById(R.id.info_sendMail);
+                sendMail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_SENDTO);
+                        intent.setType("message/rfc822");
+                        intent.setData(Uri.parse("mailto:"+organization.getEmail()));
+                        startActivity(intent);
+                    }
+                });
+
+                FloatingActionButton call = (FloatingActionButton) findViewById(R.id.info_call);
+                call.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:"+organization.getPhone()));
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
@@ -50,43 +89,5 @@ public class OrganizationInfoActivity extends AppCompatActivity {
 
             }
         });
-        //Get info from database here
-
-        TextView background = (TextView) findViewById(R.id.info_text_background);
-        background.setText("Founded in 1678 by Richard B. Patterson, this organization has grown to over 50 branches acrross Malaysia.");
-
-        TextView about = (TextView) findViewById(R.id.info_text_about);
-        about.setText("Sell stuff, I guess...\nI heard their cookies are nice. :)");
-
-        TextView contact = (TextView) findViewById(R.id.info_text_contact);
-        contact.setText("Email: info@mail.noreply.com");
-    }
-
-    protected void initializeActionWidgets() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton email = (FloatingActionButton) findViewById(R.id.spon_email);
-        email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setType("message/rfc822");
-                intent.setData(Uri.parse("mailto:recipient@example.com"));
-                startActivity(intent);
-            }
-        });
-
-        FloatingActionButton call = (FloatingActionButton) findViewById(R.id.info_phone);
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:0123456789"));
-                startActivity(intent);
-            }
-        });
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }
