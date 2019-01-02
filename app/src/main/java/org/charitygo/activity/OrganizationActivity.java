@@ -41,6 +41,7 @@ public class OrganizationActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //initOrganizations();
         createViews();
     }
 
@@ -48,20 +49,13 @@ public class OrganizationActivity extends AppCompatActivity {
         //organizations.put("1", new Organization("Soda Foundation", 1, 0, R.drawable.city));
 
         organizationRef.push().setValue(new Organization("Soda Foundation", "We make soda, lots of soda.\nSoda for the rich, soda for the poor", "01120141336", "weeb@trap.con", "www.google.com", "1234 Banana Road, 11300 Monkey Avenue, Pulau Pinang, Malaysia", 0, R.drawable.city));
-        organizationRef.push().setValue(new Organization("Chicken Foundation", "We fight against the cruelty shown by humans against chickens.\nEveryday, 2 million chickens are murdered in cold blood while humans get away scot free.", "01120141336", "weeb@trap.con", "www.google.com", "1234 Banana Road, 11300 Monkey Avenue, Pulau Pinang, Malaysia",0, R.drawable.city));
-        organizationRef.push().setValue(new Organization("Potato Foundation", "Even potatoes are human", "01120141336", "weeb@trap.con", "www.google.com", "1234 Banana Road, 11300 Monkey Avenue, Pulau Pinang, Malaysia",0, R.drawable.city));
-        organizationRef.push().setValue(new Organization("Nyanko Foundation","Nya nya nya nya nya nya nya nya nya.\nNya nya nya nya nya nya nya nya nya nya nya nya nya nya nya nya!", "01120141336", "weeb@trap.con", "www.google.com", "1234 Banana Road, 11300 Monkey Avenue, Pulau Pinang, Malaysia",0, R.drawable.city));
-    }
-
-    protected void goToDonate(View view) {
-        Intent intent = new Intent(this, DonateActivity.class);
-        intent.putExtra("EXTRA_ID", String.valueOf(view.getId()));
-        startActivity(intent);
+        organizationRef.push().setValue(new Organization("Chicken Foundation", "We fight against the cruelty shown by humans against chickens.\nEveryday, 2 million chickens are murdered in cold blood while humans get away scot free.", "01120141336", "weeb@trap.con", "www.google.com", "1234 Banana Road, 11300 Monkey Avenue, Pulau Pinang, Malaysia", 0, R.drawable.city));
+        organizationRef.push().setValue(new Organization("Potato Foundation", "Even potatoes are human", "01120141336", "weeb@trap.con", "www.google.com", "1234 Banana Road, 11300 Monkey Avenue, Pulau Pinang, Malaysia", 0, R.drawable.city));
+        organizationRef.push().setValue(new Organization("Nyanko Foundation", "Nya nya nya nya nya nya nya nya nya.\nNya nya nya nya nya nya nya nya nya nya nya nya nya nya nya nya!", "01120141336", "weeb@trap.con", "www.google.com", "1234 Banana Road, 11300 Monkey Avenue, Pulau Pinang, Malaysia", 0, R.drawable.city));
     }
 
     protected void createViews() {
-        //initOrganizations();
-
+        organizationList.clear();
         organizationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

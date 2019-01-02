@@ -81,7 +81,6 @@
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/button_stroke"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="goToDonate"
                 android:text="Donate"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent" />
