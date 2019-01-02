@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.charitygo.R;
+import org.charitygo.activity.DonateActivity;
 import org.charitygo.activity.OrganizationInfoActivity;
 import org.charitygo.model.Organization;
 
@@ -46,6 +47,14 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
         organizationHolder.points.setText(organization.getPoints() + " points more");
 
         final String id = organization.getKey();
+        organizationHolder.donate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(context, DonateActivity.class);
+                intent.putExtra("EXTRA_ID", id);
+                context.startActivity(intent);
+            }
+        });
         organizationHolder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
