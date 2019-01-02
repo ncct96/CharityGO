@@ -134,33 +134,32 @@ public class MainUI extends AppCompatActivity
 
             }
         });
-        authListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                currentUser = firebaseAuth.getCurrentUser();
-                if (currentUser != null) {
-                    // Retrieve data from gooogle user
-//        FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
-                    DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
-                    googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
-                            stepHistory.getUser();
-//                final User userClass = new User();
-//                final Field[] fields = userClass.getClass().getDeclaredFields();
-//                for(Field field : fields){
-//                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
+//        authListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                currentUser = firebaseAuth.getCurrentUser();
+//                if (currentUser != null) {
+//                    // Retrieve data from gooogle user
+//                    DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("user").child(currentUser.getUid());
+//                    googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
+//                            stepHistory.getUser();
+////                final User userClass = new User();
+////                final Field[] fields = userClass.getClass().getDeclaredFields();
+////                for(Field field : fields){
+////                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
+////                }
+//                        }
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    });
 //                }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            }
-        };
+//            }
+//        };
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
@@ -170,7 +169,7 @@ public class MainUI extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         currentUser = fireAuth.getInstance().getCurrentUser();
-        fireAuth.addAuthStateListener(authListener);
+        //fireAuth.addAuthStateListener(authListener);
     }
 
     public void createNotificationChannel() {

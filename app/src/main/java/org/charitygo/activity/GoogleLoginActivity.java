@@ -154,7 +154,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                     Toast.makeText(GoogleLoginActivity.this, "Logged in Successful!", Toast.LENGTH_SHORT).show();
 
                     UID = currentUser.getUid();
-                    dataRef = ref.child("users").child(UID);
+                    dataRef = ref.child("user").child(UID);
                     dataRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
