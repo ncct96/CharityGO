@@ -31,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -112,30 +113,35 @@ public class MainUI extends AppCompatActivity
             isSensorPresent = false;
         }
 
-/*
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Boolean data = sharedPreferences.getBoolean("reminder", false);
-*/
-
         createNotificationChannel();
 
-        //Firebase retrieve Steps Data
+        userInstance.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (currentUser != null) {
+//                    ref.child("")
+//
+//                    txtProgress.setText();
+                } else {
+
+                }
+            }
+        });
+
+/*        //Firebase retrieve Steps Data
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //StepHistory steps = dataSnapshot.getValue(StepHistory.class);
-                //System.out.println(steps.getSteps());
-                //txtProgress.setText(steps.getSteps() + "\nSTEPS");
+                StepHistory steps = dataSnapshot.getValue(StepHistory.class);
+                System.out.println(steps.getSteps());
+                txtProgress.setText(steps.getSteps() + "\nSTEPS");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
-
-        Intent intent = new Intent(getApplicationContext(), StepService.class);
-        startService(intent);
+        });*/
 
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
 
@@ -180,6 +186,8 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        startService(intent);
         if (isSensorPresent) {
             mSensorManager.unregisterListener(this);
         }
@@ -298,6 +306,21 @@ public class MainUI extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), GoogleLoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void onComplete(@NonNull Task<AuthResult> task) {
+        if (task.isSuccessful()) {
+            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+
+            if(isNewUser){
+
+                StepHistory stepHistory = new StepHistory();
+            }
+
+        } else {
+            Toast.makeText(MainUI.this, "Authentication failed.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void profile(MenuItem menuItem) {
