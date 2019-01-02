@@ -56,7 +56,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     private final FirebaseDatabase instant = FirebaseDatabase.getInstance();
     private DatabaseReference ref = instant.getReference();
     private DatabaseReference dataRef;
-    private DatabaseReference dataRefStore;
+
     private TextView usernameDisplay; private TextView emailDisplay;
     private String UID; private boolean checkExist;
     private View progressView; private View loginView; private ProgressBar progressb;
@@ -284,13 +284,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                             Log.d(TAG, "signInWithCredential:success");
                             currentUser = fireAuth.getCurrentUser();
 
-//                            //Suppose to be in register activity
-//                            Map<String, User> googleUsers = new HashMap<>();
-//                            User userClass = new User(currentUser.getDisplayName(), currentUser.getEmail());
-//                            googleUsers.put(userClass.name, userClass);
-//                            String uid = currentUser.getUid();
-//                            dataRefStore = ref.child("users");
-//                            dataRefStore.child(uid).setValue(googleUsers);
                             //updateUI(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
