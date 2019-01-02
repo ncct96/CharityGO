@@ -102,7 +102,7 @@ public class StepService extends Service implements SensorEventListener {
                 if (user != null) {
                     // Retrieve data from google user
                     FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
-                    DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("users").child(googleUser.getUid());
+                    DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("stepHistory").child(googleUser.getUid());
                     googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -130,7 +130,7 @@ public class StepService extends Service implements SensorEventListener {
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             stepCounts++;
         }
-        
+
     }
 
     @Override
