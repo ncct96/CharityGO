@@ -76,6 +76,8 @@ public class MainUI extends AppCompatActivity
     final DatabaseReference ref = mDatabase.getReference("stepsHistory");
 
     //CK CHANGES
+    private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseAuth fireAuth = FirebaseAuth.getInstance();
     private FirebaseAuth userInstance = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = userInstance.getCurrentUser();
     private Menu menu;
@@ -144,7 +146,13 @@ public class MainUI extends AppCompatActivity
         });*/
 
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = fireAuth.getInstance().getCurrentUser();
+        //fireAuth.addAuthStateListener(authListener);
     }
 
     public void createNotificationChannel() {
