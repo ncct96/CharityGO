@@ -75,9 +75,10 @@ public class MainUI extends AppCompatActivity
     final DatabaseReference ref = mDatabase.getReference("stepsHistory");
 
     //CK CHANGES
-    private FirebaseUser currentUser;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth fireAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth userInstance = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = userInstance.getCurrentUser();
     private Menu menu;
 
     @Override
@@ -124,9 +125,9 @@ public class MainUI extends AppCompatActivity
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.getValue(StepHistory.class);
-                System.out.println(steps.getSteps());
-                txtProgress.setText(steps.getSteps() + "\nSTEPS");
+                //StepHistory steps = dataSnapshot.getValue(StepHistory.class);
+                //System.out.println(steps.getSteps());
+                //txtProgress.setText(steps.getSteps() + "\nSTEPS");
             }
 
             @Override
@@ -134,34 +135,10 @@ public class MainUI extends AppCompatActivity
 
             }
         });
-//        authListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                currentUser = firebaseAuth.getCurrentUser();
-//                if (currentUser != null) {
-//                    // Retrieve data from gooogle user
-//                    DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("user").child(currentUser.getUid());
-//                    googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
-//                            stepHistory.getUser();
-////                final User userClass = new User();
-////                final Field[] fields = userClass.getClass().getDeclaredFields();
-////                for(Field field : fields){
-////                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
-////                }
-//                        }
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                        }
-//                    });
-//                }
-//            }
-//        };
+
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         startService(intent);
+
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
     }
 

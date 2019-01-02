@@ -10,11 +10,16 @@ import android.hardware.SensorManager;
 import android.hardware.TriggerEvent;
 import android.hardware.TriggerEventListener;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
@@ -30,7 +35,8 @@ public class StepService extends Service implements SensorEventListener {
     private final FirebaseDatabase mFirebase = FirebaseDatabase.getInstance();
     DatabaseReference ref = mFirebase.getReference();
     DatabaseReference stepsRef = mFirebase.getReference("stepsHistory");
-    private User user;
+    private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseUser user;
     private int stepCounts = 0;
 
     public StepService() {
@@ -82,7 +88,42 @@ public class StepService extends Service implements SensorEventListener {
     };
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(this, "Background service stopping", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onSensorChanged(SensorEvent event) {
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // Retrieve data from google user
+                    FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
+                    DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("stepHistory").child(googleUser.getUid());
+                    googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
+
+
+//                final User userClass = new User();
+//                final Field[] fields = userClass.getClass().getDeclaredFields();
+//                for(Field field : fields){
+//                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
+//                }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+        };
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference stepsRef = ref.child("stepsHistory/users/" + uid);
 
@@ -90,9 +131,6 @@ public class StepService extends Service implements SensorEventListener {
             stepCounts++;
         }
 
-        StepHistory steps = new StepHistory(user, new Date(), new Date(), stepCounts, 1000);
-
-        stepsRef.setValue(steps);
     }
 
     @Override
