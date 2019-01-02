@@ -1,5 +1,7 @@
 package org.charitygo.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +12,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.charitygo.R;
+import org.charitygo.activity.OrganizationInfoActivity;
 import org.charitygo.model.Organization;
 
 import java.util.List;
 
 public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapter.OrganizationHolder> {
     private List<Organization> organizationList;
+    private Context context;
 
-    public OrganizationAdapter(List<Organization> organizationList) {
+    public OrganizationAdapter(Context context, List<Organization> organizationList) {
+        this.context = context;
         this.organizationList = organizationList;
     }
 
@@ -35,12 +40,28 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
 
     @Override
     public void onBindViewHolder(OrganizationAdapter.OrganizationHolder organizationHolder, int i) {
-        Organization organization = organizationList.get(i);
+        final Organization organization = organizationList.get(i);
         organizationHolder.background.setImageResource(organization.getDrawable());
         organizationHolder.name.setText(organization.getName());
         organizationHolder.points.setText(organization.getPoints() + " points more");
-        organizationHolder.donate.setId(organization.getId());
-        organizationHolder.more.setId(organization.getId());
+
+        final String id = organization.getKey();
+        organizationHolder.more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(context, OrganizationInfoActivity.class);
+                intent.putExtra("EXTRA_ID", id);
+                context.startActivity(intent);
+            }
+        });
+        organizationHolder.background.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(context, OrganizationInfoActivity.class);
+                intent.putExtra("EXTRA_ID", id);
+                context.startActivity(intent);
+            }
+        });
     }
 
     public static class OrganizationHolder extends RecyclerView.ViewHolder {
@@ -59,4 +80,6 @@ public class OrganizationAdapter extends RecyclerView.Adapter<OrganizationAdapte
             more = v.findViewById(R.id.info_more);
         }
     }
+
+
 }
