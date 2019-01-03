@@ -58,13 +58,9 @@ public class MainUI extends AppCompatActivity
     private ProgressBar progressBar;
     private Handler handler = new Handler();
 
-
-    private StepDetector simpleStepDetector;
-    private SensorManager sensorManager;
     private SensorManager mSensorManager;
     private boolean isSensorPresent = false;
     private Sensor mSensor;
-    private Sensor accel;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
     private int numSteps;
     private static int savedNumSteps;
@@ -73,7 +69,7 @@ public class MainUI extends AppCompatActivity
 
     //Firebase Reference
     final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    final DatabaseReference ref = mDatabase.getReference("stepsHistory");
+    final DatabaseReference ref = mDatabase.getReference("stepHistory");
 
     //CK CHANGES
     private FirebaseAuth.AuthStateListener authListener;
@@ -104,12 +100,15 @@ public class MainUI extends AppCompatActivity
         txtProgress = findViewById(R.id.numOfStep);
         progressBar = findViewById(R.id.stepProgress);
 
+        initSteps();
+
         mSensorManager = (SensorManager)
                 this.getSystemService(Context.SENSOR_SERVICE);
-        if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
                 != null) {
             mSensor =
-                    mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+                    mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
             isSensorPresent = true;
         } else {
             isSensorPresent = false;
@@ -130,21 +129,6 @@ public class MainUI extends AppCompatActivity
             }
         });
 
-/*        //Firebase retrieve Steps Data
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.getValue(StepHistory.class);
-                System.out.println(steps.getSteps());
-                txtProgress.setText(steps.getSteps() + "\nSTEPS");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
-
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
     }
 
@@ -153,6 +137,24 @@ public class MainUI extends AppCompatActivity
         super.onStart();
         currentUser = fireAuth.getInstance().getCurrentUser();
         //fireAuth.addAuthStateListener(authListener);
+    }
+
+    public void initSteps(){
+        //Firebase retrieve Steps Data
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
+                System.out.println(steps.getSteps());
+                savedNumSteps = steps.getSteps();
+                txtProgress.setText(savedNumSteps + "\nSTEPS");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void createNotificationChannel() {
@@ -194,8 +196,11 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+        String uid = currentUser.getUid();
         Intent intent = new Intent(getApplicationContext(), StepService.class);
-        startService(intent);
+
+        ref.child(uid + "/steps").setValue(savedNumSteps);
+        //startService(intent);
         if (isSensorPresent) {
             mSensorManager.unregisterListener(this);
         }
@@ -371,6 +376,7 @@ public class MainUI extends AppCompatActivity
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        txtProgress.setText( ++savedNumSteps + "\nSTEPS");
     }
 
     @Override
