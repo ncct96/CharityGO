@@ -1,9 +1,11 @@
 package org.charitygo.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +58,24 @@ public class OrganizationActivity extends AppCompatActivity {
 
     protected void createViews() {
         organizationList.clear();
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                } else {
+                    setErrorMessage();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                setErrorMessage();
+            }
+        });
+
         organizationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -76,8 +96,22 @@ public class OrganizationActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                setErrorMessage();
             }
         });
+    }
+
+    private void setErrorMessage(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(OrganizationActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        builder.setTitle("Unable to contact server");
+        builder.setMessage("Please check your internet settings and try again");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                OrganizationActivity.this.finish();
+            }
+        });
+        builder.show();
     }
 }
