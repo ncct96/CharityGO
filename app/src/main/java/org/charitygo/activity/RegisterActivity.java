@@ -17,8 +17,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.charitygo.R;
+import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity{
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
     private DatabaseReference dataRefStore;
+    private DatabaseReference stepRefStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,12 +173,18 @@ public class RegisterActivity extends AppCompatActivity{
         } else {
             //Need to store the user details entered
             //Suppose to be in register activity
-            Map<String, User> googleUsers = new HashMap<>();
-            User userClass = new User(usern, currentUser.getEmail(), phone, genStr, 0);
-            googleUsers.put(userClass.name, userClass);
             String uid = currentUser.getUid();
+
+            Map<String, User> googleUsers = new HashMap<>();
+//            Map<String, StepHistory> userSteps = new HashMap<>();
+            User userClass = new User(usern, currentUser.getEmail(), phone, genStr, 0);
+            StepHistory steps = new StepHistory(uid, System.currentTimeMillis() , System.currentTimeMillis(), 0, 0);
+            googleUsers.put(userClass.name, userClass);
+/*            userSteps.put(uid, steps);*/
             dataRefStore = ref.child("user");
             dataRefStore.child(uid).setValue(googleUsers);
+            stepRefStore = ref.child("stepHistory");
+            stepRefStore.child(uid).setValue(steps);
 
             Intent intent = new Intent(getApplicationContext(),MainUI.class);
             startActivity(intent);

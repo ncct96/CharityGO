@@ -11,6 +11,7 @@ import android.hardware.TriggerEvent;
 import android.hardware.TriggerEventListener;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,7 +39,7 @@ public class StepService extends Service implements SensorEventListener {
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
-    private Date todayDate = new Date();
+    private long todayDate = System.currentTimeMillis();
     private int stepCounts = 0;
 
     public StepService() {
@@ -49,7 +50,6 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         super.onCreate();
-        initUser();
         mSensorManager = (SensorManager)
                 this.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null) {
@@ -78,7 +78,6 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Background service starting", Toast.LENGTH_SHORT).show();
-
         return START_STICKY;
     }
 
@@ -103,18 +102,12 @@ public class StepService extends Service implements SensorEventListener {
             // Retrieve data from google user
             FirebaseUser googleUser = FirebaseAuth.getInstance().getCurrentUser();
             DatabaseReference googleRef = FirebaseDatabase.getInstance().getReference("stepHistory").child(googleUser.getUid());
-            DatabaseReference dateRef = stepsRef.child("date/" + todayDate);
+            DatabaseReference dateRef = googleRef.child("" + todayDate);
             googleRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     final StepHistory stepHistory = dataSnapshot.getValue(StepHistory.class);
 
-
-//                final User userClass = new User();
-//                final Field[] fields = userClass.getClass().getDeclaredFields();
-//                for(Field field : fields){
-//                    Log.i("TAG", field.getName()+ ": " + dataSnapshot.child(field.getName()).getValue());
-//                }
                 }
 
                 @Override
