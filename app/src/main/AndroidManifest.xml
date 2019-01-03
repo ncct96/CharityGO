@@ -115,15 +115,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.charitygo.activity.OrganizationActivity" />
         </activity>
-        <activity android:name=".activity.FragmPage"
-            android:label="Fragment Page"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".activity.FragmentPageAdapter"
+        android:label="Fragment Page"
+        android:screenOrientation="portrait">
+        <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.Leaderboard"
             android:label="Leaderboard"
