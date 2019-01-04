@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -92,7 +93,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
 //            });
 //            animation.start();
 
-
+            //Progress Dialog
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             loginView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -120,7 +121,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,8 +142,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         emailDisplay = findViewById(R.id.displayEmail);
 
         googleSignClient = GoogleSignIn.getClient(this, gso);
-        //Start initialize authentication
-        fireAuth = FirebaseAuth.getInstance();
 
         //Get current uid of user, and add value event listener
         authListener = new FirebaseAuth.AuthStateListener() {
@@ -151,8 +149,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 currentUser = firebaseAuth.getCurrentUser();
                 if(currentUser != null){
-                    Toast.makeText(GoogleLoginActivity.this, "Logged in Successful!", Toast.LENGTH_SHORT).show();
-
+                    //Toast.makeText(GoogleLoginActivity.this, "Logged in Successful!", Toast.LENGTH_SHORT).show();
                     UID = currentUser.getUid();
                     dataRef = ref.child("user").child(UID);
                     dataRef.addValueEventListener(new ValueEventListener() {
@@ -166,9 +163,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
 
                         }
                     });
-
-                }else{
-                    Toast.makeText(GoogleLoginActivity.this, "No User Logged In", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -177,21 +171,21 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     private void showData(DataSnapshot dataSnapshot){
         for(DataSnapshot ds : dataSnapshot.getChildren()){
             if(ds.exists()){
-                //loggedInUser = ds.child(currentUser.getUid()).getValue(User.class);
                 checkExist = true; break;
             }
         }
-        if(checkExist){
+        if(checkExist && currentUser != null){
             //Redirect to Main Page
-            //checkExist = false;
             showProgress(true);
             Intent intent = new Intent(this, MainUI.class);
             startActivity(intent);
-        }else {
+        }else if (!checkExist && currentUser != null){
             //Redirect to Register Page
             showProgress(true);
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
+        }else {
+
         }
     }
 
@@ -246,9 +240,25 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onStart() {
         super.onStart();
+        //Start initialize authentication
+        fireAuth = FirebaseAuth.getInstance();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = fireAuth.getInstance().getCurrentUser();
         fireAuth.addAuthStateListener(authListener);
+
+        //Get the last signed in users account
+//        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+//        if(acct != null){
+//            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+//            currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Void> task) {
+//                    if(task.isSuccessful()){
+//                        Toast.makeText(GoogleLoginActivity.this, "Reauthenticated.", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
+//        }
         updateUI(currentUser);
     }
 
@@ -283,7 +293,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             currentUser = fireAuth.getCurrentUser();
-
                             //updateUI(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.

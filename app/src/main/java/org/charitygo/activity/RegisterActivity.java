@@ -1,6 +1,12 @@
 package org.charitygo.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,15 +17,27 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.charitygo.R;
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +59,9 @@ public class RegisterActivity extends AppCompatActivity{
 
     private DatabaseReference dataRefStore;
     private DatabaseReference stepRefStore;
+    private StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+    private final static int GET_FROM_GALLERY = 8000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +108,51 @@ public class RegisterActivity extends AppCompatActivity{
 
         boolean notValid = false;
         View focusView = null;
+
+
+//        StorageReference tohruRef = storageRef.child("tohru.jpg");
+//        StorageReference tohruImgRef = storageRef.child("images/tohru.jpg");
+//        tohruRef.getName().equals(tohruImgRef.getName()); //true
+//        tohruRef.getName().equals(tohruImgRef.getPath()); //false
+
+        //Upload from a local file
+        Uri file = Uri.fromFile(new File("path/to/images/tohru.jpg"));
+        StorageReference tohruRef = storageRef.child("images/"+file.getLastPathSegment());
+        UploadTask uploadTask = tohruRef.putFile(file);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        });
+
+        //Get download URL
+        final StorageReference reference = storageRef.child("images/tohru.jpg");
+        uploadTask = reference.putFile(file);
+        Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if(!task.isSuccessful()){
+                    throw task.getException();
+                }else{
+                    return null;
+                }
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if(task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                }else{
+
+                }
+            }
+        });
 
 //        if(repassw.isEmpty()){
 //            retypePassword.setError("Please Retype Your Password");
@@ -194,5 +260,28 @@ public class RegisterActivity extends AppCompatActivity{
 
     public void cancelRegister(View view) {
         this.finish();
+    }
+
+    public void addImage(View view){
+        startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Detects request codes
+        if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 }
