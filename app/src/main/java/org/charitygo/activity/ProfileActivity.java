@@ -114,6 +114,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         }
+        //DO STORE
 
         //Get Edit Text
         Email = findViewById(R.id.editEmail);
