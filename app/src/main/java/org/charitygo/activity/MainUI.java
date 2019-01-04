@@ -21,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,17 +38,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.charitygo.Constants;
-import org.charitygo.FirebaseCMSvc;
-import org.charitygo.MyNotificationManager;
 import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
 
-import java.lang.reflect.Field;
+import java.util.Date;
 
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
@@ -92,6 +88,8 @@ public class MainUI extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //initializePoints();
 
         // Create progress bar
         // Step counter
@@ -325,7 +323,7 @@ public class MainUI extends AppCompatActivity
         if (task.isSuccessful()) {
             boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
 
-            if(isNewUser){
+            if (isNewUser) {
 
                 StepHistory stepHistory = new StepHistory();
             }
@@ -382,5 +380,38 @@ public class MainUI extends AppCompatActivity
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public void initializePoints() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference stepRef = ref.child("rewards"+ firebaseUser.getUid());
+        DatabaseReference userRef = ref.child("users"+ firebaseUser.getUid());
+        User user = new User();
+
+
+        stepRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    StepHistory currentSteps = dataSnapshot1.getValue(StepHistory.class);
+
+                    if(currentSteps.getStartDate() == new Date()){
+                        TextView donatePoints = findViewById(R.id.main_donate_points);
+                        donatePoints.setText(currentSteps.getSteps() / 10 + " donatePoints available");
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        TextView redeemPoints = findViewById(R.id.main_redeem_points);
+        //redeemPoints.setText(calculator.getRedeemPoints() + " donatePoints available");
     }
 }
