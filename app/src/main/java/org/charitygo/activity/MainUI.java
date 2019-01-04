@@ -12,6 +12,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,7 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,17 +42,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.charitygo.Constants;
-import org.charitygo.FirebaseCMSvc;
-import org.charitygo.MyNotificationManager;
 import org.charitygo.R;
 import org.charitygo.StepService;
+import org.charitygo.model.Reward;
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
 
-import java.lang.reflect.Field;
+import java.util.Date;
 
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
@@ -65,10 +63,7 @@ public class MainUI extends AppCompatActivity
     private boolean isSensorPresent = false;
     private Sensor mSensor;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
-    private int numSteps;
-    private static int savedNumSteps;
-    private double progress;
-    private int progressCircle = 0;
+    private static int savedNumSteps, goal;
 
     //Firebase Reference
     final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -96,6 +91,8 @@ public class MainUI extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //initializePoints();
+
         // Create progress bar
         // Step counter
         // Get an instance of the SensorManager
@@ -114,6 +111,8 @@ public class MainUI extends AppCompatActivity
             mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
             isSensorPresent = true;
         } else {
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
             isSensorPresent = false;
         }
 
@@ -131,6 +130,14 @@ public class MainUI extends AppCompatActivity
                 }
             }
         });
+
+
+
+//        goal = (100 * 100) / savedNumSteps;
+
+        Log.e("goal", String.valueOf(savedNumSteps));
+
+        progressBar.setProgress(goal);
 
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
     }
@@ -155,13 +162,13 @@ public class MainUI extends AppCompatActivity
 //        }
     }
 
-    public void initSteps(){
+    public void initSteps() {
         //Firebase retrieve Steps Data
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
-                System.out.println(steps.getSteps());
+                //System.out.println(steps.getSteps());
                 savedNumSteps = steps.getSteps();
                 txtProgress.setText(savedNumSteps + "\nSTEPS");
             }
@@ -207,19 +214,26 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        intent.putExtra("steps", savedNumSteps);
+        startService(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         String uid = currentUser.getUid();
-        Intent intent = new Intent(getApplicationContext(), StepService.class);
 
         ref.child(uid + "/steps").setValue(savedNumSteps);
-        //startService(intent);
         if (isSensorPresent) {
             mSensorManager.unregisterListener(this);
         }
+
     }
 
     @Override
@@ -341,7 +355,7 @@ public class MainUI extends AppCompatActivity
         if (task.isSuccessful()) {
             boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
 
-            if(isNewUser){
+            if (isNewUser) {
 
                 StepHistory stepHistory = new StepHistory();
             }
@@ -390,13 +404,53 @@ public class MainUI extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void goToRewards(View view) {
+        Intent intent = new Intent(this, RewardActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
-        txtProgress.setText( ++savedNumSteps + "\nSTEPS");
+        txtProgress.setText(++savedNumSteps + "\nSTEPS");
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+    public void initializePoints() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference stepRef = ref.child("rewards"+ firebaseUser.getUid());
+        DatabaseReference userRef = ref.child("users"+ firebaseUser.getUid());
+        User user = new User();
+
+
+        stepRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    StepHistory currentSteps = dataSnapshot1.getValue(StepHistory.class);
+
+/*                    if(currentSteps.getStartDate() == new Date()){
+                        TextView donatePoints = findViewById(R.id.main_donate_points);
+                        donatePoints.setText(currentSteps.getSteps() / 10 + " donatePoints available");
+                        return;
+                    }*/
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        TextView redeemPoints = findViewById(R.id.main_redeem_points);
+        //redeemPoints.setText(calculator.getRedeemPoints() + " donatePoints available");
+    }
+
+
 }

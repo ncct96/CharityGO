@@ -72,7 +72,7 @@ public class OrganizationActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                setErrorMessage();
+
             }
         });
 

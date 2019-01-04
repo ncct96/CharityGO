@@ -42,4 +42,12 @@ public class User {
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
     }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
 }
