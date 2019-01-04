@@ -43,7 +43,6 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
     private String userID;
     private Organization organization = new Organization();
     private User user = new User();
-    Map<String, User> userMap = new HashMap<>();
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference ref = database.getReference();
@@ -108,7 +107,7 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void initializeUIValues() {
-        DatabaseReference userRef = ref.child("user/" + firebaseUser.getUid());
+        DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

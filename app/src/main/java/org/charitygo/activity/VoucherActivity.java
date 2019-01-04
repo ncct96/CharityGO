@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +23,10 @@ import org.charitygo.model.Reward;
 public class VoucherActivity extends AppCompatActivity {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference ref = database.getReference();
+    private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    private DatabaseReference voucherRef = ref.child("vouchers");
+    private String rewardID;
+
     Reward reward = new Reward();
 
     @Override
@@ -31,14 +37,13 @@ public class VoucherActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String rewardID = getIntent().getStringExtra("EXTRA_ID");
+        rewardID = getIntent().getStringExtra("EXTRA_ID");
         initializeUIValues(rewardID);
     }
 
 
     protected void initializeUIValues(String id) {
         DatabaseReference rewardRef = ref.child("rewards/"+id);
-
         rewardRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -77,7 +82,7 @@ public class VoucherActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes, redeem!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                voucherRef.push().setValue(new Reward());
             }
         });
 
