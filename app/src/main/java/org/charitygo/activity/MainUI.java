@@ -146,8 +146,8 @@ public class MainUI extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         currentUser = fireAuth.getInstance().getCurrentUser();
-        //fireAuth = FirebaseAuth.getInstance();
-        //fireAuth.addAuthStateListener(authListener);
+//        fireAuth = FirebaseAuth.getInstance();
+//        fireAuth.addAuthStateListener(authListener);
 //        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 //        if(acct != null){
 //            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);

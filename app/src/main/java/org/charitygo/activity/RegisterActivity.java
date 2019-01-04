@@ -1,9 +1,13 @@
 package org.charitygo.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +34,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -65,7 +71,14 @@ public class RegisterActivity extends AppCompatActivity{
     private StorageReference storageRef = storage.getReference();
 
     private ImageView imagetoUpload; private static final int RESULT_LOAD_IMAGE = 1;
-    private Uri selectedImage;
+    private Uri selectedImage; private String uploadURL;
+
+    private String usern;
+    private String phone;
+    private String genStr;
+
+    private View progressView;
+    private View registerView;
 
     private final static int GET_FROM_GALLERY = 8000;
 
@@ -73,6 +86,9 @@ public class RegisterActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        progressView = findViewById(R.id.registerProgress);
+        registerView = findViewById(R.id.registerScroll);
 
         Button signupBtn = (Button) findViewById(R.id.buttonReg);
         signupBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,20 +120,73 @@ public class RegisterActivity extends AppCompatActivity{
         });
     }
 
-    public void uploadImage(){
-        StorageReference tohruImgRef = storageRef.child("images/"+UUID.randomUUID().toString());
-        tohruImgRef.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    public String getFileExtension(Uri uri){
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+
+            //Progress Dialog
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            registerView.setVisibility(show ? View.GONE : View.VISIBLE);
+            registerView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    registerView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            registerView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    public void uploadImageRegister(){
+        StorageReference storageImgRef = storageRef.child("images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage));
+        storageImgRef.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(RegisterActivity.this, "Image Uploaded", Toast.LENGTH_SHORT);
+                uploadURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                showProgress(false);
+                //Store the user details entered
+                User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL,0);
+                dataRefStore.child(currentUser.getUid()).setValue(newUser);
+                Intent intent = new Intent(getApplicationContext(),MainUI.class);
+                startActivity(intent);
+                Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(RegisterActivity.this, "Image Unable To be Upload", Toast.LENGTH_SHORT);
+                Toast.makeText(RegisterActivity.this, "Image Unable To be Upload", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                //double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                //Toast.makeText(RegisterActivity.this, "Registering... Please Wait.."+String.format("%f",progress)+"Seconds..", Toast.LENGTH_SHORT).show();
+                showProgress(true);
             }
         });
-
 //        //Upload from a local file
 //        Uri file = Uri.fromFile(new File("path/to/images/tohru.png"));
 //        StorageReference tohruRef = storageRef.child("images/"+file.getLastPathSegment());
@@ -159,10 +228,10 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     public void registerAccount(View view) {
-        String usern = username.getText().toString();
+        usern = username.getText().toString();
 //        String passw = password.getText().toString();
 //        String repassw = retypePassword.getText().toString();
-        String phone = contactNum.getText().toString();
+        phone = contactNum.getText().toString();
 
         //Get the selected index of the radio group
         int gen = gender.getCheckedRadioButtonId();
@@ -172,9 +241,7 @@ public class RegisterActivity extends AppCompatActivity{
         int index = gender.indexOfChild(radiobtn);
         //Get the text of radio button in radio group
         RadioButton gend = (RadioButton) gender.getChildAt(index);
-        String genStr = gend.getText().toString();
-
-        String eml = email.getText().toString();
+        genStr = gend.getText().toString();
 
         boolean notValid = false;
         View focusView = null;
@@ -237,15 +304,15 @@ public class RegisterActivity extends AppCompatActivity{
             notValid = true;
         }
 
-        if(eml.isEmpty()){
-            email.setError("Please Enter Your Email");
-            focusView = email;
-            notValid = true;
-        } else if(!eml.contains("@") && !eml.contains(".com")){
-            email.setError("Please Enter a Valid Email Address");
-            focusView = email;
-            notValid = true;
-        }
+//        if(eml.isEmpty()){
+//            email.setError("Please Enter Your Email");
+//            focusView = email;
+//            notValid = true;
+//        } else if(!eml.contains("@") && !eml.contains(".com")){
+//            email.setError("Please Enter a Valid Email Address");
+//            focusView = email;
+//            notValid = true;
+//        }
 
         if(gen <= 0){
             maleRadioBtn.setError("Please Select Your Gender");
@@ -262,12 +329,7 @@ public class RegisterActivity extends AppCompatActivity{
                 focusView.requestFocus();
             }
         } else {
-            //Need to store the user details entered
-            //Suppose to be in register activity
-            String uid = currentUser.getUid();
-            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, 0);
-            dataRefStore.child(currentUser.getUid()).setValue(newUser);
-
+               uploadImageRegister();
 //            Map<String, User> googleUsers = new HashMap<>();
 ////            Map<String, StepHistory> userSteps = new HashMap<>();
 //            User userClass = new User(usern, currentUser.getEmail(), phone, genStr, 0);
@@ -278,10 +340,6 @@ public class RegisterActivity extends AppCompatActivity{
 //            dataRefStore.child(uid).setValue(googleUsers);
 //            stepRefStore = ref.child("stepHistory");
 //            stepRefStore.child(uid).setValue(steps);
-
-            Intent intent = new Intent(getApplicationContext(),MainUI.class);
-            startActivity(intent);
-            Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
         }
     }
 

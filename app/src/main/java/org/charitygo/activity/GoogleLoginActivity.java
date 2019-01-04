@@ -67,31 +67,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-//            ObjectAnimator animation = ObjectAnimator.ofInt(progressb, "progress",0, 100);
-//            animation.setDuration(5000);
-//            animation.setInterpolator(new DecelerateInterpolator());
-//            animation.addListener(new Animator.AnimatorListener() {
-//                @Override
-//                public void onAnimationStart(Animator animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//                }
-//
-//                @Override
-//                public void onAnimationCancel(Animator animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animator animation) {
-//
-//                }
-//            });
-//            animation.start();
 
             //Progress Dialog
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
