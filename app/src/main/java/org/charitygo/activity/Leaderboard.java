@@ -37,6 +37,7 @@ public class Leaderboard extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
+        recList.setNestedScrollingEnabled(false);
         //getData();
 
     }
