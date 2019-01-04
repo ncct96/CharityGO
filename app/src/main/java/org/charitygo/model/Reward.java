@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Reward {
     private String key, company, shortDescription, longDescription, code;
-    private Date redeemDate, expiryDate;
+
     private int validFor, drawable;
 
     public Reward() {
@@ -60,20 +60,8 @@ public class Reward {
         this.code = code;
     }
 
-    public Date getRedeemDate() {
-        return redeemDate;
-    }
-
-
-    public Date getValidDate() {
-        return expiryDate;
-    }
-
     public void setDates() {
-        Calendar calendar = Calendar.getInstance();
-        this.redeemDate = calendar.getTime();
-        calendar.add(Calendar.MINUTE, validFor);
-        this.expiryDate = calendar.getTime();
+
     }
 
     public int getValidFor() {
