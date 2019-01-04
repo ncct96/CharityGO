@@ -3,13 +3,14 @@ package org.charitygo.model;
 import java.util.Date;
 
 public class Donation {
-    String userID, organizationID, points;
+    String userID, organizationID;
+    int points;
     Date transactionDate;
 
     public Donation() {
     }
 
-    public Donation(String userID, String organizationID, String points, Date transactionDate) {
+    public Donation(String userID, String organizationID, int points, Date transactionDate) {
         transactionDate = new Date();
         this.userID = userID;
         this.organizationID = organizationID;
@@ -33,17 +34,15 @@ public class Donation {
         this.organizationID = organizationID;
     }
 
-    public String getPoints() {
+    public int getPoints() {
         return points;
     }
 
-    public void setPoints(String points) {
+    public void setPoints(int points) {
         this.points = points;
     }
 
-    public Date getTransactionDate() {
-        return transactionDate;
-    }
+    public Date getTransactionDate() { return transactionDate; }
 
     public void setTransactionDate(Date transactionDate) {
         this.transactionDate = transactionDate;
