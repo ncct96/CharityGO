@@ -85,13 +85,12 @@ public class MainUI extends AppCompatActivity
     private Menu menu;
 
     //CK CHANGES ON GETTING PICTURE
-//    private View profileLayout = LayoutInflater.from(this.getApplicationContext()).inflate(R.layout.nav_header_main_ui, null);
-//    private DatabaseReference imageRef;
-//    private StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
-//    private ImageView userProfile = (ImageView) profileLayout.findViewById(R.id.avatar);
-//    private TextView userProfileName = (TextView) profileLayout.findViewById(R.id.displayName);
-//    private TextView userProfilePoints = (TextView) profileLayout.findViewById(R.id.displayPoints);
-//    private String path; private String name; private String points;
+    private DatabaseReference imageRef;
+    private StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
+    private ImageView userProfile;
+    private TextView userProfileName;
+    private TextView userProfilePoints;
+    private String path = "images/1546614251952.jpg"; private String name; private String points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,18 +98,26 @@ public class MainUI extends AppCompatActivity
 
         setContentView(R.layout.activity_main_ui);
 
+//        userProfile = (ImageView) findViewById(R.id.avatar);
+//        userProfileName = (TextView) findViewById(R.id.displayName);
+//        userProfilePoints = (TextView) findViewById(R.id.displayPoints);
+//
 //        if(currentUser != null){
-//            imageRef = FirebaseDatabase.getInstance().getReference().child(currentUser.getUid());
+//            imageRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
 //            //CK CHANGES ON GETTING PICTURE;
 //            imageRef.addValueEventListener(new ValueEventListener() {
 //                @Override
 //                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    path = dataSnapshot.child("photoID").getValue().toString();
-//                    name = dataSnapshot.child("name").getValue().toString();
-//                    points = dataSnapshot.child("points").getValue().toString();
+//                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+//                        if(ds.exists()){
+//                            path = dataSnapshot.child("photoID").getValue().toString();
+//                            name = dataSnapshot.child("name").getValue().toString();
+//                            points = dataSnapshot.child("points").getValue().toString();
 //
-//                    userProfileName.setText(name);
-//                    userProfilePoints.setText(points);
+//                            userProfileName.setText(name);
+//                            userProfilePoints.setText(points);
+//                        }
+//                    }
 //                }
 //
 //                @Override
@@ -118,7 +125,7 @@ public class MainUI extends AppCompatActivity
 //
 //                }
 //            });
-//            imageStorage.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            imageStorage.child(currentUser.getUid()).child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
 //                @Override
 //                public void onSuccess(Uri uri) {
 //                    userProfile.setImageURI(uri);

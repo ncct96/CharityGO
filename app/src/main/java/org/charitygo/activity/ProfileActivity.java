@@ -34,6 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText Email;
     private EditText Username;
     private EditText ContactNumber;
+    private EditText Gender;
     private TextView EmailView;
     private TextView UsernameView;
     private TextView ContactNumberView;
@@ -120,21 +121,24 @@ public class ProfileActivity extends AppCompatActivity {
         Email = findViewById(R.id.editEmail);
         Username = findViewById(R.id.editUsername);
         ContactNumber = findViewById(R.id.editPhone);
+        Gender = findViewById(R.id.editGender);
 
-        //Get Text View
-        EmailView = findViewById(R.id.email);
-        UsernameView = findViewById(R.id.username);
-        ContactNumberView = findViewById(R.id.contactnum);
+//        //Get Text View
+//        EmailView = findViewById(R.id.email);
+//        UsernameView = findViewById(R.id.username);
+//        ContactNumberView = findViewById(R.id.contactnum);
 
         //Get Text View Text
-        String PreEmail = EmailView.getText().toString();
-        String PreUsername = UsernameView.getText().toString();
-        String PreNumber = ContactNumberView.getText().toString();
+        String PreEmail = userProfileEmail.getText().toString();
+        String PreUsername = userProfileUsername.getText().toString();
+        String PreNumber = userProfileNumber.getText().toString();
+        String PreGender = getUserProfileGender.getText().toString();
 
         //Set Edit Text's Text
         Email.setText(PreEmail);
         Username.setText(PreUsername);
         ContactNumber.setText(PreNumber);
+        Gender.setText(PreGender);
 
         fab = findViewById(R.id.editProf);
 
@@ -142,26 +146,33 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //SET THE ICON TO CANCEL
-                if(Email.getVisibility() == View.VISIBLE && Username.getVisibility() == View.VISIBLE && ContactNumber.getVisibility() == View.VISIBLE){
+                if(Email.getVisibility() == View.VISIBLE && Username.getVisibility() == View.VISIBLE && ContactNumber.getVisibility() == View.VISIBLE && Gender.getVisibility() == View.VISIBLE){
                     //Set Text View to Invisible
-                    EmailView.setVisibility(View.VISIBLE);
-                    UsernameView.setVisibility(View.VISIBLE);
-                    ContactNumberView.setVisibility(View.VISIBLE);
+                    userProfileEmail.setVisibility(View.VISIBLE);
+                    userProfileUsername.setVisibility(View.VISIBLE);
+                    userProfileNumber.setVisibility(View.VISIBLE);
+                    getUserProfileGender.setVisibility(View.VISIBLE);
+
                     Email.setVisibility(View.GONE);
                     Username.setVisibility(View.GONE);
                     ContactNumber.setVisibility(View.GONE);
-                } else if (EmailView.getVisibility() == View.VISIBLE && UsernameView.getVisibility() == View.VISIBLE && ContactNumberView.getVisibility() == View.VISIBLE){
+                    Gender.setVisibility(View.GONE);
+                } else if (userProfileEmail.getVisibility() == View.VISIBLE && userProfileUsername.getVisibility() == View.VISIBLE && userProfileNumber.getVisibility() == View.VISIBLE && getUserProfileGender.getVisibility() == View.VISIBLE){
                     //Set Edit Text to Visible
                     Email.setVisibility(View.VISIBLE);
                     Username.setVisibility(View.VISIBLE);
                     ContactNumber.setVisibility(View.VISIBLE);
-                    EmailView.setVisibility(View.GONE);
-                    UsernameView.setVisibility(View.GONE);
-                    ContactNumberView.setVisibility(View.GONE);
+                    Gender.setVisibility(View.VISIBLE);
+
+                    userProfileEmail.setVisibility(View.GONE);
+                    userProfileUsername.setVisibility(View.GONE);
+                    userProfileNumber.setVisibility(View.GONE);
+                    getUserProfileGender.setVisibility(View.GONE);
                 }
             }
         });
 
+        //HERE NEED TO IMPLEMENT DATABASE CHANGES
         Email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

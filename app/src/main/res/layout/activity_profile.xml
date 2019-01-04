@@ -293,6 +293,16 @@
                         android:textColor="@color/colorTextPrimaryDark"
                         android:textSize="20sp" />
 
+                    <EditText
+                        android:id="@+id/editGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="Gender"
+                        android:inputType="textLongMessage"
+                        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                        android:visibility="gone" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
