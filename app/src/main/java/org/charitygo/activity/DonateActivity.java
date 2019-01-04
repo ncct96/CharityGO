@@ -1,7 +1,11 @@
 package org.charitygo.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -12,20 +16,42 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.charitygo.R;
+import org.charitygo.model.Donation;
+import org.charitygo.model.Organization;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DonateActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int points = 0;
+    private int userPoints = 0, orgPoints = 0;
     private final int minPoints = 0, step = 5;
     private static int maxPoints;
+    private String organizationID;
+    private Organization organization = new Organization();
+
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference ref = database.getReference();
+    private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    private DatabaseReference donationRef = ref.child("donations");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donate);
 
-        String organizationID = getIntent().getStringExtra("EXTRA_ID");
+        organizationID = getIntent().getStringExtra("EXTRA_ID");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -36,8 +62,9 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         Button btnMinus = (Button) findViewById(R.id.donate_imageButton_minus);
         btnMinus.setOnClickListener(this);
 
+        //Default to disabled
         EditText editPoints = (EditText) findViewById(R.id.donate_editText_amount);
-        final Button donateButton = (Button) findViewById(R.id.donate_button_donate);
+        Button donateButton = (Button) findViewById(R.id.donate_button_donate);
         donateButton.setEnabled(false);
         donateButton.setBackgroundColor(Color.LTGRAY);
 
@@ -56,7 +83,7 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        initializeUIValues(organizationID);
+        initializeUIValues();
     }
 
     private void enableButton() {
@@ -76,26 +103,36 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public void initializeUIValues(String id) {
-        int userPoints = 0, orgPoints = 0;
-
-        //Get points from database here
+    public void initializeUIValues() {
         userPoints = 1500;
-        orgPoints = 1000000;
-
-        if (userPoints > orgPoints)
-            maxPoints = orgPoints;
-        else
-            maxPoints = userPoints;
-
-        EditText setPoints = (EditText) findViewById(R.id.donate_editText_amount);
-        setPoints.setFilters(new InputFilter[]{new MinMaxFilter(minPoints, maxPoints)});
-
         TextView textUserPoints = (TextView) findViewById(R.id.donate_points_user);
         textUserPoints.setText(userPoints + " points");
 
-        TextView textOrgPoints = (TextView) findViewById(R.id.donate_points_org);
-        textOrgPoints.setText(orgPoints + " points");
+        DatabaseReference organizationRef = ref.child("organizations/" + organizationID);
+
+        organizationRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                organization = dataSnapshot.getValue(Organization.class);
+                orgPoints = organization.getPoints();
+
+                if (userPoints > orgPoints)
+                    maxPoints = orgPoints;
+                else
+                    maxPoints = userPoints;
+
+                EditText setPoints = (EditText) findViewById(R.id.donate_editText_amount);
+                setPoints.setFilters(new InputFilter[]{new MinMaxFilter(minPoints, maxPoints)});
+
+                TextView textOrgPoints = (TextView) findViewById(R.id.donate_points_org);
+                textOrgPoints.setText(orgPoints + " points");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -125,11 +162,13 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
 
     public void donateTransaction(View view) {
         EditText editPoints = (EditText) findViewById(R.id.donate_editText_amount);
-
         int points = Integer.parseInt(editPoints.getText().toString());
 
-        //Update database here
+        Donation donation = new Donation("Test ID", organizationID, points, new Date());
+        donationRef.push().setValue(donation);
 
+        DatabaseReference organizationRef = ref.child("organizations/" + organizationID);
+        organizationRef.child("points").setValue(organization.getPoints() - points);
         this.finish();
     }
 }

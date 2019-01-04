@@ -42,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.charitygo.Constants;
 import org.charitygo.R;
 import org.charitygo.StepService;
+import org.charitygo.model.Reward;
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
 
@@ -367,6 +368,11 @@ public class MainUI extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void goToRewards(View view) {
+        Intent intent = new Intent(this, RewardActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
     }
@@ -408,4 +414,6 @@ public class MainUI extends AppCompatActivity
         TextView redeemPoints = findViewById(R.id.main_redeem_points);
         //redeemPoints.setText(calculator.getRedeemPoints() + " donatePoints available");
     }
+
+
 }
