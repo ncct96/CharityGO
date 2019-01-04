@@ -109,12 +109,12 @@ public class RegisterActivity extends AppCompatActivity{
         tohruImgRef.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(RegisterActivity.this, "Image ", Toast.LENGTH_SHORT);
+                Toast.makeText(RegisterActivity.this, "Image Uploaded", Toast.LENGTH_SHORT);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Toast.makeText(RegisterActivity.this, "Image Unable To be Upload", Toast.LENGTH_SHORT);
             }
         });
 
