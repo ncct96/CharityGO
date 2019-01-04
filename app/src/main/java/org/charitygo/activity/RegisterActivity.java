@@ -1,28 +1,48 @@
 package org.charitygo.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.charitygo.R;
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class RegisterActivity extends AppCompatActivity{
 
@@ -39,8 +59,15 @@ public class RegisterActivity extends AppCompatActivity{
     private FirebaseUser currentUser = fireAuth.getCurrentUser();
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-    private DatabaseReference dataRefStore;
+    private DatabaseReference dataRefStore = ref.child("users");
     private DatabaseReference stepRefStore;
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference storageRef = storage.getReference();
+
+    private ImageView imagetoUpload; private static final int RESULT_LOAD_IMAGE = 1;
+    private Uri selectedImage;
+
+    private final static int GET_FROM_GALLERY = 8000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +92,70 @@ public class RegisterActivity extends AppCompatActivity{
         femaleRadioBtn = (RadioButton) findViewById(R.id.radioButtonFemale);
 
         email.setText(currentUser.getEmail());
+
+        imagetoUpload = findViewById(R.id.imageView);
+        imagetoUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+            }
+        });
+    }
+
+    public void uploadImage(){
+        StorageReference tohruImgRef = storageRef.child("images/"+UUID.randomUUID().toString());
+        tohruImgRef.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(RegisterActivity.this, "Image Uploaded", Toast.LENGTH_SHORT);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(RegisterActivity.this, "Image Unable To be Upload", Toast.LENGTH_SHORT);
+            }
+        });
+
+//        //Upload from a local file
+//        Uri file = Uri.fromFile(new File("path/to/images/tohru.png"));
+//        StorageReference tohruRef = storageRef.child("images/"+file.getLastPathSegment());
+//        UploadTask uploadTask = tohruRef.putFile(file);
+//        uploadTask.addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//            }
+//        });
+//
+//        //Get download URL
+//        final StorageReference reference = storageRef.child("images/tohru.png");
+//        uploadTask = reference.putFile(file);
+//        Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//            @Override
+//            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                if(!task.isSuccessful()){
+//                    throw task.getException();
+//                }else{
+//                    return null;
+//                }
+//            }
+//        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Uri> task) {
+//                if(task.isSuccessful()){
+//                    Uri downloadUri = task.getResult();
+//                }else{
+//
+//                }
+//            }
+//        });
     }
 
     public void registerAccount(View view) {
@@ -174,17 +265,19 @@ public class RegisterActivity extends AppCompatActivity{
             //Need to store the user details entered
             //Suppose to be in register activity
             String uid = currentUser.getUid();
+            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, 0);
+            dataRefStore.child(currentUser.getUid()).setValue(newUser);
 
-            Map<String, User> googleUsers = new HashMap<>();
-//            Map<String, StepHistory> userSteps = new HashMap<>();
-            User userClass = new User(usern, currentUser.getEmail(), phone, genStr, 0);
-            StepHistory steps = new StepHistory(uid, System.currentTimeMillis() , System.currentTimeMillis(), 0, 0);
-            googleUsers.put(userClass.name, userClass);
-/*            userSteps.put(uid, steps);*/
-            dataRefStore = ref.child("user");
-            dataRefStore.child(uid).setValue(googleUsers);
-            stepRefStore = ref.child("stepHistory");
-            stepRefStore.child(uid).setValue(steps);
+//            Map<String, User> googleUsers = new HashMap<>();
+////            Map<String, StepHistory> userSteps = new HashMap<>();
+//            User userClass = new User(usern, currentUser.getEmail(), phone, genStr, 0);
+//            StepHistory steps = new StepHistory(uid, System.currentTimeMillis() , System.currentTimeMillis(), 0, 0);
+//            googleUsers.put(userClass.name, userClass);
+///*            userSteps.put(uid, steps);*/
+//            dataRefStore = ref.child("user");
+//            dataRefStore.child(uid).setValue(googleUsers);
+//            stepRefStore = ref.child("stepHistory");
+//            stepRefStore.child(uid).setValue(steps);
 
             Intent intent = new Intent(getApplicationContext(),MainUI.class);
             startActivity(intent);
@@ -194,5 +287,25 @@ public class RegisterActivity extends AppCompatActivity{
 
     public void cancelRegister(View view) {
         this.finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Detects request codes
+        if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            selectedImage = data.getData();
+            imagetoUpload.setImageURI(selectedImage);
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 }

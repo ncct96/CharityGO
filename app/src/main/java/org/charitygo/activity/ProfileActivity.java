@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import org.charitygo.R;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -20,6 +23,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView EmailView;
     private TextView UsernameView;
     private TextView ContactNumberView;
+    private StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,5 +103,11 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
+        StorageReference tohruRef = storageRef.child("tohru.jpg");
+        StorageReference tohruImgRef = storageRef.child("images/tohru.jpg");
+
+        tohruRef.getName().equals(tohruImgRef.getName()); //true
+        tohruRef.getName().equals(tohruImgRef.getPath());
     }
 }
