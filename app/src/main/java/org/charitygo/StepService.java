@@ -1,11 +1,13 @@
 package org.charitygo;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -40,7 +42,7 @@ public class StepService extends Service implements SensorEventListener {
     private Sensor mStepDetectorSensor;
     private final FirebaseDatabase mFirebase = FirebaseDatabase.getInstance();
     DatabaseReference ref = mFirebase.getReference();
-    DatabaseReference stepsRef;
+    DatabaseReference stepsRef = mFirebase.getReference().child("stepHistory");
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseUser FBuser = FirebaseAuth.getInstance().getCurrentUser();
@@ -63,6 +65,9 @@ public class StepService extends Service implements SensorEventListener {
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null) {
             mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
             mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        }else{
+            mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 
@@ -82,8 +87,10 @@ public class StepService extends Service implements SensorEventListener {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+        createNotificationChannel();
+
+        notification = new NotificationCompat.Builder(this, "fg01")
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Pedometer Running")
                 .setColor(R.drawable.gradient_blue)
                 .setColorized(true)
@@ -101,6 +108,26 @@ public class StepService extends Service implements SensorEventListener {
         return START_STICKY;
     }
 
+    public void createNotificationChannel() {
+
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+
+        {
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel("fg01", Constants.CHANNEL_NAME, importance);
+            mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
+
+
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -163,6 +190,7 @@ public class StepService extends Service implements SensorEventListener {
 
         notification.number = stepCounts;
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        stepsRef = ref.child("stepHistory");
         stepsRef.child(uid + "/steps").setValue(stepCounts);
 
     }
@@ -173,15 +201,15 @@ public class StepService extends Service implements SensorEventListener {
 
     public int initSteps() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        stepsRef = ref.child("stepHistory" + user.getUid());
+        stepsRef = ref.child("stepHistory/" + user.getUid());
 
         if (user != null) {
             stepsRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     System.out.println(dataSnapshot.getValue());
-                    //initStepCounts = dataSnapshot.child("steps").getValue(Integer.class);
-                    //System.out.println("dssa" + initStepCounts);
+                    initStepCounts = dataSnapshot.child("steps").getValue(Integer.class);
+                    System.out.println("dssa" + initStepCounts);
                 }
 
                 @Override
@@ -190,6 +218,6 @@ public class StepService extends Service implements SensorEventListener {
                 }
             });
         }
-        return 0;
+        return initStepCounts;
     }
 }

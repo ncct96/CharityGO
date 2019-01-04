@@ -34,10 +34,10 @@ public class AvailablePointsCalculator {
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     currentSteps = dataSnapshot.getValue(StepHistory.class);
 
-                    if(currentSteps.getStartDate() == new Date()){
+/*                    if(currentSteps.getStartDate() == new Date()){
                         points = currentSteps.getSteps() / 10;
                         return;
-                    }
+                    }*/
                 }
             }
 

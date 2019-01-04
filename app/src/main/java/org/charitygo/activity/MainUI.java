@@ -60,10 +60,7 @@ public class MainUI extends AppCompatActivity
     private boolean isSensorPresent = false;
     private Sensor mSensor;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
-    private int numSteps;
-    private static int savedNumSteps;
-    private double progress;
-    private int progressCircle = 0;
+    private static int savedNumSteps, goal;
 
     //Firebase Reference
     final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -111,6 +108,8 @@ public class MainUI extends AppCompatActivity
             mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
             isSensorPresent = true;
         } else {
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
             isSensorPresent = false;
         }
 
@@ -128,6 +127,14 @@ public class MainUI extends AppCompatActivity
                 }
             }
         });
+
+
+
+//        goal = (100 * 100) / savedNumSteps;
+
+        Log.e("goal", String.valueOf(savedNumSteps));
+
+        progressBar.setProgress(goal);
 
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
     }
@@ -411,11 +418,11 @@ public class MainUI extends AppCompatActivity
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     StepHistory currentSteps = dataSnapshot1.getValue(StepHistory.class);
 
-                    if(currentSteps.getStartDate() == new Date()){
+/*                    if(currentSteps.getStartDate() == new Date()){
                         TextView donatePoints = findViewById(R.id.main_donate_points);
                         donatePoints.setText(currentSteps.getSteps() / 10 + " donatePoints available");
                         return;
-                    }
+                    }*/
                 }
             }
 
