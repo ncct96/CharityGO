@@ -262,24 +262,7 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onRestart() {
         super.onRestart();
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.child(dayDatePath).child(uid).getValue(StepHistory.class);
-
-                if(steps != null) {
-                    savedNumSteps = steps.getSteps();
-                    retrieveData(steps.getSteps());
-                }
-/*                goal = (savedNumSteps * 100) / 100;
-                progressBar.setProgress(Math.round(goal));*/
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        initSteps();
     }
 
     public void createNotificationChannel() {
@@ -310,7 +293,7 @@ public class MainUI extends AppCompatActivity
 
         checkExistDate();
 
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
@@ -356,10 +339,10 @@ public class MainUI extends AppCompatActivity
         super.onPause();
 
         ref.child(dayDatePath).child(uid).child("steps").setValue(savedNumSteps);
+
         if (isSensorPresent) {
             mSensorManager.unregisterListener(this);
         }
-
     }
 
     @Override
@@ -586,14 +569,18 @@ public class MainUI extends AppCompatActivity
 
     public boolean checkExistDate(){
 
+        dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
+
         Intent intent = new Intent(getApplicationContext(), StepService.class);
         intent.putExtra("steps", savedNumSteps);
         stopService(intent);
 
-        ref.child(dayDatePath).orderByChild(uid).equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference stepsRef = ref.child(dayDatePath);
+
+        stepsRef.orderByKey().equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
+                if(!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)){
                     StepHistory steps = new StepHistory(0, 0);
                     setData(steps, steps.getSteps());
                     ref.child(dayDatePath).child(uid).setValue(steps);

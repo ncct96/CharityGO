@@ -92,7 +92,7 @@ public class Leaderboard extends AppCompatActivity {
 
         int lastDay = df.getLastDayofMonth(timestamp);
 
-        ref.startAt(dayDatePath).endAt(lastDay).orderByChild(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+        ref.startAt(String.valueOf(dayDatePath)).endAt(String.valueOf(lastDay)).orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 System.out.println("abcde  " + dataSnapshot.getValue());
