@@ -40,7 +40,7 @@
                         app:cardPreventCornerOverlap="false">
 
                         <ImageView
-                            android:id="@+id/avatar"
+                            android:id="@+id/avatarProfile"
                             android:layout_width="140dp"
                             android:layout_height="140dp"
                             android:background="@drawable/circle"
@@ -279,19 +279,29 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total Accumulated Points"
+                        android:text="Gender"
                         android:textColor="@color/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/totalpoints"
+                        android:id="@+id/gender"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
-                        android:text="9000"
+                        android:text="Male"
                         android:textColor="@color/colorTextPrimaryDark"
                         android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/editGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="Gender"
+                        android:inputType="textLongMessage"
+                        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                        android:visibility="gone" />
 
                     <View
                         android:layout_width="match_parent"

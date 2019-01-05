@@ -10,11 +10,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +26,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +38,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -44,6 +51,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.charitygo.Constants;
 import org.charitygo.DateFormat;
@@ -85,11 +94,58 @@ public class MainUI extends AppCompatActivity
     private String uid = currentUser.getUid();
     private Menu menu;
 
+    //CK CHANGES ON GETTING PICTURE
+    View inflatedView; LinearLayout navHeader;
+    private DatabaseReference imageRef;
+    private StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
+    private ImageView userProfile;
+    private TextView userProfileName;
+    private TextView userProfilePoints;
+    private String path = "images/1546659750662.jpg"; private String name; private String points;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main_ui);
+        inflatedView = getLayoutInflater().inflate(R.layout.nav_header_main_ui, null);
+        navHeader = (LinearLayout) inflatedView.findViewById(R.id.navLayout);
+        userProfile = (ImageView) navHeader.findViewById(R.id.avatar);
+        userProfileName = (TextView) navHeader.findViewById(R.id.displayName);
+        userProfilePoints = (TextView) navHeader.findViewById(R.id.displayPoints);
+
+        if(currentUser != null){
+            imageRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
+            //CK CHANGES ON GETTING PICTURE;
+            imageRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    path = dataSnapshot.child("photoID").getValue().toString();
+                    name = dataSnapshot.child("name").getValue().toString();
+                    points = dataSnapshot.child("points").getValue().toString();
+
+                    userProfileName.setText(name);
+                    userProfilePoints.setText(points);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            imageStorage.child(currentUser.getUid()).child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    userProfile.setImageURI(uri);
+                    userProfile.invalidate();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -158,8 +214,12 @@ public class MainUI extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         currentUser = fireAuth.getInstance().getCurrentUser();
-        //fireAuth = FirebaseAuth.getInstance();
-        //fireAuth.addAuthStateListener(authListener);
+        if(currentUser == null){
+            Intent intent = new Intent(this, GoogleLoginActivity.class);
+            startActivity(intent);
+        }
+//        fireAuth = FirebaseAuth.getInstance();
+//        fireAuth.addAuthStateListener(authListener);
 //        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 //        if(acct != null){
 //            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);

@@ -8,6 +8,17 @@
     android:layout_margin="24dp"
     tools:context=".activity.RegisterActivity">
 
+    <ProgressBar
+        android:id="@+id/registerProgress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal"
+        android:max="100"
+        android:progress="0"
+        android:visibility="gone" />
+
     <ScrollView
         android:id="@+id/registerScroll"
         android:layout_width="match_parent"
