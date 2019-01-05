@@ -20,8 +20,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.R;
+import org.charitygo.model.Redeems;
 import org.charitygo.model.Reward;
 import org.charitygo.model.User;
+
+import java.util.Date;
 
 public class VoucherActivity extends AppCompatActivity {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -29,6 +32,7 @@ public class VoucherActivity extends AppCompatActivity {
     private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference voucherRef = ref.child("vouchers");
     private String rewardID;
+    private boolean eligible = true;
 
     Reward reward = new Reward();
     User user = new User();
@@ -47,49 +51,33 @@ public class VoucherActivity extends AppCompatActivity {
 
 
     protected void initializeUIValues() {
-        DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
-        userRef.addValueEventListener(new ValueEventListener() {
+        //Search for voucher details
+        final DatabaseReference rewardRef = ref.child("rewards/" + rewardID);
+        rewardRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                user = dataSnapshot.getValue(User.class);
+                reward = dataSnapshot.getValue(Reward.class);
 
-                final DatabaseReference rewardRef = ref.child("rewards/" + rewardID);
-                rewardRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        reward = dataSnapshot.getValue(Reward.class);
+                TextView name = (TextView) findViewById(R.id.voucher_company);
+                name.setText(reward.getCompany());
 
-                        TextView name = (TextView) findViewById(R.id.voucher_company);
-                        name.setText(reward.getCompany());
+                TextView expiry = (TextView) findViewById(R.id.voucher_expiry);
+                String expiryTime;
 
-                        TextView expiry = (TextView) findViewById(R.id.voucher_expiry);
-                        String expiryTime;
+                if (reward.getValidFor() < 60)
+                    expiryTime = String.valueOf(reward.getValidFor()) + " minutes";
+                else if (reward.getValidFor() < 1440)
+                    expiryTime = String.valueOf(reward.getValidFor() / 60) + " hours and " + String.valueOf(reward.getValidFor() % 60) + " minutes";
+                else
+                    expiryTime = String.valueOf(reward.getValidFor() / 1440) + " days and " + String.valueOf(reward.getValidFor() % 1440) + " hours";
 
-                        if (reward.getValidFor() < 60)
-                            expiryTime = String.valueOf(reward.getValidFor()) + " minutes";
-                        else if (reward.getValidFor() < 1440)
-                            expiryTime = String.valueOf(reward.getValidFor() / 60) + " hours and " + String.valueOf(reward.getValidFor() % 60) + " minutes";
-                        else
-                            expiryTime = String.valueOf(reward.getValidFor() / 1440) + " days and " + String.valueOf(reward.getValidFor() % 1440) + " hours";
+                expiry.setText(expiryTime);
 
-                        expiry.setText(expiryTime);
+                TextView description = (TextView) findViewById(R.id.voucher_description);
+                description.setText(reward.getLongDescription());
 
-                        TextView description = (TextView) findViewById(R.id.voucher_description);
-                        description.setText(reward.getLongDescription());
-
-                        Button button = findViewById(R.id.voucher_redeem);
-                        button.setText(reward.getPrice() + " points");
-                        if (user.getPoints() < reward.getPrice()) {
-                            button.setEnabled(false);
-                            button.setBackgroundColor(Color.LTGRAY);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                Button button = findViewById(R.id.voucher_redeem);
+                button.setText(reward.getPrice() + " points");
             }
 
             @Override
@@ -98,6 +86,56 @@ public class VoucherActivity extends AppCompatActivity {
             }
         });
 
+        //Search for unredeemed vouchers
+
+        final DatabaseReference voucherRef = ref.child("vouchers");
+        voucherRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Redeems redeem = dataSnapshot1.getValue(Redeems.class);
+                    String UID = firebaseUser.getUid();
+                    if (redeem.getRewardsID().equals(rewardID) && redeem.getUserID().equals(UID)) {
+                        Button button = findViewById(R.id.voucher_redeem);
+                        button.setText(reward.getCode());
+                        button.setEnabled(false);
+                        button.setBackgroundColor(Color.RED);
+                        eligible = false;
+
+                        if(redeem.getExpiryDate().before(new Date())){
+                            button.setText("Redeemed");
+                            button.setBackgroundColor(Color.LTGRAY);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        if (eligible) {
+            //Search user's eligibility
+            DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    user = dataSnapshot.getValue(User.class);
+                    if (user.getPoints() < reward.getPrice()) {
+                        Button button = findViewById(R.id.voucher_redeem);
+                        button.setEnabled(false);
+                        button.setBackgroundColor(Color.LTGRAY);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     public void confirmRedeem(View view) {
@@ -108,7 +146,8 @@ public class VoucherActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes, redeem!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                voucherRef.push().setValue(new Reward());
+                voucherRef.push().setValue(new Redeems(firebaseUser.getUid(), rewardID, reward.getValidFor()));
+
                 DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
                 userRef.child("points").setValue(user.getPoints() - reward.getPrice());
 
