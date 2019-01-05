@@ -50,10 +50,9 @@ public class Leaderboard extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         loadLeaderboard();
         LeaderboardAdapter adapter = new LeaderboardAdapter(leaderList);
-
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
         RecyclerView recList = (RecyclerView) findViewById(R.id.rank_recycler_view);
         recList.setHasFixedSize(true);
@@ -92,7 +91,7 @@ public class Leaderboard extends AppCompatActivity {
 
         int lastDay = df.getLastDayofMonth(timestamp);
 
-        ref.startAt(dayDatePath).endAt(lastDay).orderByChild(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+        ref.startAt(String.valueOf(dayDatePath)).endAt(String.valueOf(lastDay)).orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 System.out.println("abcde  " + dataSnapshot.getValue());
