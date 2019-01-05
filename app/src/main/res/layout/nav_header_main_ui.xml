@@ -19,7 +19,7 @@
         app:cardCornerRadius="35dp"
         app:cardPreventCornerOverlap="false">
 
-        <ImageView
+        <com.master.glideimageview.GlideImageView
             android:id="@+id/avatar"
             android:layout_width="70dp"
             android:layout_height="70dp"

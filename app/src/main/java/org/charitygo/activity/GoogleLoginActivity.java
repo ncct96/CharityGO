@@ -144,10 +144,8 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void showData(DataSnapshot dataSnapshot){
-        for(DataSnapshot ds : dataSnapshot.getChildren()){
-            if(ds.exists()){
-                checkExist = true; break;
-            }
+        if(dataSnapshot.exists()){
+            checkExist = true;
         }
         if(checkExist && currentUser != null){
             //Redirect to Main Page
