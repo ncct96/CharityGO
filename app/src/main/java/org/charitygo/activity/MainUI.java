@@ -46,6 +46,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.Constants;
+import org.charitygo.DateFormat;
 import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.Reward;
@@ -67,6 +68,10 @@ public class MainUI extends AppCompatActivity
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
     private static int savedNumSteps, userGoal;
     private static float goal;
+    private static long timestamp = System.currentTimeMillis();
+    private DateFormat df = new DateFormat();
+    private String monthYearPath = String.valueOf(df.longToYearMonth(timestamp));
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
 
     //Firebase Reference
     final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -77,6 +82,7 @@ public class MainUI extends AppCompatActivity
     private FirebaseAuth fireAuth = FirebaseAuth.getInstance();
     private FirebaseAuth userInstance = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = userInstance.getCurrentUser();
+    private String uid = currentUser.getUid();
     private Menu menu;
 
     @Override
@@ -103,6 +109,8 @@ public class MainUI extends AppCompatActivity
         txtProgress = findViewById(R.id.numOfStep);
         progressBar = findViewById(R.id.stepProgress);
 
+        checkExistDate();
+        checkExistEntry();
         initSteps();
 
         mSensorManager = (SensorManager)
@@ -144,7 +152,6 @@ public class MainUI extends AppCompatActivity
 
         progressBar.setProgress(Math.round(goal));
 
-        //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
     }
 
     @Override
@@ -172,7 +179,7 @@ public class MainUI extends AppCompatActivity
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
+                StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
                 savedNumSteps = steps.getSteps();
                 txtProgress.setText(savedNumSteps + "\nSTEPS");
 /*                goal = (savedNumSteps * 100) / 100;
@@ -192,7 +199,7 @@ public class MainUI extends AppCompatActivity
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
+                StepHistory steps = dataSnapshot.child(dayDatePath).child(uid).getValue(StepHistory.class);
                 savedNumSteps = steps.getSteps();
                 retrieveData(steps.getSteps());
 /*                goal = (savedNumSteps * 100) / 100;
@@ -239,7 +246,7 @@ public class MainUI extends AppCompatActivity
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
+                StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
                 savedNumSteps = steps.getSteps();
                 retrieveData(steps.getSteps());
                 goal = (savedNumSteps * 100) / 100;
@@ -270,9 +277,8 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        String uid = currentUser.getUid();
 
-        ref.child(uid + "/steps").setValue(savedNumSteps);
+        ref.child(dayDatePath).child(uid).child("steps").setValue(savedNumSteps);
         if (isSensorPresent) {
             mSensorManager.unregisterListener(this);
         }
@@ -506,5 +512,29 @@ public class MainUI extends AppCompatActivity
         return steps;
     }
 
+    public boolean checkExistDate(){
+
+        ref.child(dayDatePath).orderByChild(uid).equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    StepHistory steps = new StepHistory(0, 0);
+                    ref.child(dayDatePath).child(uid).setValue(steps);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return true;
+    }
+
+    public boolean checkExistEntry(){
+
+        return true;
+    }
 
 }

@@ -46,9 +46,13 @@ public class StepService extends Service implements SensorEventListener {
     DatabaseReference stepsRef = mFirebase.getReference().child("stepHistory");
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private FirebaseUser FBuser = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+    private String uid = currentUser.getUid();
     private Notification notification;
-    private long todayDate = System.currentTimeMillis();
+    private static long timestamp = System.currentTimeMillis();
+    private DateFormat df = new DateFormat();
+    private String monthYearPath = String.valueOf(df.longToYearMonth(timestamp));
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
     private static int stepCounts, initStepCounts;
     private StepHistory steps;
 
@@ -192,7 +196,7 @@ public class StepService extends Service implements SensorEventListener {
         notification.number = stepCounts;
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         stepsRef = ref.child("stepHistory");
-        stepsRef.child(uid + "/steps").setValue(stepCounts);
+        stepsRef.child(dayDatePath).child(uid).child("steps").setValue(stepCounts);
 
     }
 
@@ -202,7 +206,7 @@ public class StepService extends Service implements SensorEventListener {
 
     public int initSteps() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        stepsRef = ref.child("stepHistory/" + user.getUid());
+        stepsRef = ref.child("stepHistory/" + dayDatePath + "/" + uid);
 
         if (user != null) {
             stepsRef.addListenerForSingleValueEvent(new ValueEventListener() {

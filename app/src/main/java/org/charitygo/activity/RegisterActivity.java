@@ -32,6 +32,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.charitygo.DateFormat;
 import org.charitygo.R;
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
@@ -64,10 +65,16 @@ public class RegisterActivity extends AppCompatActivity{
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
 
-    private ImageView imagetoUpload; private static final int RESULT_LOAD_IMAGE = 1;
+    private ImageView imagetoUpload;
+    private static final int RESULT_LOAD_IMAGE = 1;
     private Uri selectedImage;
 
     private final static int GET_FROM_GALLERY = 8000;
+
+    private static long timestamp = System.currentTimeMillis();
+    private DateFormat df = new DateFormat();
+    private String monthYearPath = String.valueOf(df.longToYearMonth(timestamp));
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,16 +275,10 @@ public class RegisterActivity extends AppCompatActivity{
             User newUser = new User(usern, currentUser.getEmail(), phone, genStr, 0);
             dataRefStore.child(currentUser.getUid()).setValue(newUser);
 
-//            Map<String, User> googleUsers = new HashMap<>();
-////            Map<String, StepHistory> userSteps = new HashMap<>();
-//            User userClass = new User(usern, currentUser.getEmail(), phone, genStr, 0);
-//            StepHistory steps = new StepHistory(uid, System.currentTimeMillis() , System.currentTimeMillis(), 0, 0);
-//            googleUsers.put(userClass.name, userClass);
-///*            userSteps.put(uid, steps);*/
-//            dataRefStore = ref.child("user");
-//            dataRefStore.child(uid).setValue(googleUsers);
-//            stepRefStore = ref.child("stepHistory");
-//            stepRefStore.child(uid).setValue(steps);
+            //Create new step history for newly registered user
+            StepHistory steps = new StepHistory(0, 0);
+            stepRefStore = ref.child("stepHistory");
+            stepRefStore.child(dayDatePath).child(uid).setValue(steps);
 
             Intent intent = new Intent(getApplicationContext(),MainUI.class);
             startActivity(intent);
