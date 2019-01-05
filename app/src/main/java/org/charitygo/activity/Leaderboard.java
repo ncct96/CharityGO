@@ -50,10 +50,9 @@ public class Leaderboard extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         loadLeaderboard();
         LeaderboardAdapter adapter = new LeaderboardAdapter(leaderList);
-
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
         RecyclerView recList = (RecyclerView) findViewById(R.id.rank_recycler_view);
         recList.setHasFixedSize(true);
