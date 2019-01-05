@@ -10,7 +10,7 @@ public class Redeems {
     public Redeems() {
     }
 
-    public Redeems(String userID, String rewardsID, Date redeemDate, Date expiryDate, int validFor) {
+    public Redeems(String userID, String rewardsID, int validFor) {
         this.userID = userID;
         this.rewardsID = rewardsID;
 

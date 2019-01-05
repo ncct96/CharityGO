@@ -73,7 +73,7 @@
                     android:id="@+id/donate_conversion_rate_steps"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/donate_conversion_rate_steps"
+                    android:text="10 steps = 1 point"
                     android:textAlignment="center"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
