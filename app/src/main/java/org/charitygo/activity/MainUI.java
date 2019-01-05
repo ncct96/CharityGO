@@ -114,6 +114,8 @@ public class MainUI extends AppCompatActivity
         userProfileName = (TextView) navHeader.findViewById(R.id.displayName);
         userProfilePoints = (TextView) navHeader.findViewById(R.id.displayPoints);
 
+        Log.e("Start", "1");
+
         if(currentUser != null){
             imageRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
             //CK CHANGES ON GETTING PICTURE;
@@ -298,10 +300,9 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (isSensorPresent) {
-            mSensorManager.registerListener(this, mSensor,
-                    SensorManager.SENSOR_DELAY_FASTEST);
-        }
+        Log.e("Resume", "1");
+
+        txtProgress.setText(savedNumSteps + "\nSTEPS");
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -319,6 +320,11 @@ public class MainUI extends AppCompatActivity
 
             }
         });
+
+        if (isSensorPresent) {
+            mSensorManager.registerListener(this, mSensor,
+                    SensorManager.SENSOR_DELAY_FASTEST);
+        }
     }
 
     @Override

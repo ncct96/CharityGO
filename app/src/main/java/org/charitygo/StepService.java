@@ -223,12 +223,13 @@ public class StepService extends Service implements SensorEventListener {
                 }
             });
         }
-
+Log.e("STPPPPPPP", String.valueOf(initStepCounts));
         return initStepCounts;
     }
 
     public int retrieveData(int steps){
         stepCounts = steps;
+        Log.e("FFFFFFFFFFF", String.valueOf(stepCounts));
         return steps;
     }
 }
