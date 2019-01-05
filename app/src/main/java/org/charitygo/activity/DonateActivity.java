@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.charitygo.R;
 import org.charitygo.model.Donation;
 import org.charitygo.model.Organization;
+import org.charitygo.model.User;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -39,7 +40,9 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
     private final int minPoints = 0, step = 5;
     private static int maxPoints;
     private String organizationID;
+    private String userID;
     private Organization organization = new Organization();
+    private User user = new User();
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference ref = database.getReference();
@@ -104,28 +107,40 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void initializeUIValues() {
-        userPoints = 1500;
-        TextView textUserPoints = (TextView) findViewById(R.id.donate_points_user);
-        textUserPoints.setText(userPoints + " points");
-
-        DatabaseReference organizationRef = ref.child("organizations/" + organizationID);
-
-        organizationRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                organization = dataSnapshot.getValue(Organization.class);
-                orgPoints = organization.getPoints();
+                user = dataSnapshot.getValue(User.class);
+                userPoints = user.getPoints();
 
-                if (userPoints > orgPoints)
-                    maxPoints = orgPoints;
-                else
-                    maxPoints = userPoints;
+                TextView textUserPoints = (TextView) findViewById(R.id.donate_points_user);
+                textUserPoints.setText(userPoints + " points");
 
-                EditText setPoints = (EditText) findViewById(R.id.donate_editText_amount);
-                setPoints.setFilters(new InputFilter[]{new MinMaxFilter(minPoints, maxPoints)});
+                DatabaseReference organizationRef = ref.child("organizations/" + organizationID);
+                organizationRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        organization = dataSnapshot.getValue(Organization.class);
+                        orgPoints = organization.getPoints();
 
-                TextView textOrgPoints = (TextView) findViewById(R.id.donate_points_org);
-                textOrgPoints.setText(orgPoints + " points");
+                        if (userPoints > orgPoints)
+                            maxPoints = orgPoints;
+                        else
+                            maxPoints = userPoints;
+
+                        EditText setPoints = (EditText) findViewById(R.id.donate_editText_amount);
+                        setPoints.setFilters(new InputFilter[]{new MinMaxFilter(minPoints, maxPoints)});
+
+                        TextView textOrgPoints = (TextView) findViewById(R.id.donate_points_org);
+                        textOrgPoints.setText(orgPoints + " points");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
