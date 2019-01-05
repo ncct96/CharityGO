@@ -170,7 +170,6 @@ public class MainUI extends AppCompatActivity
         progressBar = findViewById(R.id.stepProgress);
 
         checkExistDate();
-        checkExistEntry();
         initSteps();
 
         mSensorManager = (SensorManager)
@@ -244,10 +243,13 @@ public class MainUI extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
-                savedNumSteps = steps.getSteps();
-                txtProgress.setText(savedNumSteps + "\nSTEPS");
+                if(steps != null) {
+                    savedNumSteps = steps.getSteps();
+                    Log.e("Init", String.valueOf(savedNumSteps));
+                    txtProgress.setText(savedNumSteps + "\nSTEPS");
 /*                goal = (savedNumSteps * 100) / 100;
                 progressBar.setProgress(Math.round(goal));*/
+                }
             }
 
             @Override
@@ -264,8 +266,11 @@ public class MainUI extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 StepHistory steps = dataSnapshot.child(dayDatePath).child(uid).getValue(StepHistory.class);
-                savedNumSteps = steps.getSteps();
-                retrieveData(steps.getSteps());
+
+                if(steps != null) {
+                    savedNumSteps = steps.getSteps();
+                    retrieveData(steps.getSteps());
+                }
 /*                goal = (savedNumSteps * 100) / 100;
                 progressBar.setProgress(Math.round(goal));*/
             }
@@ -302,19 +307,21 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("Resume", "1");
 
-        txtProgress.setText(savedNumSteps + "\nSTEPS");
+        checkExistDate();
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
-                savedNumSteps = steps.getSteps();
-                retrieveData(steps.getSteps());
-                goal = (savedNumSteps * 100) / 100;
-                txtProgress.setText(savedNumSteps + "\nSTEPS");
-                progressBar.setProgress(Math.round(goal));
+                if(steps != null) {
+                    savedNumSteps = steps.getSteps();
+                    Log.e("ResumeTesting", String.valueOf(savedNumSteps));
+                    retrieveData(steps.getSteps());
+                    goal = (savedNumSteps * 100) / 100;
+                    txtProgress.setText(savedNumSteps + "\nSTEPS");
+                    progressBar.setProgress(Math.round(goal));
+                }
             }
 
             @Override
@@ -322,6 +329,8 @@ public class MainUI extends AppCompatActivity
 
             }
         });
+
+        txtProgress.setText(savedNumSteps + "\nSTEPS");
 
         if (isSensorPresent) {
             mSensorManager.registerListener(this, mSensor,
@@ -575,20 +584,18 @@ public class MainUI extends AppCompatActivity
         //redeemPoints.setText(calculator.getRedeemPoints() + " donatePoints available");
     }
 
-    public int retrieveData(int steps) {
-
-        savedNumSteps = steps;
-
-        return steps;
-    }
-
     public boolean checkExistDate(){
+
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        intent.putExtra("steps", savedNumSteps);
+        stopService(intent);
 
         ref.child(dayDatePath).orderByChild(uid).equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
                     StepHistory steps = new StepHistory(0, 0);
+                    setData(steps, steps.getSteps());
                     ref.child(dayDatePath).child(uid).setValue(steps);
                 }
             }
@@ -602,9 +609,20 @@ public class MainUI extends AppCompatActivity
         return true;
     }
 
-    public boolean checkExistEntry(){
 
-        return true;
+    public int retrieveData(int steps) {
+
+        savedNumSteps = steps;
+
+        return steps;
+    }
+
+    public void setData(StepHistory stepHistory, int steps){
+
+        savedNumSteps = steps;
+
+        stepHistory.setSteps(savedNumSteps);
+
     }
 
 }
