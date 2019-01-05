@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreferenceCompat
-        android:defaultValue="true"
-        android:key="reminder"
-        android:title="Enable reminder for donation" />
+    <PreferenceCategory android:title="General">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="reminder"
+            android:icon="@drawable/ic_notifications_black_24dp"
+            android:title="Enable reminder for donation" />
+
+        <EditTextPreference
+            android:icon="?android:attr/actionModePasteDrawable"
+            android:key="goalSetting"
+            android:title="Set Goal" />
+    </PreferenceCategory>
+
+<!--    <EditTextPreference
+        android:key="goal"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Set Goal" />-->
 
 </PreferenceScreen>

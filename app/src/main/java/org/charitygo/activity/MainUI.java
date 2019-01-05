@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,6 +12,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -60,7 +62,8 @@ public class MainUI extends AppCompatActivity
     private boolean isSensorPresent = false;
     private Sensor mSensor;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
-    private static int savedNumSteps, goal;
+    private static int savedNumSteps, userGoal;
+    private static float goal;
 
     //Firebase Reference
     final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -128,13 +131,15 @@ public class MainUI extends AppCompatActivity
             }
         });
 
+        SharedPreferences goalSetting = PreferenceManager.getDefaultSharedPreferences(this);
 
+        userGoal =  goalSetting.getInt("goal", 3000);
 
-//        goal = (100 * 100) / savedNumSteps;
+        goal = (savedNumSteps * 100) / userGoal;
 
-        Log.e("goal", String.valueOf(savedNumSteps));
+        Log.e("goal", String.valueOf(userGoal));
 
-        progressBar.setProgress(goal);
+        progressBar.setProgress(Math.round(goal));
 
         //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
     }
@@ -148,13 +153,34 @@ public class MainUI extends AppCompatActivity
 
     public void initSteps() {
         //Firebase retrieve Steps Data
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
-                //System.out.println(steps.getSteps());
                 savedNumSteps = steps.getSteps();
                 txtProgress.setText(savedNumSteps + "\nSTEPS");
+/*                goal = (savedNumSteps * 100) / 100;
+                progressBar.setProgress(Math.round(goal));*/
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
+                savedNumSteps = steps.getSteps();
+                retrieveData(steps.getSteps());
+/*                goal = (savedNumSteps * 100) / 100;
+                progressBar.setProgress(Math.round(goal));*/
             }
 
             @Override
@@ -193,6 +219,23 @@ public class MainUI extends AppCompatActivity
             mSensorManager.registerListener(this, mSensor,
                     SensorManager.SENSOR_DELAY_FASTEST);
         }
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
+                savedNumSteps = steps.getSteps();
+                retrieveData(steps.getSteps());
+                goal = (savedNumSteps * 100) / 100;
+                txtProgress.setText(savedNumSteps + "\nSTEPS");
+                progressBar.setProgress(Math.round(goal));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -396,6 +439,10 @@ public class MainUI extends AppCompatActivity
     @Override
     public void onSensorChanged(SensorEvent event) {
         txtProgress.setText(++savedNumSteps + "\nSTEPS");
+
+        goal = (savedNumSteps * 100) / 100;
+
+        progressBar.setProgress(Math.round(goal));
     }
 
     @Override
@@ -407,15 +454,15 @@ public class MainUI extends AppCompatActivity
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference stepRef = ref.child("rewards"+ firebaseUser.getUid());
-        DatabaseReference userRef = ref.child("users"+ firebaseUser.getUid());
+        DatabaseReference stepRef = ref.child("rewards" + firebaseUser.getUid());
+        DatabaseReference userRef = ref.child("users" + firebaseUser.getUid());
         User user = new User();
 
 
         stepRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     StepHistory currentSteps = dataSnapshot1.getValue(StepHistory.class);
 
 /*                    if(currentSteps.getStartDate() == new Date()){
@@ -434,6 +481,13 @@ public class MainUI extends AppCompatActivity
 
         TextView redeemPoints = findViewById(R.id.main_redeem_points);
         //redeemPoints.setText(calculator.getRedeemPoints() + " donatePoints available");
+    }
+
+    public int retrieveData(int steps) {
+
+        savedNumSteps = steps;
+
+        return steps;
     }
 
 
