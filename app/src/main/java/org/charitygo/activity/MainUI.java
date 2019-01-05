@@ -390,7 +390,9 @@ public class MainUI extends AppCompatActivity
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-
+                        Intent intent = new Intent(getApplicationContext(), StepService.class);
+                        intent.putExtra("steps", savedNumSteps);
+                        stopService(intent);
                     }
                 });
         LoginActivity.getPreference(getApplicationContext()).edit().clear().apply();
