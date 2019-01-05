@@ -1,10 +1,14 @@
 package org.charitygo;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v14.preference.PreferenceFragment;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.SwitchPreferenceCompat;
@@ -19,8 +23,6 @@ import android.widget.Toast;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
-import org.charitygo.activity.SettingsActivity;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -34,7 +36,7 @@ public class SettingFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.pref_setting, rootKey);
 
-        final SwitchPreferenceCompat reminderSwitch = (SwitchPreferenceCompat) findPreference("reminder");
+        final SwitchPreference reminderSwitch = (SwitchPreference) findPreference("reminder");
 
         reminderSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override

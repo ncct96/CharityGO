@@ -17,6 +17,7 @@ import android.hardware.TriggerEventListener;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class StepService extends Service implements SensorEventListener {
     private FirebaseUser FBuser = FirebaseAuth.getInstance().getCurrentUser();
     private Notification notification;
     private long todayDate = System.currentTimeMillis();
-    private int stepCounts = 0, initStepCounts = 0;
+    private static int stepCounts, initStepCounts;
     private StepHistory steps;
 
 
@@ -65,7 +66,7 @@ public class StepService extends Service implements SensorEventListener {
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null) {
             mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
             mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        }else{
+        } else {
             mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
             mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
@@ -138,7 +139,8 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startServiceForeground(intent, flags, startId);
-        stepCounts = initSteps();
+        initSteps();
+        Log.e("Steps", String.valueOf(stepCounts));
         Toast.makeText(this, "Background service starting", Toast.LENGTH_SHORT).show();
         return START_STICKY;
     }
@@ -183,7 +185,6 @@ public class StepService extends Service implements SensorEventListener {
         }*/
 
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR)
-
         {
             stepCounts++;
         }
@@ -204,12 +205,12 @@ public class StepService extends Service implements SensorEventListener {
         stepsRef = ref.child("stepHistory/" + user.getUid());
 
         if (user != null) {
-            stepsRef.addValueEventListener(new ValueEventListener() {
+            stepsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     System.out.println(dataSnapshot.getValue());
                     initStepCounts = dataSnapshot.child("steps").getValue(Integer.class);
-                    System.out.println("dssa" + initStepCounts);
+                    retrieveData(initStepCounts);
                 }
 
                 @Override
@@ -218,6 +219,12 @@ public class StepService extends Service implements SensorEventListener {
                 }
             });
         }
+
         return initStepCounts;
+    }
+
+    public int retrieveData(int steps){
+        stepCounts = steps;
+        return steps;
     }
 }
