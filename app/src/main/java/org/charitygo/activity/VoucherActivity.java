@@ -1,12 +1,14 @@
 package org.charitygo.activity;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.R;
 import org.charitygo.model.Reward;
+import org.charitygo.model.User;
 
 public class VoucherActivity extends AppCompatActivity {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -28,6 +31,7 @@ public class VoucherActivity extends AppCompatActivity {
     private String rewardID;
 
     Reward reward = new Reward();
+    User user = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,34 +42,54 @@ public class VoucherActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         rewardID = getIntent().getStringExtra("EXTRA_ID");
-        initializeUIValues(rewardID);
+        initializeUIValues();
     }
 
 
-    protected void initializeUIValues(String id) {
-        DatabaseReference rewardRef = ref.child("rewards/"+id);
-        rewardRef.addValueEventListener(new ValueEventListener() {
+    protected void initializeUIValues() {
+        DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                reward = dataSnapshot.getValue(Reward.class);
+                user = dataSnapshot.getValue(User.class);
 
-                TextView name = (TextView) findViewById(R.id.voucher_company);
-                name.setText(reward.getCompany());
+                final DatabaseReference rewardRef = ref.child("rewards/" + rewardID);
+                rewardRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        reward = dataSnapshot.getValue(Reward.class);
 
-                TextView expiry = (TextView) findViewById(R.id.voucher_expiry);
-                String expiryTime;
+                        TextView name = (TextView) findViewById(R.id.voucher_company);
+                        name.setText(reward.getCompany());
 
-                if(reward.getValidFor() < 60)
-                    expiryTime = String.valueOf(reward.getValidFor()) + " minutes";
-                else if(reward.getValidFor() < 1440)
-                    expiryTime = String.valueOf(reward.getValidFor() / 60) + " hours and " + String.valueOf(reward.getValidFor() % 60) + " minutes";
-                else
-                    expiryTime = String.valueOf(reward.getValidFor() / 1440) + " days and " + String.valueOf(reward.getValidFor() % 1440) + " hours";
+                        TextView expiry = (TextView) findViewById(R.id.voucher_expiry);
+                        String expiryTime;
 
-                expiry.setText(expiryTime);
+                        if (reward.getValidFor() < 60)
+                            expiryTime = String.valueOf(reward.getValidFor()) + " minutes";
+                        else if (reward.getValidFor() < 1440)
+                            expiryTime = String.valueOf(reward.getValidFor() / 60) + " hours and " + String.valueOf(reward.getValidFor() % 60) + " minutes";
+                        else
+                            expiryTime = String.valueOf(reward.getValidFor() / 1440) + " days and " + String.valueOf(reward.getValidFor() % 1440) + " hours";
 
-                TextView description = (TextView) findViewById(R.id.voucher_description);
-                description.setText(reward.getLongDescription());
+                        expiry.setText(expiryTime);
+
+                        TextView description = (TextView) findViewById(R.id.voucher_description);
+                        description.setText(reward.getLongDescription());
+
+                        Button button = findViewById(R.id.voucher_redeem);
+                        button.setText(reward.getPrice() + " points");
+                        if (user.getPoints() < reward.getPrice()) {
+                            button.setEnabled(false);
+                            button.setBackgroundColor(Color.LTGRAY);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -73,7 +97,9 @@ public class VoucherActivity extends AppCompatActivity {
 
             }
         });
+
     }
+
     public void confirmRedeem(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
         builder.setTitle("Redeem voucher?");
@@ -83,6 +109,13 @@ public class VoucherActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 voucherRef.push().setValue(new Reward());
+                DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
+                userRef.child("points").setValue(user.getPoints() - reward.getPrice());
+
+                Button button = findViewById(R.id.voucher_redeem);
+                button.setText(reward.getCode());
+                button.setEnabled(false);
+                button.setBackgroundColor(Color.RED);
             }
         });
 

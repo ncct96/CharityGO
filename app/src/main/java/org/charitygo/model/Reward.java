@@ -5,19 +5,19 @@ import java.util.Date;
 
 public class Reward {
     private String key, company, shortDescription, longDescription, code;
-
-    private int validFor, drawable;
+    private int validFor, drawable, price;
 
     public Reward() {
     }
 
-    public Reward(String company, String shortDescription, String longDescription, String code, int validFor, int drawable) {
+    public Reward(String company, String shortDescription, String longDescription, String code, int validFor, int drawable, int price) {
         this.company = company;
         this.shortDescription = shortDescription;
         this.longDescription = longDescription;
         this.code = code;
         this.validFor = validFor;
         this.drawable = drawable;
+        this.price = price;
     }
 
     public String getKey() {
@@ -60,10 +60,6 @@ public class Reward {
         this.code = code;
     }
 
-    public void setDates() {
-
-    }
-
     public int getValidFor() {
         return validFor;
     }
@@ -79,4 +75,8 @@ public class Reward {
     public void setDrawable(int drawable) {
         this.drawable = drawable;
     }
+
+    public int getPrice() { return price; }
+
+    public void setPrice(int price) { this.price = price; }
 }
