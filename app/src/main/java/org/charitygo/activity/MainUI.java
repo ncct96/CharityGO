@@ -102,7 +102,7 @@ public class MainUI extends AppCompatActivity
     private GlideImageView userProfile;
     private TextView userProfileName;
     private TextView userProfilePoints;
-    private String path; private String name; private String points;
+    private String url; private String name; private String points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,13 +123,13 @@ public class MainUI extends AppCompatActivity
             imageRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    path = dataSnapshot.child("photoID").getValue().toString();
+                    url = dataSnapshot.child("photoURL").getValue().toString();
                     name = dataSnapshot.child("name").getValue().toString();
                     points = dataSnapshot.child("points").getValue().toString();
 
                     userProfileName.setText(name);
                     userProfilePoints.setText(points);
-                    userProfile.loadImageUrl(path);
+                    userProfile.loadImageUrl(url);
                 }
 
                 @Override

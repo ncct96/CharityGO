@@ -168,7 +168,8 @@ public class RegisterActivity extends AppCompatActivity{
 
     public void uploadImageRegister(){
         //uploadURL = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
-        final StorageReference storageImgRef = storageRef.child("images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage));
+        final String photoPath = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
+        final StorageReference storageImgRef = storageRef.child(photoPath);
         final UploadTask uploadTask = storageImgRef.putFile(selectedImage);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -189,12 +190,13 @@ public class RegisterActivity extends AppCompatActivity{
                             uploadURL = task.getResult().toString();
                             showProgress(false);
                             //Store the user details entered
-                            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL,0);
+                            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL, photoPath, 0);
                             dataRefStore.child(currentUser.getUid()).setValue(newUser);
                             Intent intent = new Intent(getApplicationContext(),MainUI.class);
                             startActivity(intent);
                             Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
                         }
+
                     }
                 });
             }
@@ -211,7 +213,9 @@ public class RegisterActivity extends AppCompatActivity{
                 showProgress(true);
             }
         });
-//        //Upload from a local file
+    }
+
+    //        //Upload from a local file
 //        Uri file = Uri.fromFile(new File("path/to/images/tohru.png"));
 //        StorageReference tohruRef = storageRef.child("images/"+file.getLastPathSegment());
 //        UploadTask uploadTask = tohruRef.putFile(file);
@@ -249,7 +253,6 @@ public class RegisterActivity extends AppCompatActivity{
 //                }
 //            }
 //        });
-    }
 
     public void registerAccount(View view) {
         usern = username.getText().toString();
