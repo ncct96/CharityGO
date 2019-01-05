@@ -3,46 +3,44 @@ package org.charitygo.adapter;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.charitygo.R;
 
 public class DonationFragment extends Fragment {
-    // Store instance variables
-    private String title;
-    private int page;
+    //Firebase Database
+    private FirebaseUser currentUser;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference userDonate = FirebaseDatabase.getInstance().getReference();
 
-    // newInstance constructor for creating fragment with arguments
-//    public static DonationFragment newInstance(int page, String title) {
-//        DonationFragment fragmentFirst = new DonationFragment();
-//        Bundle args = new Bundle();
-//        args.putInt("Donation Page 1", page);
-//        args.putString("Donation Title 1", title);
-//        fragmentFirst.setArguments(args);
-//        return fragmentFirst;
-//    }
-
-//    // Store instance variables based on arguments passed
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        page = getArguments().getInt("Donation Page 2", 0);
-//        title = getArguments().getString("Donation Title 2");
-//    }
+    //XML Attributes
     private ImageView imageDonation;
+    private RecyclerView donationList;
 
     // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_transact_hist, container, false);
-        //TextView tvLabel = (TextView) view.findViewById(R.id.tvLabel);
-        //tvLabel.setText(page + " -- " + title);
         imageDonation = (ImageView) view.findViewById(R.id.imageTransact);
         imageDonation.setImageDrawable(getResources().getDrawable(R.drawable.stars));
+        donationList = (RecyclerView) view.findViewById(R.id.donation_view);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
     }
 }

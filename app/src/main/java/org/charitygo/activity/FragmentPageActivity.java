@@ -32,36 +32,6 @@ public class FragmentPageActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-//        viewPager.setAdapter(new SectionPageAdapter(getSupportFragmentManager()));
-
-//        // Give the PagerSlidingTabStrip the ViewPager
-//        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-//        // Attach the view pager to the tab strip
-//        tabsStrip.setViewPager(viewPager);
-
-//        tabsStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//
-//            // This method will be invoked when a new page becomes selected.
-//            @Override
-//            public void onPageSelected(int position) {
-////                Toast.makeText(FragmentPageActivity.this,
-////                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            // This method will be invoked when the current page is scrolled
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                // Code goes here
-//            }
-//
-//            // Called when the scroll state changes:
-//            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//                // Code goes here
-//            }
-//        });
     }
 
     private void setupViewPager(ViewPager viewPager){
@@ -70,31 +40,5 @@ public class FragmentPageActivity extends AppCompatActivity {
         adapter.addFragment(new RedemptionFragment(), "Redemption History");
         viewPager.setAdapter(adapter);
     }
-
-//    public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter {
-//        final int PAGE_COUNT = 2;
-//        private String tabTitles[] = new String[] { "Donation History", "Redemption History"};
-//
-//        public SampleFragmentPagerAdapter(FragmentManager fm) { super(fm); }
-//
-//        @Override
-//        public int getCount() { return PAGE_COUNT; }
-//
-//        @Override
-//        public Fragment getItem(int position) {
-//            switch (position){
-//                case 0: return DonationFragment.newInstance(0, "Donation Page");
-//                case 1: return RedemptionFragment.newInstance(1, "Redemption Page");
-//                default: return null;
-//            }
-//            //return PageFragment.newInstance(position + 1);
-//        }
-//
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            // Generate title based on item position
-//            return tabTitles[position];
-//        }
-//    }
 
 }
