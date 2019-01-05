@@ -6,19 +6,21 @@ public class User {
     public String contactNumber;
     public String gender;
     public int points = 0;
-    public String photoID;
+    public String photoURL;
+    public String photoPath;
 
     public User() {
 
     }
 
-    public User(String name, String email, String contactNumber, String gender, String photoID, int points) {
+    public User(String name, String email, String contactNumber, String gender, String photoURL, String photoPath, int points) {
         this.name = name;
         this.email = email;
         this.contactNumber = contactNumber;
         this.gender = gender;
         this.points = points;
-        this.photoID = photoID;
+        this.photoURL = photoURL;
+        this.photoPath = photoPath;
     }
 
     public String getName() {
@@ -61,11 +63,19 @@ public class User {
         this.gender = gender;
     }
 
-    public String getPhotoID() {
-        return photoID;
+    public String getphotoURL() {
+        return photoURL;
     }
 
-    public void setPhotoID(String photoID) {
-        this.photoID = photoID;
+    public void setphotoURL(String photoURL) {
+        this.photoURL = photoURL;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 }
