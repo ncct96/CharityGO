@@ -28,6 +28,7 @@ import com.google.firebase.storage.StorageReference;
 import com.master.glideimageview.GlideImageView;
 
 import org.charitygo.R;
+import org.charitygo.model.User;
 import org.w3c.dom.Text;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -162,26 +163,35 @@ public class ProfileActivity extends AppCompatActivity {
         Email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                String emailChg = Email.getText().toString();
-                EmailView.setText(emailChg);
+                if(!Email.getText().toString().equals("")){
+                    String emailChg = Email.getText().toString();
+                    EmailView.setText(emailChg);
+                }
+
             }
         });
         Username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                String usernChg = Username.getText().toString();
-                UsernameView.setText(usernChg);
-                userData.child("name").setValue(usernChg);
+                if(!Username.getText().toString().equals("")){
+                    String usernChg = Username.getText().toString();
+                    UsernameView.setText(usernChg);
+                    if(!usernChg.equals("")){
+                        userData.child("name").setValue(usernChg);
+                    }
+                }
             }
         });
         ContactNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-//                if(ContactNumber.getText().toString().equals(null)){
+                if(ContactNumber.getText().toString().equals(null)){
                     String contNChg = ContactNumber.getText().toString();
                     ContactNumberView.setText(contNChg);
-                    userData.child("contactNumber").setValue(contNChg);
-//                }
+                    if(!contNChg.equals("")){
+                        userData.child("contactNumber").setValue(contNChg);
+                    }
+                }
             }
         });
     }
