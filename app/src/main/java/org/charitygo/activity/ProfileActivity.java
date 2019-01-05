@@ -277,7 +277,9 @@ public class ProfileActivity extends AppCompatActivity {
                     String usernChg = Username.getText().toString();
                     UsernameView.setText(usernChg);
                     if(!usernChg.equals("")){
+                        progressDialog.show();
                         userData.child("name").setValue(usernChg);
+                        progressDialog.dismiss();
                     }
                 }
             }

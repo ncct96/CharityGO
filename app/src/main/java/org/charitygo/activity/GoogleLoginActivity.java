@@ -69,7 +69,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 
             //Progress Dialog
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_mediumAnimTime);
 
             loginView.setVisibility(show ? View.GONE : View.VISIBLE);
             loginView.animate().setDuration(shortAnimTime).alpha(
@@ -104,7 +104,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         progressView = findViewById(R.id.google_login_progress);
         loginView = findViewById(R.id.google_login_scroll);
 
@@ -157,8 +156,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
             showProgress(true);
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
-        }else {
-
         }
     }
 
