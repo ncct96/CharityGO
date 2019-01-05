@@ -363,16 +363,18 @@ public class RegisterActivity extends AppCompatActivity{
             }
         } else {
                uploadImageRegister();
-//            Map<String, User> googleUsers = new HashMap<>();
-////            Map<String, StepHistory> userSteps = new HashMap<>();
-//            User userClass = new User(usern, currentUser.getEmail(), phone, genStr, 0);
-//            StepHistory steps = new StepHistory(uid, System.currentTimeMillis() , System.currentTimeMillis(), 0, 0);
-//            googleUsers.put(userClass.name, userClass);
-///*            userSteps.put(uid, steps);*/
-//            dataRefStore = ref.child("user");
-//            dataRefStore.child(uid).setValue(googleUsers);
+            String uid = currentUser.getUid();
+//            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, 0);
+//            dataRefStore.child(currentUser.getUid()).setValue(newUser);
+//
+//            //Create new step history for newly registered user
+//            StepHistory steps = new StepHistory(0, 0);
 //            stepRefStore = ref.child("stepHistory");
-//            stepRefStore.child(uid).setValue(steps);
+//            stepRefStore.child(dayDatePath).child(uid).setValue(steps);
+//
+//            Intent intent = new Intent(getApplicationContext(),MainUI.class);
+//            startActivity(intent);
+//            Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
         }
     }
 
