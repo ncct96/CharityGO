@@ -44,8 +44,9 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth userInstance = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = userInstance.getCurrentUser();
 
+    View inflatedView;
     private DatabaseReference imageRef;
-    private StorageReference imageStorage = FirebaseStorage.getInstance().getReference().child("users");
+    private StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
     private ImageView userProfile;
     private TextView userProfileName;
     private TextView userProfilePoints;
@@ -54,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView userProfileUsername;
     private TextView userProfilePointsAccu;
     private TextView getUserProfileGender;
-    private String path = "images/1546614251952.jpg"; private String name; private String points; private String gender; private String email; private String number;
+    private String path = "images/1546659750662.jpg"; private String name; private String points; private String gender; private String email; private String number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,25 +77,21 @@ public class ProfileActivity extends AppCompatActivity {
             imageRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        if(ds.exists()){
-                            path = dataSnapshot.child("photoID").getValue().toString();
-                            name = dataSnapshot.child("name").getValue().toString();
-                            points = dataSnapshot.child("points").getValue().toString();
-                            gender = dataSnapshot.child("gender").getValue().toString();
-                            number = dataSnapshot.child("contactNumber").getValue().toString();
-                            email = currentUser.getEmail();
+                    path = dataSnapshot.child("photoID").getValue().toString();
+                    name = dataSnapshot.child("name").getValue().toString();
+                    points = dataSnapshot.child("points").getValue().toString();
+                    gender = dataSnapshot.child("gender").getValue().toString();
+                    number = dataSnapshot.child("contactNumber").getValue().toString();
+                    email = currentUser.getEmail();
 
-                            userProfileName.setText(name);
-                            userProfilePoints.setText(points);
-                            userProfileEmail.setText(email);
-                            userProfileNumber.setText(number);
-                            getUserProfileGender.setText(gender);
+                    userProfileName.setText(name);
+                    userProfilePoints.setText(points);
+                    userProfileEmail.setText(email);
+                    userProfileNumber.setText(number);
+                    getUserProfileGender.setText(gender);
 
-                            userProfileUsername.setText(name);
-                            userProfilePointsAccu.setText(points);
-                        }
-                    }
+                    userProfileUsername.setText(name);
+                    userProfilePointsAccu.setText(points);
                 }
 
                 @Override
@@ -102,7 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 }
             });
-            imageStorage.child(currentUser.getUid()).child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            imageStorage.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     userProfile.setImageURI(uri);

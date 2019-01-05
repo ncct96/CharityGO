@@ -161,8 +161,8 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     public void uploadImageRegister(){
-        StorageReference storageImgRef = storageRef.child("images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage));
         uploadURL = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
+        StorageReference storageImgRef = storageRef.child(uploadURL);
         storageImgRef.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
