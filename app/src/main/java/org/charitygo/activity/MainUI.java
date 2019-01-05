@@ -53,6 +53,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.master.glideimageview.GlideImageView;
 
 import org.charitygo.Constants;
 import org.charitygo.DateFormat;
@@ -98,10 +99,10 @@ public class MainUI extends AppCompatActivity
     View inflatedView; LinearLayout navHeader;
     private DatabaseReference imageRef;
     private StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
-    private ImageView userProfile;
+    private GlideImageView userProfile;
     private TextView userProfileName;
     private TextView userProfilePoints;
-    private String path = "images/1546659750662.jpg"; private String name; private String points;
+    private String path; private String name; private String points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,7 @@ public class MainUI extends AppCompatActivity
         setContentView(R.layout.activity_main_ui);
         inflatedView = getLayoutInflater().inflate(R.layout.nav_header_main_ui, null);
         navHeader = (LinearLayout) inflatedView.findViewById(R.id.navLayout);
-        userProfile = (ImageView) navHeader.findViewById(R.id.avatar);
+        userProfile = (GlideImageView) navHeader.findViewById(R.id.avatar);
         userProfileName = (TextView) navHeader.findViewById(R.id.displayName);
         userProfilePoints = (TextView) navHeader.findViewById(R.id.displayPoints);
 
@@ -128,6 +129,7 @@ public class MainUI extends AppCompatActivity
 
                     userProfileName.setText(name);
                     userProfilePoints.setText(points);
+                    userProfile.loadImageUrl(path);
                 }
 
                 @Override
@@ -135,18 +137,18 @@ public class MainUI extends AppCompatActivity
 
                 }
             });
-            imageStorage.child(currentUser.getUid()).child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    userProfile.setImageURI(uri);
-                    userProfile.invalidate();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });
+//            imageStorage.child(currentUser.getUid()).child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                @Override
+//                public void onSuccess(Uri uri) {
+//                    userProfile.setImageURI(uri);
+//                    userProfile.invalidate();
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//
+//                }
+//            });
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);

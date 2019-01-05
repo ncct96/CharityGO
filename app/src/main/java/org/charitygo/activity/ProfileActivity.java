@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.master.glideimageview.GlideImageView;
 
 import org.charitygo.R;
 import org.w3c.dom.Text;
@@ -43,11 +45,12 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth fireAuth = FirebaseAuth.getInstance();
     private FirebaseAuth userInstance = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = userInstance.getCurrentUser();
+    private DatabaseReference userData = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
 
     View inflatedView;
     private DatabaseReference imageRef;
     private StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
-    private ImageView userProfile;
+    private GlideImageView userProfile;
     private TextView userProfileName;
     private TextView userProfilePoints;
     private TextView userProfileEmail;
@@ -55,14 +58,14 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView userProfileUsername;
     private TextView userProfilePointsAccu;
     private TextView getUserProfileGender;
-    private String path = "images/1546659750662.jpg"; private String name; private String points; private String gender; private String email; private String number;
-
+    private String path; private String name; private String points; private String gender; private String email; private String number;
+    private Uri uriImg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        userProfile = (ImageView) findViewById(R.id.avatarProfile);
+        userProfile = (GlideImageView) findViewById(R.id.avatarProfile);
         userProfileName = (TextView) findViewById(R.id.user_name);
         userProfilePoints = (TextView) findViewById(R.id.user_points);
         userProfileEmail = (TextView) findViewById(R.id.email);
@@ -70,72 +73,6 @@ public class ProfileActivity extends AppCompatActivity {
         userProfileUsername = (TextView) findViewById(R.id.username);
         userProfilePointsAccu = (TextView) findViewById(R.id.points);
         getUserProfileGender = (TextView) findViewById(R.id.gender);
-
-        if(currentUser != null){
-            imageRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
-            //CK CHANGES ON GETTING PICTURE;
-            imageRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    path = dataSnapshot.child("photoID").getValue().toString();
-                    name = dataSnapshot.child("name").getValue().toString();
-                    points = dataSnapshot.child("points").getValue().toString();
-                    gender = dataSnapshot.child("gender").getValue().toString();
-                    number = dataSnapshot.child("contactNumber").getValue().toString();
-                    email = currentUser.getEmail();
-
-                    userProfileName.setText(name);
-                    userProfilePoints.setText(points);
-                    userProfileEmail.setText(email);
-                    userProfileNumber.setText(number);
-                    getUserProfileGender.setText(gender);
-
-                    userProfileUsername.setText(name);
-                    userProfilePointsAccu.setText(points);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            imageStorage.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    userProfile.setImageURI(uri);
-                    userProfile.invalidate();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });
-        }
-        //DO STORE
-
-        //Get Edit Text
-        Email = findViewById(R.id.editEmail);
-        Username = findViewById(R.id.editUsername);
-        ContactNumber = findViewById(R.id.editPhone);
-        Gender = findViewById(R.id.editGender);
-
-//        //Get Text View
-//        EmailView = findViewById(R.id.email);
-//        UsernameView = findViewById(R.id.username);
-//        ContactNumberView = findViewById(R.id.contactnum);
-
-        //Get Text View Text
-        String PreEmail = userProfileEmail.getText().toString();
-        String PreUsername = userProfileUsername.getText().toString();
-        String PreNumber = userProfileNumber.getText().toString();
-        String PreGender = getUserProfileGender.getText().toString();
-
-        //Set Edit Text's Text
-        Email.setText(PreEmail);
-        Username.setText(PreUsername);
-        ContactNumber.setText(PreNumber);
-        Gender.setText(PreGender);
 
         fab = findViewById(R.id.editProf);
 
@@ -169,32 +106,82 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        if(currentUser != null){
+            imageRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
+            //CK CHANGES ON GETTING PICTURE;
+            imageRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    path = dataSnapshot.child("photoID").getValue().toString();
+                    name = dataSnapshot.child("name").getValue().toString();
+                    points = dataSnapshot.child("points").getValue().toString();
+                    gender = dataSnapshot.child("gender").getValue().toString();
+                    number = dataSnapshot.child("contactNumber").getValue().toString();
+                    email = currentUser.getEmail();
+
+                    userProfileName.setText(name);
+                    userProfilePoints.setText(points);
+                    userProfileEmail.setText(email);
+                    userProfileNumber.setText(number);
+                    getUserProfileGender.setText(gender);
+
+                    userProfileUsername.setText(name);
+                    userProfilePointsAccu.setText(points);
+                    userProfile.loadImageUrl(path);
+
+                    changeUI();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+    public void changeUI(){
+        //Get Edit Text
+        Email = findViewById(R.id.editEmail);
+        Username = findViewById(R.id.editUsername);
+        ContactNumber = findViewById(R.id.editPhone);
+        Gender = findViewById(R.id.editGender);
+
+        //Get Text View Text
+        String PreEmail = userProfileEmail.getText().toString();
+        String PreUsername = userProfileUsername.getText().toString();
+        String PreNumber = userProfileNumber.getText().toString();
+        String PreGender = getUserProfileGender.getText().toString();
+
+        //Set Edit Text's Text
+        Email.setText(PreEmail);
+        Username.setText(PreUsername);
+        ContactNumber.setText(PreNumber);
+        Gender.setText(PreGender);
+
         //HERE NEED TO IMPLEMENT DATABASE CHANGES
         Email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(Email.getText().toString().equals(null)){
-                    String emailChg = Email.getText().toString();
-                    EmailView.setText(emailChg);
-                }
+                String emailChg = Email.getText().toString();
+                EmailView.setText(emailChg);
             }
         });
         Username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(Username.getText().toString().equals(null)){
-                    String usernChg = Username.getText().toString();
-                    UsernameView.setText(usernChg);
-                }
+                String usernChg = Username.getText().toString();
+                UsernameView.setText(usernChg);
+                userData.child("name").setValue(usernChg);
             }
         });
         ContactNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(ContactNumber.getText().toString().equals(null)){
+//                if(ContactNumber.getText().toString().equals(null)){
                     String contNChg = ContactNumber.getText().toString();
                     ContactNumberView.setText(contNChg);
-                }
+                    userData.child("contactNumber").setValue(contNChg);
+//                }
             }
         });
     }

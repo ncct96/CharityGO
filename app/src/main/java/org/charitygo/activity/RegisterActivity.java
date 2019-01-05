@@ -167,19 +167,36 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     public void uploadImageRegister(){
-        uploadURL = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
-        StorageReference storageImgRef = storageRef.child(uploadURL);
-        storageImgRef.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        //uploadURL = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
+        final StorageReference storageImgRef = storageRef.child("images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage));
+        final UploadTask uploadTask = storageImgRef.putFile(selectedImage);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                //uploadURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-                showProgress(false);
-                //Store the user details entered
-                User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL,0);
-                dataRefStore.child(currentUser.getUid()).setValue(newUser);
-                Intent intent = new Intent(getApplicationContext(),MainUI.class);
-                startActivity(intent);
-                Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
+                Task<Uri> uriTask = storageImgRef.putFile(selectedImage).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if(!task.isSuccessful()){
+                            throw task.getException();
+                        }
+                        uploadURL = storageImgRef.getDownloadUrl().toString();
+                        return storageImgRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()){
+                            uploadURL = task.getResult().toString();
+                            showProgress(false);
+                            //Store the user details entered
+                            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL,0);
+                            dataRefStore.child(currentUser.getUid()).setValue(newUser);
+                            Intent intent = new Intent(getApplicationContext(),MainUI.class);
+                            startActivity(intent);
+                            Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
