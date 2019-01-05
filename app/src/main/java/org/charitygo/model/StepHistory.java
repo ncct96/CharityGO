@@ -12,50 +12,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Date;
 
 public class StepHistory {
-    public String uid;
-    public long startDate;
-    public long endDate;
-    public int steps, weeklyPoint;
+    public int steps, point;
 
     public StepHistory() {
     }
 
-    public StepHistory(String uid, long startDate, long endDate, int steps, int weeklyPoint) {
-        this.uid = uid;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public StepHistory(int steps, int point) {
         this.steps = steps;
-        this.weeklyPoint = weeklyPoint;
-    }
-
-    @Exclude
-    public String getUid() {
-        return uid;
-    }
-
-    @Exclude
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    @Exclude
-    public long getStartDate() {
-        return startDate;
-    }
-
-    @Exclude
-    public void setStartDate(long startDate) {
-        this.startDate = startDate;
-    }
-
-    @Exclude
-    public long getEndDate() {
-        return endDate;
-    }
-
-    @Exclude
-    public void setEndDate(long endDate) {
-        this.endDate = endDate;
+        this.point = point;
     }
 
     @Exclude
@@ -69,13 +33,12 @@ public class StepHistory {
     }
 
     @Exclude
-    public int getWeeklyPoint() {
-        return weeklyPoint;
+    public int getPoint() {
+        return point;
     }
 
     @Exclude
-    public void setWeeklyPoint(int weeklyPoint) {
-        this.weeklyPoint = weeklyPoint;
+    public void setPoint(int point) {
+        this.point = point;
     }
-
 }

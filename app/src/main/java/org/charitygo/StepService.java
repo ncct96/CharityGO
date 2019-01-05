@@ -17,6 +17,7 @@ import android.hardware.TriggerEventListener;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,10 +46,14 @@ public class StepService extends Service implements SensorEventListener {
     DatabaseReference stepsRef = mFirebase.getReference().child("stepHistory");
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private FirebaseUser FBuser = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+    private String uid = currentUser.getUid();
     private Notification notification;
-    private long todayDate = System.currentTimeMillis();
-    private int stepCounts = 0, initStepCounts = 0;
+    private static long timestamp = System.currentTimeMillis();
+    private DateFormat df = new DateFormat();
+    private String monthYearPath = String.valueOf(df.longToYearMonth(timestamp));
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
+    private static int stepCounts, initStepCounts;
     private StepHistory steps;
 
 
@@ -65,7 +70,7 @@ public class StepService extends Service implements SensorEventListener {
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null) {
             mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
             mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        }else{
+        } else {
             mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
             mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
@@ -138,7 +143,8 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startServiceForeground(intent, flags, startId);
-        stepCounts = initSteps();
+        initSteps();
+        Log.e("Steps", String.valueOf(stepCounts));
         Toast.makeText(this, "Background service starting", Toast.LENGTH_SHORT).show();
         return START_STICKY;
     }
@@ -183,7 +189,6 @@ public class StepService extends Service implements SensorEventListener {
         }*/
 
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR)
-
         {
             stepCounts++;
         }
@@ -191,7 +196,7 @@ public class StepService extends Service implements SensorEventListener {
         notification.number = stepCounts;
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         stepsRef = ref.child("stepHistory");
-        stepsRef.child(uid + "/steps").setValue(stepCounts);
+        stepsRef.child(dayDatePath).child(uid).child("steps").setValue(stepCounts);
 
     }
 
@@ -201,15 +206,15 @@ public class StepService extends Service implements SensorEventListener {
 
     public int initSteps() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        stepsRef = ref.child("stepHistory/" + user.getUid());
+        stepsRef = ref.child("stepHistory/" + dayDatePath + "/" + uid);
 
         if (user != null) {
-            stepsRef.addValueEventListener(new ValueEventListener() {
+            stepsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     System.out.println(dataSnapshot.getValue());
                     initStepCounts = dataSnapshot.child("steps").getValue(Integer.class);
-                    System.out.println("dssa" + initStepCounts);
+                    retrieveData(initStepCounts);
                 }
 
                 @Override
@@ -218,6 +223,12 @@ public class StepService extends Service implements SensorEventListener {
                 }
             });
         }
+
         return initStepCounts;
+    }
+
+    public int retrieveData(int steps){
+        stepCounts = steps;
+        return steps;
     }
 }

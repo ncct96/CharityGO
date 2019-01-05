@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,6 +13,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,6 +55,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.charitygo.Constants;
+import org.charitygo.DateFormat;
 import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.Reward;
@@ -72,7 +75,12 @@ public class MainUI extends AppCompatActivity
     private boolean isSensorPresent = false;
     private Sensor mSensor;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
-    private static int savedNumSteps, goal;
+    private static int savedNumSteps, userGoal;
+    private static float goal;
+    private static long timestamp = System.currentTimeMillis();
+    private DateFormat df = new DateFormat();
+    private String monthYearPath = String.valueOf(df.longToYearMonth(timestamp));
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
 
     //Firebase Reference
     final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -83,6 +91,7 @@ public class MainUI extends AppCompatActivity
     private FirebaseAuth fireAuth = FirebaseAuth.getInstance();
     private FirebaseAuth userInstance = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = userInstance.getCurrentUser();
+    private String uid = currentUser.getUid();
     private Menu menu;
 
     //CK CHANGES ON GETTING PICTURE
@@ -156,6 +165,8 @@ public class MainUI extends AppCompatActivity
         txtProgress = findViewById(R.id.numOfStep);
         progressBar = findViewById(R.id.stepProgress);
 
+        checkExistDate();
+        checkExistEntry();
         initSteps();
 
         mSensorManager = (SensorManager)
@@ -187,15 +198,16 @@ public class MainUI extends AppCompatActivity
             }
         });
 
+        SharedPreferences goalSetting = PreferenceManager.getDefaultSharedPreferences(this);
 
+        userGoal =  goalSetting.getInt("goal", 3000);
 
-//        goal = (100 * 100) / savedNumSteps;
+        goal = (savedNumSteps * 100) / userGoal;
 
-        Log.e("goal", String.valueOf(savedNumSteps));
+        Log.e("goal", String.valueOf(userGoal));
 
-        progressBar.setProgress(goal);
+        progressBar.setProgress(Math.round(goal));
 
-        //txtProgress.setText(TEXT_NUM_STEPS + savedNumSteps + "\n" + "Progress: "+ progressCircle + "%");
     }
 
     @Override
@@ -224,13 +236,34 @@ public class MainUI extends AppCompatActivity
 
     public void initSteps() {
         //Firebase retrieve Steps Data
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.child(currentUser.getUid()).getValue(StepHistory.class);
-                //System.out.println(steps.getSteps());
+                StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
                 savedNumSteps = steps.getSteps();
                 txtProgress.setText(savedNumSteps + "\nSTEPS");
+/*                goal = (savedNumSteps * 100) / 100;
+                progressBar.setProgress(Math.round(goal));*/
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StepHistory steps = dataSnapshot.child(dayDatePath).child(uid).getValue(StepHistory.class);
+                savedNumSteps = steps.getSteps();
+                retrieveData(steps.getSteps());
+/*                goal = (savedNumSteps * 100) / 100;
+                progressBar.setProgress(Math.round(goal));*/
             }
 
             @Override
@@ -269,6 +302,23 @@ public class MainUI extends AppCompatActivity
             mSensorManager.registerListener(this, mSensor,
                     SensorManager.SENSOR_DELAY_FASTEST);
         }
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
+                savedNumSteps = steps.getSteps();
+                retrieveData(steps.getSteps());
+                goal = (savedNumSteps * 100) / 100;
+                txtProgress.setText(savedNumSteps + "\nSTEPS");
+                progressBar.setProgress(Math.round(goal));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -287,9 +337,8 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        String uid = currentUser.getUid();
 
-        ref.child(uid + "/steps").setValue(savedNumSteps);
+        ref.child(dayDatePath).child(uid).child("steps").setValue(savedNumSteps);
         if (isSensorPresent) {
             mSensorManager.unregisterListener(this);
         }
@@ -472,6 +521,10 @@ public class MainUI extends AppCompatActivity
     @Override
     public void onSensorChanged(SensorEvent event) {
         txtProgress.setText(++savedNumSteps + "\nSTEPS");
+
+        goal = (savedNumSteps * 100) / 100;
+
+        progressBar.setProgress(Math.round(goal));
     }
 
     @Override
@@ -483,15 +536,15 @@ public class MainUI extends AppCompatActivity
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference stepRef = ref.child("rewards"+ firebaseUser.getUid());
-        DatabaseReference userRef = ref.child("users"+ firebaseUser.getUid());
+        DatabaseReference stepRef = ref.child("rewards" + firebaseUser.getUid());
+        DatabaseReference userRef = ref.child("users" + firebaseUser.getUid());
         User user = new User();
 
 
         stepRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     StepHistory currentSteps = dataSnapshot1.getValue(StepHistory.class);
 
 /*                    if(currentSteps.getStartDate() == new Date()){
@@ -512,5 +565,36 @@ public class MainUI extends AppCompatActivity
         //redeemPoints.setText(calculator.getRedeemPoints() + " donatePoints available");
     }
 
+    public int retrieveData(int steps) {
+
+        savedNumSteps = steps;
+
+        return steps;
+    }
+
+    public boolean checkExistDate(){
+
+        ref.child(dayDatePath).orderByChild(uid).equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    StepHistory steps = new StepHistory(0, 0);
+                    ref.child(dayDatePath).child(uid).setValue(steps);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return true;
+    }
+
+    public boolean checkExistEntry(){
+
+        return true;
+    }
 
 }

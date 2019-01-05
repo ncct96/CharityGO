@@ -38,6 +38,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.charitygo.DateFormat;
 import org.charitygo.R;
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
@@ -81,6 +82,11 @@ public class RegisterActivity extends AppCompatActivity{
     private View registerView;
 
     private final static int GET_FROM_GALLERY = 8000;
+
+    private static long timestamp = System.currentTimeMillis();
+    private DateFormat df = new DateFormat();
+    private String monthYearPath = String.valueOf(df.longToYearMonth(timestamp));
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
