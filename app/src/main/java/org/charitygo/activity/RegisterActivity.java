@@ -207,7 +207,7 @@ public class RegisterActivity extends AppCompatActivity{
                             stepRefStore.child(dayDatePath).child(uid).setValue(steps);
                           
                             //Create parent node to store user accumulate steps for every month
-                            StepsRanking rank = new StepsRanking(0);
+                            StepsRanking rank = new StepsRanking(0, currentUser.getDisplayName());
                             rankRefStore = ref.child("stepRanking");
                             rankRefStore.child(monthYearPath).child(uid).setValue(rank);
 
