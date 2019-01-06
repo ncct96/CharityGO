@@ -36,8 +36,7 @@ public class DonationFragment extends Fragment {
     private ArrayList<Donation> donations = new ArrayList<>();
 
     //XML Attributes
-    private ImageView imageDonation;
-    private RecyclerView donationList;
+    private RecyclerView list;
 
     // Inflate the view for the fragment based on layout XML
     @Override
@@ -46,6 +45,11 @@ public class DonationFragment extends Fragment {
         final View view = inflater.inflate(R.layout.activity_transact_hist, container, false);
 //        imageDonation = (ImageView) view.findViewById(R.id.imageTransact);
 //        imageDonation.setImageDrawable(getResources().getDrawable(R.drawable.stars));
+        list = (RecyclerView) view.findViewById(R.id.donation_view);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this.getContext());
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        list.setLayoutManager(mLinearLayoutManager);
+
         donationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -53,11 +57,6 @@ public class DonationFragment extends Fragment {
                     Donation donation = dataSnapshot1.getValue(Donation.class);
                     donations.add(donation);
                 }
-
-                RecyclerView list = (RecyclerView) view.findViewById(R.id.donation_view);
-                //LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(TransactHistActivity.this);
-                //mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                //list.setLayoutManager(mLinearLayoutManager);
                 DonationAdapter donationAdapter = new DonationAdapter(donations);
                 list.setAdapter(donationAdapter);
             }

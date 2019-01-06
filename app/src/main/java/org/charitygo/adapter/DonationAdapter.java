@@ -41,8 +41,8 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
         Donation donation = donationList.get(i);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         donationHolder.time.setText(sdf.format(donation.getTransactionDate()));
-        donationHolder.points.setText(donation.getPoints());
-        donationHolder.desc.setText(donation.getOrganizationName() + " - ");
+        donationHolder.points.setText(String.valueOf(donation.getPoints()));
+        donationHolder.desc.setText(donation.getOrganizationName());
     }
 
     public static class DonationHolder extends RecyclerView.ViewHolder {
