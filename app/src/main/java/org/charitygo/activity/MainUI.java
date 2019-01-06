@@ -124,13 +124,13 @@ public class MainUI extends AppCompatActivity
             imageRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    url = dataSnapshot.child("photoURL").getValue().toString();
+                    //url = dataSnapshot.child("photoURL").getValue().toString();
                     name = dataSnapshot.child("name").getValue().toString();
                     points = dataSnapshot.child("points").getValue().toString();
 
                     userProfileName.setText(name);
                     userProfilePoints.setText(points);
-                    userProfile.loadImageUrl(url);
+                    //userProfile.loadImageUrl(url);
                 }
 
                 @Override
