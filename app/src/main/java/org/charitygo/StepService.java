@@ -44,16 +44,17 @@ public class StepService extends Service implements SensorEventListener {
     private final FirebaseDatabase mFirebase = FirebaseDatabase.getInstance();
     DatabaseReference ref = mFirebase.getReference();
     DatabaseReference stepsRef = mFirebase.getReference().child("stepHistory");
+    DatabaseReference rankRef = mFirebase.getReference().child("stepRanking");
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-    private String uid = currentUser.getUid();
+    private String uid;
     private Notification notification;
     private static long timestamp = System.currentTimeMillis();
     private DateFormat df = new DateFormat();
     private String monthYearPath = String.valueOf(df.longToYearMonth(timestamp));
     private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
-    private static int stepCounts, initStepCounts;
+    private static int stepCounts, initStepCounts, accSteps;
     private StepHistory steps;
 
 
@@ -65,6 +66,13 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        try {
+            uid = currentUser.getUid();
+        } catch (Exception e) {
+            
+        }
+
         mSensorManager = (SensorManager)
                 this.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null) {
@@ -144,6 +152,7 @@ public class StepService extends Service implements SensorEventListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         startServiceForeground(intent, flags, startId);
         initSteps();
+        notification.number = stepCounts;
         Log.e("Steps", String.valueOf(stepCounts));
         Toast.makeText(this, "Background service starting", Toast.LENGTH_SHORT).show();
         return START_STICKY;
@@ -161,7 +170,7 @@ public class StepService extends Service implements SensorEventListener {
         super.onDestroy();
         if (mStepDetectorSensor != null) {
             mSensorManager.unregisterListener(this);
-    }
+        }
         Toast.makeText(this, "Background service stopping", Toast.LENGTH_SHORT).show();
     }
 
@@ -188,15 +197,19 @@ public class StepService extends Service implements SensorEventListener {
             });
         }*/
 
-        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR)
-        {
+        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             stepCounts++;
         }
 
         notification.number = stepCounts;
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         stepsRef = ref.child("stepHistory");
+        rankRef = ref.child("stepRanking");
+
         stepsRef.child(dayDatePath).child(uid).child("steps").setValue(stepCounts);
+        getAccSteps();
+        ++accSteps;
+        rankRef.child(monthYearPath).child(uid).child("accSteps").setValue(accSteps);
 
     }
 
@@ -215,6 +228,7 @@ public class StepService extends Service implements SensorEventListener {
                     System.out.println(dataSnapshot.getValue());
                     initStepCounts = dataSnapshot.child("steps").getValue(Integer.class);
                     retrieveData(initStepCounts);
+                    notification.number = initStepCounts;
                 }
 
                 @Override
@@ -223,13 +237,65 @@ public class StepService extends Service implements SensorEventListener {
                 }
             });
         }
-Log.e("STPPPPPPP", String.valueOf(initStepCounts));
+        Log.e("STPPPPPPP", String.valueOf(initStepCounts));
         return initStepCounts;
     }
 
-    public int retrieveData(int steps){
+    public int retrieveData(int steps) {
         stepCounts = steps;
         Log.e("FFFFFFFFFFF", String.valueOf(stepCounts));
         return steps;
+    }
+
+    public int retrieveAccSteps(int steps) {
+        accSteps = steps;
+
+        return accSteps;
+    }
+
+    public int getAccSteps() {
+
+        rankRef.child(monthYearPath).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                accSteps = dataSnapshot.child("accSteps").getValue(Integer.class);
+                retrieveAccSteps(accSteps);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        return accSteps;
+    }
+
+    public boolean checkExistDate() {
+
+        dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
+
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        stopService(intent);
+
+        DatabaseReference stepsRef = ref.child(dayDatePath);
+
+        stepsRef.orderByKey().equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
+                    StepHistory steps = new StepHistory(0, 0);
+                    ref.child(dayDatePath).child(uid).setValue(steps);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return true;
     }
 }
