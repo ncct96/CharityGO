@@ -3,9 +3,12 @@ package org.charitygo.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -82,9 +85,9 @@ public class RegisterActivity extends AppCompatActivity{
     private String usern;
     private String phone;
     private String genStr;
+    private String uriImage;
 
-    private View progressView;
-    private View registerView;
+    private ProgressDialog progressDialog;
 
     private final static int GET_FROM_GALLERY = 8000;
 
@@ -98,8 +101,15 @@ public class RegisterActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        progressView = findViewById(R.id.registerProgress);
-        registerView = findViewById(R.id.registerScroll);
+        progressDialog = new ProgressDialog(RegisterActivity.this);
+        progressDialog.setTitle("Creating New Account");
+        progressDialog.setMessage("Please Wait For A Moment");
+        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+
+            }
+        });
 
         Button signupBtn = (Button) findViewById(R.id.buttonReg);
         signupBtn.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +121,6 @@ public class RegisterActivity extends AppCompatActivity{
 
         email = findViewById(R.id.editEmail);
         username = findViewById(R.id.editUsername);
-//        password = findViewById(R.id.editPassword);
-//        retypePassword = findViewById(R.id.editRePassword);
         contactNum = findViewById(R.id.editPhone);
         gender = (RadioGroup) findViewById(R.id.radioGroupGender);
         maleRadioBtn = (RadioButton) findViewById(R.id.radioButtonMale);
@@ -139,42 +147,7 @@ public class RegisterActivity extends AppCompatActivity{
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-
-            //Progress Dialog
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            registerView.setVisibility(show ? View.GONE : View.VISIBLE);
-            registerView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    registerView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            registerView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
     public void uploadImageRegister(){
-        //uploadURL = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
         final String photoPath = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
         final StorageReference storageImgRef = storageRef.child(photoPath);
         final UploadTask uploadTask = storageImgRef.putFile(selectedImage);
@@ -195,7 +168,6 @@ public class RegisterActivity extends AppCompatActivity{
                     public void onComplete(@NonNull Task<Uri> task) {
                         if(task.isSuccessful()){
                             uploadURL = task.getResult().toString();
-                            showProgress(false);
                             //Store the user details entered
                             User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL, photoPath, 0);
                             dataRefStore.child(currentUser.getUid()).setValue(newUser);
@@ -227,56 +199,15 @@ public class RegisterActivity extends AppCompatActivity{
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                //double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                //Toast.makeText(RegisterActivity.this, "Registering... Please Wait.."+String.format("%f",progress)+"Seconds..", Toast.LENGTH_SHORT).show();
-                showProgress(true);
+                progressDialog.show();
             }
         });
     }
 
-    //        //Upload from a local file
-//        Uri file = Uri.fromFile(new File("path/to/images/tohru.png"));
-//        StorageReference tohruRef = storageRef.child("images/"+file.getLastPathSegment());
-//        UploadTask uploadTask = tohruRef.putFile(file);
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//
-//            }
-//        });
-//
-//        //Get download URL
-//        final StorageReference reference = storageRef.child("images/tohru.png");
-//        uploadTask = reference.putFile(file);
-//        Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-//            @Override
-//            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-//                if(!task.isSuccessful()){
-//                    throw task.getException();
-//                }else{
-//                    return null;
-//                }
-//            }
-//        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Uri> task) {
-//                if(task.isSuccessful()){
-//                    Uri downloadUri = task.getResult();
-//                }else{
-//
-//                }
-//            }
-//        });
-
     public void registerAccount(View view) {
+        boolean notValid = false;
+        View focusView = null;
         usern = username.getText().toString();
-//        String passw = password.getText().toString();
-//        String repassw = retypePassword.getText().toString();
         phone = contactNum.getText().toString();
 
         //Get the selected index of the radio group
@@ -285,43 +216,27 @@ public class RegisterActivity extends AppCompatActivity{
 
         View radiobtn = gender.findViewById(gen);
         int index = gender.indexOfChild(radiobtn);
+
+        //Get Uri of Image
+        uriImage = imagetoUpload.getTag().toString();
+
         //Get the text of radio button in radio group
         RadioButton gend = (RadioButton) gender.getChildAt(index);
-        genStr = gend.getText().toString();
+        if(gend != null){
+            genStr = gend.getText().toString();
+        }
 
-        boolean notValid = false;
-        View focusView = null;
-
-//        if(repassw.isEmpty()){
-//            retypePassword.setError("Please Retype Your Password");
-//            focusView = retypePassword;
-//            notValid = true;
-//        } else if(!repassw.equals(passw)){
-//            retypePassword.setError("Entered Password Mismatch");
-//            focusView = retypePassword;
-//            notValid = true;
-//        }
-
-//        if(passw.isEmpty()){
-//            password.setError("Password Cannot Be Empty !");
-//            focusView = password;
-//            notValid = true;
-//        } else if(passw.length() <= 6){
-//            password.setError("Password must be at least 6 Characters");
-//            focusView = password;
-//            notValid = true;
-//        } else if(passw.contains(" ")){
-//            password.setError("Password Cannot Contain Blank Space");
-//            focusView = password;
-//            notValid = true;
-//        }
+        if(uriImage.equals(null)){
+            focusView = imagetoUpload;
+            notValid = true;
+        }
 
         //Contact Number Validations
         if(phone.isEmpty()){
             contactNum.setError("Please Enter Contact Number");
             focusView = contactNum;
             notValid = true;
-        } else if(phone.matches("[a-zA-Z]+")){
+        } else if(!phone.matches("[0-9]+")){
             contactNum.setError("Only Numbers Are Allowed");
             focusView = contactNum;
             notValid = true;
@@ -350,16 +265,6 @@ public class RegisterActivity extends AppCompatActivity{
             notValid = true;
         }
 
-//        if(eml.isEmpty()){
-//            email.setError("Please Enter Your Email");
-//            focusView = email;
-//            notValid = true;
-//        } else if(!eml.contains("@") && !eml.contains(".com")){
-//            email.setError("Please Enter a Valid Email Address");
-//            focusView = email;
-//            notValid = true;
-//        }
-
         if(gen <= 0){
             maleRadioBtn.setError("Please Select Your Gender");
             femaleRadioBtn.setError("Please Select Your Gender");
@@ -375,7 +280,7 @@ public class RegisterActivity extends AppCompatActivity{
                 focusView.requestFocus();
             }
         } else {
-               uploadImageRegister();
+            uploadImageRegister();
         }
     }
 

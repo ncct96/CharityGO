@@ -229,15 +229,14 @@ public class ProfileActivity extends AppCompatActivity {
                     email = currentUser.getEmail();
 
                     userProfileName.setText(name);
-                    userProfilePoints.setText(points);
+                    userProfilePoints.setText("Points : "+points);
+
                     userProfileEmail.setText(email);
                     userProfileNumber.setText(number);
                     getUserProfileGender.setText(gender);
-
                     userProfileUsername.setText(name);
                     userProfilePointsAccu.setText(points);
                     userProfile.loadImageUrl(url);
-
                     changeUI();
                 }
 
@@ -277,9 +276,7 @@ public class ProfileActivity extends AppCompatActivity {
                     String usernChg = Username.getText().toString();
                     UsernameView.setText(usernChg);
                     if(!usernChg.equals("")){
-                        progressDialog.show();
                         userData.child("name").setValue(usernChg);
-                        progressDialog.dismiss();
                     }
                 }
             }
