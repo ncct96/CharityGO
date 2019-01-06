@@ -32,4 +32,14 @@ public class DateFormat {
 
         return (cal.get(Calendar.YEAR) * 10000) + (cal.get(Calendar.MONTH) + 1 * 100) + cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
+
+    public boolean checkSameMonth(int dateWithMonth, int dateWithMonthDay){
+        int tempDate = dateWithMonthDay / 100;
+
+        if(dateWithMonth == tempDate){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
