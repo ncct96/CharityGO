@@ -19,9 +19,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.charitygo.DateFormat;
 import org.charitygo.R;
 import org.charitygo.model.Redeems;
 import org.charitygo.model.Reward;
+import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
 
 import java.util.Date;
@@ -32,6 +34,10 @@ public class VoucherActivity extends AppCompatActivity {
     private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference voucherRef = ref.child("vouchers");
     private String rewardID;
+    private int userPoints;
+    private DateFormat df = new DateFormat();
+    private static long timestamp = System.currentTimeMillis();
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
     private boolean eligible = true;
 
     Reward reward = new Reward();
@@ -87,27 +93,41 @@ public class VoucherActivity extends AppCompatActivity {
         });
 
         //Search for unredeemed vouchers
-
-        final DatabaseReference voucherRef = ref.child("vouchers");
+        final DatabaseReference voucherRef = ref.child("vouchers").child(rewardID).child(firebaseUser.getUid());
         voucherRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    Redeems redeem = dataSnapshot1.getValue(Redeems.class);
-                    String UID = firebaseUser.getUid();
-                    if (redeem.getRewardsID().equals(rewardID) && redeem.getUserID().equals(UID)) {
+                Redeems redeem = dataSnapshot.getValue(Redeems.class);
+                if (redeem != null) {
+                    if (redeem.getRewardsID().equals(rewardID) && redeem.getUserID().equals(firebaseUser.getUid())) {
                         Button button = findViewById(R.id.voucher_redeem);
                         button.setText(reward.getCode());
                         button.setEnabled(false);
                         button.setBackgroundColor(Color.RED);
                         eligible = false;
 
-                        if(redeem.getExpiryDate().before(new Date())){
+                        if (redeem.getExpiryDate().before(new Date())) {
                             button.setText("Redeemed");
                             button.setBackgroundColor(Color.LTGRAY);
                         }
                     }
                 }
+//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+//                    Redeems redeem = dataSnapshot1.getValue(Redeems.class);
+//                    String UID = firebaseUser.getUid();
+//                    if (redeem.getRewardsID().equals(rewardID) && redeem.getUserID().equals(UID)) {
+//                        Button button = findViewById(R.id.voucher_redeem);
+//                        button.setText(reward.getCode());
+//                        button.setEnabled(false);
+//                        button.setBackgroundColor(Color.RED);
+//                        eligible = false;
+//
+//                        if(redeem.getExpiryDate().before(new Date())){
+//                            button.setText("Redeemed");
+//                            button.setBackgroundColor(Color.LTGRAY);
+//                        }
+//                    }
+//                }
             }
 
             @Override
@@ -118,12 +138,12 @@ public class VoucherActivity extends AppCompatActivity {
 
         if (eligible) {
             //Search user's eligibility
-            DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
-            userRef.addValueEventListener(new ValueEventListener() {
+            ref.child("stepHistory").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    user = dataSnapshot.getValue(User.class);
-                    if (user.getPoints() < reward.getPrice()) {
+                    StepHistory steps = dataSnapshot.child(dayDatePath).child(firebaseUser.getUid()).getValue(StepHistory.class);
+                    userPoints = steps.getSteps() / 10;
+                    if (userPoints < reward.getPrice()) {
                         Button button = findViewById(R.id.voucher_redeem);
                         button.setEnabled(false);
                         button.setBackgroundColor(Color.LTGRAY);
@@ -146,10 +166,7 @@ public class VoucherActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes, redeem!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                voucherRef.push().setValue(new Redeems(firebaseUser.getUid(), rewardID, reward.getValidFor()));
-
-                DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
-                userRef.child("points").setValue(user.getPoints() - reward.getPrice());
+                voucherRef.child(rewardID).child(firebaseUser.getUid()).setValue(new Redeems(firebaseUser.getUid(), rewardID, reward.getValidFor()));
 
                 Button button = findViewById(R.id.voucher_redeem);
                 button.setText(reward.getCode());
