@@ -82,15 +82,19 @@
 
             <TextView
                 android:id="@+id/main_donate_points"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Points Available"
+                android:ellipsize="end"
+                android:text="Donate your steps to charity!"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageButton2"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageButton
+                android:id="@+id/imageButton2"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_margin="2dp"
@@ -122,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="Redeem Voucher!"
+                android:text="Redeem Vouchers!"
                 android:textColor="@color/colorAccent"
                 android:textSize="30sp"
                 android:textStyle="bold"
@@ -131,15 +135,18 @@
 
             <TextView
                 android:id="@+id/main_redeem_points"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Points Available"
+                android:text="Redeem items with your donated points!"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageButton3"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageButton
+                android:id="@+id/imageButton3"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_margin="2dp"

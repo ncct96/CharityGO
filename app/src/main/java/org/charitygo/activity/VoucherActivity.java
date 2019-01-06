@@ -33,6 +33,7 @@ public class VoucherActivity extends AppCompatActivity {
     private DatabaseReference ref = database.getReference();
     private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference voucherRef = ref.child("vouchers");
+    private DatabaseReference userRef = ref.child("users").child(firebaseUser.getUid());
     private String rewardID;
     private int userPoints;
     private DateFormat df = new DateFormat();
@@ -138,11 +139,11 @@ public class VoucherActivity extends AppCompatActivity {
 
         if (eligible) {
             //Search user's eligibility
-            ref.child("stepHistory").addListenerForSingleValueEvent(new ValueEventListener() {
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    StepHistory steps = dataSnapshot.child(dayDatePath).child(firebaseUser.getUid()).getValue(StepHistory.class);
-                    userPoints = steps.getSteps() / 10;
+                    User user = dataSnapshot.getValue(User.class);
+                    userPoints = user.getPoints();
                     if (userPoints < reward.getPrice()) {
                         Button button = findViewById(R.id.voucher_redeem);
                         button.setEnabled(false);
@@ -166,12 +167,13 @@ public class VoucherActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes, redeem!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                voucherRef.child(rewardID).child(firebaseUser.getUid()).setValue(new Redeems(firebaseUser.getUid(), rewardID, reward.getValidFor()));
-
+                voucherRef.child(rewardID).child(firebaseUser.getUid()).setValue(new Redeems(firebaseUser.getUid(), rewardID, reward.getValidFor(), reward.getPrice()));
                 Button button = findViewById(R.id.voucher_redeem);
                 button.setText(reward.getCode());
                 button.setEnabled(false);
                 button.setBackgroundColor(Color.RED);
+
+                userRef.child("points").setValue(userPoints - reward.getPrice());
             }
         });
 

@@ -6,13 +6,15 @@ import java.util.Date;
 public class Redeems {
     String key, userID, rewardsID;
     private Date redeemDate, expiryDate;
+    private int price;
 
     public Redeems() {
     }
 
-    public Redeems(String userID, String rewardsID, int validFor) {
+    public Redeems(String userID, String rewardsID, int validFor, int price) {
         this.userID = userID;
         this.rewardsID = rewardsID;
+        this.price = price;
 
         Calendar calendar = Calendar.getInstance();
         this.redeemDate = calendar.getTime();
@@ -58,5 +60,13 @@ public class Redeems {
 
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }
