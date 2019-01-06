@@ -120,8 +120,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-//        progressView = findViewById(R.id.google_login_progress);
-//        loginView = findViewById(R.id.google_login_scroll);
+
         googleSignIn = findViewById(R.id.signInBtn);
         setGooglePlusButtonText(googleSignIn, "Sign In With Google");
 
@@ -147,7 +146,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 currentUser = firebaseAuth.getCurrentUser();
                 if(currentUser != null){
-                    //Toast.makeText(GoogleLoginActivity.this, "Logged in Successful!", Toast.LENGTH_SHORT).show();
                     UID = currentUser.getUid();
                     dataRef = ref.child("users").child(UID);
                     dataRef.addValueEventListener(new ValueEventListener() {
@@ -192,45 +190,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-//    private void signOut() {
-//        if(currentUser != null){
-//            // Firebase sign out
-//            fireAuth.signOut();
-//            currentUser = null;
-//            // Google sign out
-//            googleSignClient.signOut().addOnCompleteListener(this,
-//                    new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            //updateUI(null);
-//                        }
-//                    });
-//        }
-//    }
-
-//    private void updateUI(FirebaseUser user) {
-//        hideProgressDialog();
-//        if (user != null ) {
-//            usernameDisplay.setText(user.getDisplayName());
-//            emailDisplay.setText(user.getEmail());
-//
-//            usernameDisplay.setVisibility(View.VISIBLE);
-//            emailDisplay.setVisibility(View.VISIBLE);
-//
-//            findViewById(R.id.signInBtn).setVisibility(View.GONE);
-//            findViewById(R.id.signOutBtn).setVisibility(View.VISIBLE);
-//        } else {
-////            usernameDisplay.setText("Username Signed Out !");
-////            emailDisplay.setText("Email Signed Out !");
-//
-//            usernameDisplay.setVisibility(View.INVISIBLE);
-//            emailDisplay.setVisibility(View.INVISIBLE);
-//
-//            findViewById(R.id.signInBtn).setVisibility(View.VISIBLE);
-//            findViewById(R.id.signOutBtn).setVisibility(View.GONE);
-//        }
-//    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -242,7 +201,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
             progressDialog.show();
         }
         fireAuth.addAuthStateListener(authListener);
-        //updateUI(currentUser);
     }
 
     @Override
@@ -276,12 +234,10 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             currentUser = fireAuth.getCurrentUser();
-                            //updateUI(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.coordinatorLayout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-//                            updateUI(null);
                         }
                         hideProgressDialog();
                     }
