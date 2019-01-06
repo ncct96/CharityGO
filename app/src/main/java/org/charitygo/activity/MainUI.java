@@ -61,6 +61,7 @@ import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.Reward;
 import org.charitygo.model.StepHistory;
+import org.charitygo.model.StepsRanking;
 import org.charitygo.model.User;
 
 import java.util.Date;
@@ -76,7 +77,7 @@ public class MainUI extends AppCompatActivity
     private boolean isSensorPresent = false;
     private Sensor mSensor;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
-    private static int savedNumSteps, userGoal;
+    private static int savedNumSteps, userGoal, accSteps, dailySteps;
     private static float goal;
     private static long timestamp = System.currentTimeMillis();
     private DateFormat df = new DateFormat();
@@ -86,6 +87,7 @@ public class MainUI extends AppCompatActivity
     //Firebase Reference
     final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference ref = mDatabase.getReference("stepHistory");
+    private DatabaseReference rankRef = mDatabase.getReference("stepRanking");
 
     //CK CHANGES
     private FirebaseAuth.AuthStateListener authListener;
@@ -102,7 +104,9 @@ public class MainUI extends AppCompatActivity
     private GlideImageView userProfile;
     private TextView userProfileName;
     private TextView userProfilePoints;
-    private String url; private String name; private String points;
+    private String url;
+    private String name;
+    private String points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +122,7 @@ public class MainUI extends AppCompatActivity
 
         Log.e("Start", "1");
 
-        if(currentUser != null){
+        if (currentUser != null) {
             imageRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
             //CK CHANGES ON GETTING PICTURE;
             imageRef.addValueEventListener(new ValueEventListener() {
@@ -159,6 +163,7 @@ public class MainUI extends AppCompatActivity
         progressBar = findViewById(R.id.stepProgress);
 
         checkExistDate();
+        checkExistRank();
         initSteps();
 
         mSensorManager = (SensorManager)
@@ -192,7 +197,7 @@ public class MainUI extends AppCompatActivity
 
         SharedPreferences goalSetting = PreferenceManager.getDefaultSharedPreferences(this);
 
-        userGoal =  goalSetting.getInt("goal", 3000);
+        userGoal = goalSetting.getInt("goal", 3000);
 
         goal = (savedNumSteps * 100) / userGoal;
 
@@ -206,7 +211,7 @@ public class MainUI extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         currentUser = fireAuth.getInstance().getCurrentUser();
-        if(currentUser == null){
+        if (currentUser == null) {
             Intent intent = new Intent(this, GoogleLoginActivity.class);
             startActivity(intent);
         }
@@ -224,28 +229,6 @@ public class MainUI extends AppCompatActivity
 //                }
 //            });
 //        }
-    }
-
-    public void initSteps() {
-        //Firebase retrieve Steps Data
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
-                if(steps != null) {
-                    savedNumSteps = steps.getSteps();
-                    Log.e("Init", String.valueOf(savedNumSteps));
-                    txtProgress.setText(savedNumSteps + "\nSTEPS");
-/*                goal = (savedNumSteps * 100) / 100;
-                progressBar.setProgress(Math.round(goal));*/
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override
@@ -281,12 +264,13 @@ public class MainUI extends AppCompatActivity
         super.onResume();
 
         checkExistDate();
+        checkExistRank();
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
-                if(steps != null) {
+                if (steps != null) {
                     savedNumSteps = steps.getSteps();
                     Log.e("ResumeTesting", String.valueOf(savedNumSteps));
                     retrieveData(steps.getSteps());
@@ -327,7 +311,19 @@ public class MainUI extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
+        getDailySteps();
+        getAccSteps();
+
+        System.err.println("HI" + savedNumSteps + " " + dailySteps + " " + accSteps);
+
+        int stepDifference = savedNumSteps - dailySteps;
+
+        accSteps += stepDifference;
+
+        System.err.println("BYE" + accSteps);
+
         ref.child(dayDatePath).child(uid).child("steps").setValue(savedNumSteps);
+        rankRef.child(monthYearPath).child(uid).child("accSteps").setValue(accSteps);
 
         if (isSensorPresent) {
             mSensorManager.unregisterListener(this);
@@ -429,6 +425,8 @@ public class MainUI extends AppCompatActivity
 
     public void logOut(MenuItem menuItem) {
         //removeLoginMenu();
+        Intent svcIntent = new Intent(getApplicationContext(), StepService.class);
+        stopService(svcIntent);
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -439,9 +437,6 @@ public class MainUI extends AppCompatActivity
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Intent intent = new Intent(getApplicationContext(), StepService.class);
-                        intent.putExtra("steps", savedNumSteps);
-                        stopService(intent);
                     }
                 });
         LoginActivity.getPreference(getApplicationContext()).edit().clear().apply();
@@ -513,6 +508,7 @@ public class MainUI extends AppCompatActivity
     public void onSensorChanged(SensorEvent event) {
         txtProgress.setText(++savedNumSteps + "\nSTEPS");
 
+
         goal = (savedNumSteps * 100) / 100;
 
         progressBar.setProgress(Math.round(goal));
@@ -556,7 +552,29 @@ public class MainUI extends AppCompatActivity
         //redeemPoints.setText(calculator.getRedeemPoints() + " donatePoints available");
     }
 
-    public boolean checkExistDate(){
+    public void initSteps() {
+        //Firebase retrieve Steps Data
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
+                if (steps != null) {
+                    savedNumSteps = steps.getSteps();
+                    Log.e("Init", String.valueOf(savedNumSteps));
+                    txtProgress.setText(savedNumSteps + "\nSTEPS");
+/*                goal = (savedNumSteps * 100) / 100;
+                progressBar.setProgress(Math.round(goal));*/
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public boolean checkExistDate() {
 
         dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
 
@@ -569,10 +587,32 @@ public class MainUI extends AppCompatActivity
         stepsRef.orderByKey().equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)){
+                if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
                     StepHistory steps = new StepHistory(0, 0);
-                    setData(steps, steps.getSteps());
                     ref.child(dayDatePath).child(uid).setValue(steps);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return true;
+    }
+
+    public boolean checkExistRank() {
+        monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
+
+        DatabaseReference rankStepsRef = ref.child(monthYearPath);
+
+        rankStepsRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
+                    StepsRanking rank = new StepsRanking(0);
+                    rankRef.child(monthYearPath).child(uid).setValue(rank);
                 }
             }
 
@@ -593,12 +633,62 @@ public class MainUI extends AppCompatActivity
         return steps;
     }
 
-    public void setData(StepHistory stepHistory, int steps){
+    public void setData(StepHistory stepHistory, int steps) {
 
         savedNumSteps = steps;
 
         stepHistory.setSteps(savedNumSteps);
 
+    }
+
+    public int retrieveAccSteps(int steps) {
+        accSteps = steps;
+
+        return accSteps;
+    }
+
+    public int retrieveDailySteps(int steps) {
+
+        Log.e("HALO " , String.valueOf(steps));
+
+        dailySteps = steps;
+
+        return dailySteps;
+    }
+
+    public void getDailySteps() {
+        ref.child(dayDatePath).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int steps = dataSnapshot.child("steps").getValue(Integer.class);
+
+                    dailySteps = steps;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public int getAccSteps() {
+
+        rankRef.child(monthYearPath).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                accSteps = dataSnapshot.child("accSteps").getValue(Integer.class);
+                retrieveAccSteps(accSteps);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        return accSteps;
     }
 
 }

@@ -44,6 +44,7 @@ import com.google.firebase.storage.UploadTask;
 import org.charitygo.DateFormat;
 import org.charitygo.R;
 import org.charitygo.model.StepHistory;
+import org.charitygo.model.StepsRanking;
 import org.charitygo.model.User;
 
 import java.io.File;
@@ -71,7 +72,7 @@ public class RegisterActivity extends AppCompatActivity{
     private GoogleSignInClient googleSignClient;
 
     private DatabaseReference dataRefStore = ref.child("users");
-    private DatabaseReference stepRefStore;
+    private DatabaseReference stepRefStore, rankRefStore;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
 
@@ -198,15 +199,21 @@ public class RegisterActivity extends AppCompatActivity{
                             //Store the user details entered
                             User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL, photoPath, 0);
                             dataRefStore.child(currentUser.getUid()).setValue(newUser);
+
                             //Create new step history for newly registered user
                             String uid = currentUser.getUid();
                             StepHistory steps = new StepHistory(0, 0);
                             stepRefStore = ref.child("stepHistory");
                             stepRefStore.child(dayDatePath).child(uid).setValue(steps);
+                          
+                            //Create parent node to store user accumulate steps for every month
+                            StepsRanking rank = new StepsRanking(0);
+                            rankRefStore = ref.child("stepRanking");
+                            rankRefStore.child(monthYearPath).child(uid).setValue(rank);
 
-                            Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainUI.class);
                             startActivity(intent);
+                            Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -369,7 +376,7 @@ public class RegisterActivity extends AppCompatActivity{
             }
         } else {
                uploadImageRegister();
-         }
+        }
     }
 
     public void cancelRegister(View view) {
