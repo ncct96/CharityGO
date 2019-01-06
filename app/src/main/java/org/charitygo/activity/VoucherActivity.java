@@ -167,7 +167,7 @@ public class VoucherActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes, redeem!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                voucherRef.child(rewardID).child(firebaseUser.getUid()).setValue(new Redeems(firebaseUser.getUid(), rewardID, reward.getValidFor(), reward.getPrice()));
+                voucherRef.child(rewardID).child(firebaseUser.getUid()).setValue(new Redeems(firebaseUser.getUid(), rewardID, reward.getCompany(), reward.getShortDescription(), reward.getValidFor(), reward.getPrice()));
                 Button button = findViewById(R.id.voucher_redeem);
                 button.setText(reward.getCode());
                 button.setEnabled(false);
