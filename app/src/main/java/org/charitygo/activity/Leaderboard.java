@@ -37,7 +37,7 @@ public class Leaderboard extends AppCompatActivity {
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-    private DatabaseReference ref = mDatabase.getReference("stepHistory");
+    private DatabaseReference ref = mDatabase.getReference("stepRanking");
 
     private long timestamp = System.currentTimeMillis();
     private DateFormat df = new DateFormat();
@@ -89,9 +89,10 @@ public class Leaderboard extends AppCompatActivity {
     public void loadLeaderboard() {
         int rankSize = 10;
 
-        int lastDay = df.getLastDayofMonth(timestamp);
+        String month = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
 
-        ref.startAt(String.valueOf(dayDatePath)).endAt(String.valueOf(lastDay)).orderByKey().addValueEventListener(new ValueEventListener() {
+
+        ref.child(month).orderByKey().orderByChild("ooo").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 System.out.println("abcde  " + dataSnapshot.getValue());

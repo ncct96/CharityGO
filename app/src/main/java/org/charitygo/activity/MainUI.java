@@ -77,7 +77,7 @@ public class MainUI extends AppCompatActivity
     private boolean isSensorPresent = false;
     private Sensor mSensor;
     private static final String TEXT_NUM_STEPS = "Number of Steps: ";
-    private static int savedNumSteps, userGoal, accSteps, dailySteps;
+    private static int savedNumSteps, userGoal, accSteps, dailySteps, tempSteps;
     private static float goal;
     private static long timestamp = System.currentTimeMillis();
     private DateFormat df = new DateFormat();
@@ -98,7 +98,8 @@ public class MainUI extends AppCompatActivity
     private Menu menu;
 
     //CK CHANGES ON GETTING PICTURE
-    NavigationView navView; View headerView;
+    NavigationView navView;
+    View headerView;
     private DatabaseReference imageRef;
     private StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
     private GlideImageView userProfile;
@@ -128,13 +129,13 @@ public class MainUI extends AppCompatActivity
             imageRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    //url = dataSnapshot.child("photoURL").getValue().toString();
+                    url = dataSnapshot.child("photoURL").getValue().toString();
                     name = dataSnapshot.child("name").getValue().toString();
                     points = dataSnapshot.child("points").getValue().toString();
 
                     userProfileName.setText(name);
                     userProfilePoints.setText(points);
-                    //userProfile.loadImageUrl(url);
+                    userProfile.loadImageUrl(url);
                 }
 
                 @Override
@@ -142,18 +143,6 @@ public class MainUI extends AppCompatActivity
 
                 }
             });
-//            imageStorage.child(currentUser.getUid()).child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                @Override
-//                public void onSuccess(Uri uri) {
-//                    userProfile.setImageURI(uri);
-//                    userProfile.invalidate();
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//
-//                }
-//            });
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -246,6 +235,9 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onRestart() {
         super.onRestart();
+        checkExistRank();
+        checkExistDate();
+        Log.e("hihi", "restart");
         initSteps();
     }
 
@@ -275,8 +267,13 @@ public class MainUI extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
+        dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
+
         checkExistDate();
         checkExistRank();
+
+        initSteps();
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -297,6 +294,8 @@ public class MainUI extends AppCompatActivity
 
             }
         });
+
+        Log.e("Rsume", String.valueOf(savedNumSteps));
 
         txtProgress.setText(savedNumSteps + "\nSTEPS");
 
@@ -323,19 +322,50 @@ public class MainUI extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-        getDailySteps();
-        getAccSteps();
+        monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
+        dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
 
-        System.err.println("HI" + savedNumSteps + " " + dailySteps + " " + accSteps);
+        checkExistDate();
+        checkExistRank();
 
-        int stepDifference = savedNumSteps - dailySteps;
+        rankRef.child(monthYearPath).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                accSteps = dataSnapshot.child("accSteps").getValue(Integer.class);
+                retrieveAccSteps(accSteps);
 
-        accSteps += stepDifference;
+                ref.child(dayDatePath).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        tempSteps = dataSnapshot.child("steps").getValue(Integer.class);
+                        retrieveDailySteps(tempSteps);
 
-        System.err.println("BYE" + accSteps);
 
-        ref.child(dayDatePath).child(uid).child("steps").setValue(savedNumSteps);
-        rankRef.child(monthYearPath).child(uid).child("accSteps").setValue(accSteps);
+                        System.err.println("HI" + savedNumSteps + " " + dailySteps + " " + accSteps);
+
+                        int stepDifference = savedNumSteps - dailySteps;
+
+                        accSteps += stepDifference;
+
+                        System.err.println("BYE" + accSteps);
+
+                        ref.child(dayDatePath).child(uid).child("steps").setValue(savedNumSteps);
+                        rankRef.child(monthYearPath).child(uid).child("accSteps").setValue(accSteps);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         if (isSensorPresent) {
             mSensorManager.unregisterListener(this);
@@ -601,12 +631,27 @@ public class MainUI extends AppCompatActivity
 
         DatabaseReference stepsRef = ref.child(dayDatePath);
 
+/*        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.hasChild(dayDatePath)){
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
         stepsRef.orderByKey().equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
                     StepHistory steps = new StepHistory(0, 0);
                     ref.child(dayDatePath).child(uid).setValue(steps);
+
                 }
             }
 
@@ -622,7 +667,7 @@ public class MainUI extends AppCompatActivity
     public boolean checkExistRank() {
         monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
 
-        DatabaseReference rankStepsRef = ref.child(monthYearPath);
+        DatabaseReference rankStepsRef = rankRef.child(monthYearPath);
 
         rankStepsRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -666,7 +711,7 @@ public class MainUI extends AppCompatActivity
 
     public int retrieveDailySteps(int steps) {
 
-        Log.e("HALO " , String.valueOf(steps));
+        Log.e("HALO ", String.valueOf(steps));
 
         dailySteps = steps;
 
@@ -674,12 +719,14 @@ public class MainUI extends AppCompatActivity
     }
 
     public void getDailySteps() {
+
+        dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
+
         ref.child(dayDatePath).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int steps = dataSnapshot.child("steps").getValue(Integer.class);
-
-                    dailySteps = steps;
+                tempSteps = dataSnapshot.child("steps").getValue(Integer.class);
+                retrieveDailySteps(tempSteps);
             }
 
             @Override
@@ -690,6 +737,8 @@ public class MainUI extends AppCompatActivity
     }
 
     public int getAccSteps() {
+
+        monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
 
         rankRef.child(monthYearPath).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
