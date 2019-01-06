@@ -205,13 +205,13 @@ public class RegisterActivity extends AppCompatActivity{
                             StepHistory steps = new StepHistory(0, 0);
                             stepRefStore = ref.child("stepHistory");
                             stepRefStore.child(dayDatePath).child(uid).setValue(steps);
-
+                          
                             //Create parent node to store user accumulate steps for every month
                             StepsRanking rank = new StepsRanking(0);
                             rankRefStore = ref.child("stepRanking");
                             rankRefStore.child(monthYearPath).child(uid).setValue(rank);
 
-                            Intent intent = new Intent(getApplicationContext(),MainUI.class);
+                            Intent intent = new Intent(getApplicationContext(), MainUI.class);
                             startActivity(intent);
                             Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
                         }

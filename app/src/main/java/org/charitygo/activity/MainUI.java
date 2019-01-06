@@ -98,8 +98,7 @@ public class MainUI extends AppCompatActivity
     private Menu menu;
 
     //CK CHANGES ON GETTING PICTURE
-    View inflatedView;
-    LinearLayout navHeader;
+    NavigationView navView; View headerView;
     private DatabaseReference imageRef;
     private StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
     private GlideImageView userProfile;
@@ -114,11 +113,12 @@ public class MainUI extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main_ui);
-        inflatedView = getLayoutInflater().inflate(R.layout.nav_header_main_ui, null);
-        navHeader = (LinearLayout) inflatedView.findViewById(R.id.navLayout);
-        userProfile = (GlideImageView) navHeader.findViewById(R.id.avatar);
-        userProfileName = (TextView) navHeader.findViewById(R.id.displayName);
-        userProfilePoints = (TextView) navHeader.findViewById(R.id.displayPoints);
+        navView = (NavigationView) findViewById(R.id.nav_view);
+        headerView = getLayoutInflater().from(this).inflate(R.layout.nav_header_main_ui, navView, false);
+        navView.addHeaderView(headerView);
+        userProfile = (GlideImageView) headerView.findViewById(R.id.avatar);
+        userProfileName = (TextView) headerView.findViewById(R.id.displayName);
+        userProfilePoints = (TextView) headerView.findViewById(R.id.displayPoints);
 
         Log.e("Start", "1");
 
@@ -128,13 +128,13 @@ public class MainUI extends AppCompatActivity
             imageRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    url = dataSnapshot.child("photoURL").getValue().toString();
+                    //url = dataSnapshot.child("photoURL").getValue().toString();
                     name = dataSnapshot.child("name").getValue().toString();
                     points = dataSnapshot.child("points").getValue().toString();
 
                     userProfileName.setText(name);
                     userProfilePoints.setText(points);
-                    userProfile.loadImageUrl(url);
+                    //userProfile.loadImageUrl(url);
                 }
 
                 @Override
