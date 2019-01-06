@@ -12,7 +12,7 @@ public class SectionPageAdapter extends FragmentPagerAdapter {
     private final List<Fragment> FragmentList = new ArrayList<>();
     private final List<String> FragmentTitleList = new ArrayList<>();
 
-    public void addFragment(Fragment fragment, String title){
+    public void addFragment(Fragment fragment, String title) {
         FragmentList.add(fragment);
         FragmentTitleList.add(title);
     }
@@ -30,10 +30,13 @@ public class SectionPageAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         return FragmentList.get(i);
-//        switch (i){
-//            case 0: return DonationFragment.newInstance(0, "Donation Page");
-//            case 1: return RedemptionFragment.newInstance(1, "Redemption Page");
-//            default: return null;
+//        switch (i) {
+//            case 0:
+//                return DonationFragment.newInstance(0, "Donation Page");
+//            case 1:
+//                return RedemptionFragment.newInstance(1, "Redemption Page");
+//            default:
+//                return null;
 //        }
     }
 

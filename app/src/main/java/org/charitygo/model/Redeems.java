@@ -4,17 +4,18 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Redeems {
-    String key, userID, rewardsID;
+    String key, userID, rewardsID, rewardDesc;
     private Date redeemDate, expiryDate;
     private int price;
 
     public Redeems() {
     }
 
-    public Redeems(String userID, String rewardsID, int validFor, int price) {
+    public Redeems(String userID, String rewardsID, String company, String desc, int validFor, int price) {
         this.userID = userID;
         this.rewardsID = rewardsID;
         this.price = price;
+        rewardDesc = company + " - " + desc;
 
         Calendar calendar = Calendar.getInstance();
         this.redeemDate = calendar.getTime();
@@ -44,6 +45,14 @@ public class Redeems {
 
     public void setRewardsID(String rewardsID) {
         this.rewardsID = rewardsID;
+    }
+
+    public String getRewardDesc() {
+        return rewardDesc;
+    }
+
+    public void setRewardDesc(String rewardDesc) {
+        this.rewardDesc = rewardDesc;
     }
 
     public Date getRedeemDate() {

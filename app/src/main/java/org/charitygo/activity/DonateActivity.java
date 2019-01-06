@@ -142,7 +142,11 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
+
                 });
+
+                TextView textUserPoints = (TextView) findViewById(R.id.donate_points_user);
+                textUserPoints.setText(userPoints + " points");
 
                 DatabaseReference organizationRef = ref.child("organizations/" + organizationID);
                 organizationRef.addValueEventListener(new ValueEventListener() {
@@ -206,7 +210,7 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         EditText editPoints = (EditText) findViewById(R.id.donate_editText_amount);
         final int points = Integer.parseInt(editPoints.getText().toString());
 
-        Donation donation = new Donation(firebaseUser.getUid(), organizationID, points, new Date());
+        Donation donation = new Donation(firebaseUser.getUid(), organizationID, organization.getName(), points, new Date());
         donationRef.push().setValue(donation);
 
         DatabaseReference organizationRef = ref.child("organizations/" + organizationID);

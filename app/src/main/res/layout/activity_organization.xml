@@ -32,7 +32,7 @@
                 android:foreground="@drawable/gradient_overlay_black"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
-                app:srcCompat="@drawable/city" />
+                app:srcCompat="@drawable/gradient_blue" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
