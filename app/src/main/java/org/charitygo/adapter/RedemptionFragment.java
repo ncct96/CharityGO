@@ -36,17 +36,17 @@ public class RedemptionFragment extends Fragment {
         imageRedemption.setImageDrawable(getResources().getDrawable(R.drawable.lights));
         redemptionList = (RecyclerView) view.findViewById(R.id.redemption_view);
 
-        userRedeem.child("redemptions").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        userRedeem.child("redemptions").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
         return view;
     }
 

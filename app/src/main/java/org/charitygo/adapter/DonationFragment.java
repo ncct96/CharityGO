@@ -39,17 +39,17 @@ public class DonationFragment extends Fragment {
         imageDonation.setImageDrawable(getResources().getDrawable(R.drawable.stars));
         donationList = (RecyclerView) view.findViewById(R.id.donation_view);
 
-        userDonate.child("donations").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        userDonate.child("donations").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
         return view;
     }
 
