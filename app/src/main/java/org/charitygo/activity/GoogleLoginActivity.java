@@ -3,6 +3,8 @@ package org.charitygo.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -58,41 +60,55 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     private DatabaseReference ref = instant.getReference();
     private DatabaseReference dataRef;
 
+    private SignInButton googleSignIn;
     private TextView usernameDisplay; private TextView emailDisplay;
     private String UID; private boolean checkExist;
-    private View progressView; private View loginView; private ProgressBar progressb;
+    private View progressView; private View loginView; private ProgressDialog progressDialog;
 
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//    private void showProgress(final boolean show) {
+//        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+//        // for very easy animations. If available, use these APIs to fade-in
+//        // the progress spinner.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//
+//            //Progress Dialog
+//            int shortAnimTime = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+//
+//            loginView.setVisibility(show ? View.GONE : View.VISIBLE);
+//            loginView.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    loginView.setVisibility(show ? View.GONE : View.VISIBLE);
+//                }
+//            });
+//
+//            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            progressView.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//                }
+//            });
+//        } else {
+//            // The ViewPropertyAnimator APIs are not available, so simply show
+//            // and hide the relevant UI components.
+//            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            loginView.setVisibility(show ? View.GONE : View.VISIBLE);
+//        }
+//    }
 
-            //Progress Dialog
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
 
-            loginView.setVisibility(show ? View.GONE : View.VISIBLE);
-            loginView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    loginView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            loginView.setVisibility(show ? View.GONE : View.VISIBLE);
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
         }
     }
 
@@ -104,16 +120,23 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        progressView = findViewById(R.id.google_login_progress);
-        loginView = findViewById(R.id.google_login_scroll);
+
+        googleSignIn = findViewById(R.id.signInBtn);
+        setGooglePlusButtonText(googleSignIn, "Sign In With Google");
+
+        //Set Progress Dialog
+        progressDialog = new ProgressDialog(GoogleLoginActivity.this);
+        progressDialog.setTitle("Signing In");
+        progressDialog.setMessage("Please Wait For A Moment");
+        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+
+            }
+        });
 
         //Button Listeners
         findViewById(R.id.signInBtn).setOnClickListener(this);
-        findViewById(R.id.signOutBtn).setOnClickListener(this);
-
-        //Text View
-        usernameDisplay = findViewById(R.id.displayUsername);
-        emailDisplay = findViewById(R.id.displayEmail);
 
         googleSignClient = GoogleSignIn.getClient(this, gso);
 
@@ -123,7 +146,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 currentUser = firebaseAuth.getCurrentUser();
                 if(currentUser != null){
-                    //Toast.makeText(GoogleLoginActivity.this, "Logged in Successful!", Toast.LENGTH_SHORT).show();
                     UID = currentUser.getUid();
                     dataRef = ref.child("users").child(UID);
                     dataRef.addValueEventListener(new ValueEventListener() {
@@ -148,12 +170,12 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         }
         if(checkExist && currentUser != null){
             //Redirect to Main Page
-            showProgress(true);
+            progressDialog.dismiss();
             Intent intent = new Intent(this, MainUI.class);
             startActivity(intent);
         }else if (!checkExist && currentUser != null){
             //Redirect to Register Page
-            showProgress(true);
+            progressDialog.dismiss();
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
         }
@@ -168,45 +190,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    private void signOut() {
-        if(currentUser != null){
-            // Firebase sign out
-            fireAuth.signOut();
-            currentUser = null;
-            // Google sign out
-            googleSignClient.signOut().addOnCompleteListener(this,
-                    new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            updateUI(null);
-                        }
-                    });
-        }
-    }
-
-    private void updateUI(FirebaseUser user) {
-        hideProgressDialog();
-        if (user != null ) {
-            usernameDisplay.setText(user.getDisplayName());
-            emailDisplay.setText(user.getEmail());
-
-            usernameDisplay.setVisibility(View.VISIBLE);
-            emailDisplay.setVisibility(View.VISIBLE);
-
-            findViewById(R.id.signInBtn).setVisibility(View.GONE);
-            findViewById(R.id.signOutBtn).setVisibility(View.VISIBLE);
-        } else {
-//            usernameDisplay.setText("Username Signed Out !");
-//            emailDisplay.setText("Email Signed Out !");
-
-            usernameDisplay.setVisibility(View.INVISIBLE);
-            emailDisplay.setVisibility(View.INVISIBLE);
-
-            findViewById(R.id.signInBtn).setVisibility(View.VISIBLE);
-            findViewById(R.id.signOutBtn).setVisibility(View.GONE);
-        }
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -214,28 +197,16 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         fireAuth = FirebaseAuth.getInstance();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = fireAuth.getInstance().getCurrentUser();
+        if(currentUser != null){
+            progressDialog.show();
+        }
         fireAuth.addAuthStateListener(authListener);
-
-        //Get the last signed in users account
-//        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-//        if(acct != null){
-//            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-//            currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    if(task.isSuccessful()){
-//                        Toast.makeText(GoogleLoginActivity.this, "Reauthenticated.", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            });
-//        }
-        updateUI(currentUser);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        progressDialog.show();
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -263,12 +234,10 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             currentUser = fireAuth.getCurrentUser();
-                            //updateUI(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.coordinatorLayout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            updateUI(null);
                         }
                         hideProgressDialog();
                     }
@@ -280,8 +249,6 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         int i = v.getId();
         if( i == R.id.signInBtn){
             signIn();
-        }else if (i == R.id.signOutBtn){
-            signOut();
         }
     }
 }
