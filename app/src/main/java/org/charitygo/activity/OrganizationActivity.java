@@ -28,7 +28,6 @@ public class OrganizationActivity extends AppCompatActivity {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference ref = database.getReference();
     private DatabaseReference organizationRef = ref.child("organizations");
-    private Map<String, Organization> organizations = new HashMap<>();
     static ArrayList<Organization> organizationList = new ArrayList<>();
 
     @Override
