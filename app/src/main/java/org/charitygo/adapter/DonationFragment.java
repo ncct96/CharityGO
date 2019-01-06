@@ -19,12 +19,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.R;
+import org.charitygo.activity.OrganizationActivity;
+import org.charitygo.activity.TransactHistActivity;
+import org.charitygo.model.Donation;
+import org.charitygo.model.Organization;
+
+import java.util.ArrayList;
 
 public class DonationFragment extends Fragment {
     //Firebase Database
-    private FirebaseUser currentUser;
-    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference ref = database.getReference();
+    private DatabaseReference donationRef = ref.child("donations");
     private DatabaseReference userDonate = FirebaseDatabase.getInstance().getReference();
+    private ArrayList<Donation> donations = new ArrayList<>();
 
     //XML Attributes
     private ImageView imageDonation;
@@ -34,29 +43,36 @@ public class DonationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_transact_hist, container, false);
-        imageDonation = (ImageView) view.findViewById(R.id.imageTransact);
-        imageDonation.setImageDrawable(getResources().getDrawable(R.drawable.stars));
-        donationList = (RecyclerView) view.findViewById(R.id.donation_view);
+        final View view = inflater.inflate(R.layout.activity_transact_hist, container, false);
+//        imageDonation = (ImageView) view.findViewById(R.id.imageTransact);
+//        imageDonation.setImageDrawable(getResources().getDrawable(R.drawable.stars));
+        donationRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Donation donation = dataSnapshot1.getValue(Donation.class);
+                    donations.add(donation);
+                }
 
-//        userDonate.child("donations").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+                RecyclerView list = (RecyclerView) view.findViewById(R.id.donation_view);
+                //LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(TransactHistActivity.this);
+                //mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                //list.setLayoutManager(mLinearLayoutManager);
+                DonationAdapter donationAdapter = new DonationAdapter(donations);
+                list.setAdapter(donationAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //donationList = (RecyclerView) view.findViewById(R.id.donation_view);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
     }
 }
