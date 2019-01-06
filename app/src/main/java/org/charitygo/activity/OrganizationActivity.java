@@ -77,6 +77,7 @@ public class OrganizationActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     String key = dataSnapshot1.getKey();
                     Organization organization = dataSnapshot1.getValue(Organization.class);
+                    System.out.println("TEST" + organization);
                     organization.setKey(key);
                     organizationList.add(organization);
                 }
