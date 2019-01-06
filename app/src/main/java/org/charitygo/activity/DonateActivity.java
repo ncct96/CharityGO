@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.DateFormat;
 import org.charitygo.R;
+import org.charitygo.StepService;
 import org.charitygo.model.Donation;
 import org.charitygo.model.Organization;
 import org.charitygo.model.StepHistory;
@@ -48,15 +49,27 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
     private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
     private Organization organization = new Organization();
     private User user = new User();
+    private static long timestamp = System.currentTimeMillis();
+    private DateFormat df = new DateFormat();
+    private String monthYearPath = String.valueOf(df.longToYearMonth(timestamp));
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference ref = database.getReference();
     private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference donationRef = ref.child("donations");
+    private DatabaseReference pointRef = ref.child("stepHistory");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initPoint();
+
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+
+        stopService(intent);
+
         setContentView(R.layout.activity_donate);
 
         organizationID = getIntent().getStringExtra("EXTRA_ID");
@@ -205,5 +218,26 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
         DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
         userRef.child("points").setValue(user.getPoints() + points);
         this.finish();
+    }
+
+    public void initPoint(){
+        pointRef.child(dayDatePath).child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int steps = dataSnapshot.child("steps").getValue(Integer.class);
+                calcPoints(steps);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void calcPoints(int steps){
+        points = steps * 10;
+
+        pointRef.child(dayDatePath).child(firebaseUser.getUid()).child("point").setValue(points);
     }
 }

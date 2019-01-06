@@ -59,7 +59,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.charitygo.activity.LoginActivity" />
+                android:value="org.charitygo.activity.GoogleLoginActivity" />
         </activity>
         <activity
             android:name=".activity.PopUp"
@@ -112,7 +112,7 @@
                 android:value="org.charitygo.activity.OrganizationActivity" />
         </activity>
 
-        <activity android:name=".activity.FragmentPageAdapter"
+        <activity android:name=".activity.FragmentPageActivity"
         android:label="Fragment Page"
         android:screenOrientation="portrait">
         <intent-filter>

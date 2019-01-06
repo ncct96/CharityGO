@@ -23,6 +23,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -65,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity{
     private FirebaseAuth fireAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = fireAuth.getCurrentUser();
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+    private GoogleSignInClient googleSignClient;
 
     private DatabaseReference dataRefStore = ref.child("users");
     private DatabaseReference stepRefStore;
@@ -113,7 +117,9 @@ public class RegisterActivity extends AppCompatActivity{
         maleRadioBtn = (RadioButton) findViewById(R.id.radioButtonMale);
         femaleRadioBtn = (RadioButton) findViewById(R.id.radioButtonFemale);
 
-        email.setText(currentUser.getEmail());
+        if(currentUser != null){
+            email.setText(currentUser.getEmail());
+        }
 
         imagetoUpload = findViewById(R.id.imageView);
         imagetoUpload.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +174,8 @@ public class RegisterActivity extends AppCompatActivity{
 
     public void uploadImageRegister(){
         //uploadURL = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
-        final StorageReference storageImgRef = storageRef.child("images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage));
+        final String photoPath = "images/"+System.currentTimeMillis()+"."+getFileExtension(selectedImage);
+        final StorageReference storageImgRef = storageRef.child(photoPath);
         final UploadTask uploadTask = storageImgRef.putFile(selectedImage);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -189,12 +196,13 @@ public class RegisterActivity extends AppCompatActivity{
                             uploadURL = task.getResult().toString();
                             showProgress(false);
                             //Store the user details entered
-                            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL,0);
+                            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, uploadURL, photoPath, 0);
                             dataRefStore.child(currentUser.getUid()).setValue(newUser);
-                            Intent intent = new Intent(getApplicationContext(),MainUI.class);
+                            Intent intent = new Intent(getApplicationContext(), MainUI.class);
                             startActivity(intent);
                             Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
                         }
+
                     }
                 });
             }
@@ -211,7 +219,9 @@ public class RegisterActivity extends AppCompatActivity{
                 showProgress(true);
             }
         });
-//        //Upload from a local file
+    }
+
+    //        //Upload from a local file
 //        Uri file = Uri.fromFile(new File("path/to/images/tohru.png"));
 //        StorageReference tohruRef = storageRef.child("images/"+file.getLastPathSegment());
 //        UploadTask uploadTask = tohruRef.putFile(file);
@@ -249,7 +259,6 @@ public class RegisterActivity extends AppCompatActivity{
 //                }
 //            }
 //        });
-    }
 
     public void registerAccount(View view) {
         usern = username.getText().toString();
@@ -354,21 +363,34 @@ public class RegisterActivity extends AppCompatActivity{
             }
         } else {
                uploadImageRegister();
-//            Map<String, User> googleUsers = new HashMap<>();
-////            Map<String, StepHistory> userSteps = new HashMap<>();
-//            User userClass = new User(usern, currentUser.getEmail(), phone, genStr, 0);
-//            StepHistory steps = new StepHistory(uid, System.currentTimeMillis() , System.currentTimeMillis(), 0, 0);
-//            googleUsers.put(userClass.name, userClass);
-///*            userSteps.put(uid, steps);*/
-//            dataRefStore = ref.child("user");
-//            dataRefStore.child(uid).setValue(googleUsers);
-//            stepRefStore = ref.child("stepHistory");
-//            stepRefStore.child(uid).setValue(steps);
+
+//            User newUser = new User(usern, currentUser.getEmail(), phone, genStr, 0);
+//            dataRefStore.child(currentUser.getUid()).setValue(newUser);
+
+            //Create new step history for newly registered user
+            String uid = currentUser.getUid();
+            StepHistory steps = new StepHistory(0, 0);
+            stepRefStore = ref.child("stepHistory");
+            stepRefStore.child(dayDatePath).child(uid).setValue(steps);
+
+            Intent intent = new Intent(getApplicationContext(),MainUI.class);
+            startActivity(intent);
+            Toast.makeText(RegisterActivity.this, "Successfully Registered !",Toast.LENGTH_LONG).show();
         }
     }
 
     public void cancelRegister(View view) {
-        this.finish();
+        FirebaseAuth.getInstance().signOut();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        googleSignClient = GoogleSignIn.getClient(this, gso);
+        googleSignClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) { }
+        });
+        startActivity(new Intent(this, GoogleLoginActivity.class));
     }
 
     @Override

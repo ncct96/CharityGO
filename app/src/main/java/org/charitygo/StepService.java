@@ -161,7 +161,7 @@ public class StepService extends Service implements SensorEventListener {
         super.onDestroy();
         if (mStepDetectorSensor != null) {
             mSensorManager.unregisterListener(this);
-        }
+    }
         Toast.makeText(this, "Background service stopping", Toast.LENGTH_SHORT).show();
     }
 
