@@ -5,18 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    tools:context=".activity.FragmentPageActivity">
-
-    <!--<com.astuetz.PagerSlidingTabStrip-->
-        <!--android:id="@+id/tabs"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="48dip"-->
-        <!--/>-->
-    <!--app:pstsTabPaddingLeftRight="14dp"-->
-    <!--app:pstsDividerColor="@color/green"-->
-    <!--app:pstsIndicatorColor="@color/red"-->
-    <!--app:pstsUnderlineColor="@color/blue"-->
+    tools:context=".activity.HistoryActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -27,7 +16,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorTextPrimary"/>
+            android:background="@color/colorTextPrimary" />
 
     </android.support.design.widget.AppBarLayout>
 

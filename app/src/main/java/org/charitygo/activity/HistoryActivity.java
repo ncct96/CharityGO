@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -16,13 +17,14 @@ import org.charitygo.adapter.DonationFragment;
 import org.charitygo.adapter.RedemptionFragment;
 import org.charitygo.adapter.SectionPageAdapter;
 
-public class FragmentPageActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity {
 
     FragmentPagerAdapter adapterViewPager;
     private SectionPageAdapter sectionPageAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.fragment_pager);
 
         sectionPageAdapter = new SectionPageAdapter(getSupportFragmentManager());

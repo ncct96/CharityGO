@@ -1,13 +1,12 @@
 package org.charitygo.adapter;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,32 +17,47 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.R;
+import org.charitygo.model.Redeems;
+
+import java.util.ArrayList;
 
 public class RedemptionFragment extends Fragment {
     //Firebase Database
-    private FirebaseUser currentUser;
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference userRedeem = FirebaseDatabase.getInstance().getReference();
+    private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference ref = database.getReference();
+    private DatabaseReference voucherRef = ref.child("vouchers");
+    private ArrayList<Redeems> vouchers = new ArrayList<>();
 
-    private ImageView imageRedemption;
-    private RecyclerView redemptionList;
+    //XML Attributes
+    private RecyclerView list;
+
     // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_redempt_hist, container, false);
-        imageRedemption = (ImageView) view.findViewById(R.id.imageRedempt);
-        imageRedemption.setImageDrawable(getResources().getDrawable(R.drawable.lights));
-        redemptionList = (RecyclerView) view.findViewById(R.id.redemption_view);
+        final View view = inflater.inflate(R.layout.activity_voucher_hist, container, false);
+        list = (RecyclerView) view.findViewById(R.id.voucher_view);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this.getContext());
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        list.setLayoutManager(mLinearLayoutManager);
 
-        userRedeem.child("redemptions").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+        voucherRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    for(DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
+                        Redeems voucher = dataSnapshot2.getValue(Redeems.class);
+                        if (voucher.getUserID().equals(firebaseUser.getUid()))
+                            vouchers.add(voucher);
+                    }
+                }
+                VoucherAdapter voucherAdapter = new VoucherAdapter(vouchers);
+                list.setAdapter(voucherAdapter);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
@@ -53,7 +67,5 @@ public class RedemptionFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
     }
 }

@@ -516,6 +516,11 @@ public class MainUI extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void goToHistory(MenuItem item) {
+        Intent intent = new Intent(this, HistoryActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         txtProgress.setText(++savedNumSteps + "\nSTEPS");
