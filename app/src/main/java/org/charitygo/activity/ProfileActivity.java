@@ -236,7 +236,7 @@ public class ProfileActivity extends AppCompatActivity {
                     getUserProfileGender.setText(gender);
                     userProfileUsername.setText(name);
                     userProfilePointsAccu.setText(points);
-                    userProfile.loadImageUrl(url);
+                    Glide.with(getApplicationContext()).load(url).into(userProfile);
                     changeUI();
                 }
 

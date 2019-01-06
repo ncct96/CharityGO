@@ -33,6 +33,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -121,6 +123,8 @@ public class MainUI extends AppCompatActivity
         userProfileName = (TextView) headerView.findViewById(R.id.displayName);
         userProfilePoints = (TextView) headerView.findViewById(R.id.displayPoints);
 
+//        Glide.with(context).load(url).bitmapTransform(new GrayscaleTransformation(getContext())).into(imageView);
+
         Log.e("Start", "1");
 
         if (currentUser != null) {
@@ -132,10 +136,9 @@ public class MainUI extends AppCompatActivity
                     url = dataSnapshot.child("photoURL").getValue().toString();
                     name = dataSnapshot.child("name").getValue().toString();
                     points = dataSnapshot.child("points").getValue().toString();
-
                     userProfileName.setText(name);
                     userProfilePoints.setText(points);
-                    userProfile.loadImageUrl(url);
+                    Glide.with(getApplicationContext()).load(url).into(userProfile);
                 }
 
                 @Override
