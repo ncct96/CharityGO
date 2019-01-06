@@ -29,6 +29,7 @@ import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.Donation;
 import org.charitygo.model.Organization;
+import org.charitygo.model.StepHistory;
 import org.charitygo.model.User;
 
 import java.util.Date;
@@ -43,7 +44,9 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
     private static int maxPoints;
     private String organizationID;
     private String userID;
-    private double availablePoint;
+    private DateFormat df = new DateFormat();
+    private static long timestamp = System.currentTimeMillis();
+    private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
     private Organization organization = new Organization();
     private User user = new User();
     private static long timestamp = System.currentTimeMillis();
@@ -122,12 +125,11 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void initializeUIValues() {
-        DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
-        userRef.addValueEventListener(new ValueEventListener() {
+        ref.child("stepHistory").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                user = dataSnapshot.getValue(User.class);
-                userPoints = user.getPoints();
+                StepHistory steps = dataSnapshot.child(dayDatePath).child(firebaseUser.getUid()).getValue(StepHistory.class);
+                userPoints = steps.getSteps() / 10;
 
                 TextView textUserPoints = (TextView) findViewById(R.id.donate_points_user);
                 textUserPoints.setText(userPoints + " points");
@@ -156,6 +158,19 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
 
                     }
                 });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
             }
 
             @Override
@@ -199,6 +214,9 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
 
         DatabaseReference organizationRef = ref.child("organizations/" + organizationID);
         organizationRef.child("points").setValue(organization.getPoints() - points);
+
+        DatabaseReference userRef = ref.child("users/" + firebaseUser.getUid());
+        userRef.child("points").setValue(user.getPoints() + points);
         this.finish();
     }
 
