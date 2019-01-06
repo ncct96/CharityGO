@@ -673,7 +673,7 @@ public class MainUI extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
-                    StepsRanking rank = new StepsRanking(0);
+                    StepsRanking rank = new StepsRanking(0, currentUser.getDisplayName());
                     rankRef.child(monthYearPath).child(uid).setValue(rank);
                 }
             }

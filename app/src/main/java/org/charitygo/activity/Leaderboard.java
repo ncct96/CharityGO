@@ -27,6 +27,7 @@ import org.charitygo.DateFormat;
 import org.charitygo.R;
 import org.charitygo.adapter.LeaderboardAdapter;
 import org.charitygo.model.LeaderInfo;
+import org.charitygo.model.StepsRanking;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class Leaderboard extends AppCompatActivity {
     private int dayDatePath = df.longToYearMonthDay(timestamp);
 
     private List<LeaderInfo> leaderList = new ArrayList<>();
+    private List<StepsRanking> rankList = new ArrayList<>();
     static String[] nameArray = {"Cupcake", "Donut", "Eclair", "Froyo", "Gingerbread", "Honeycomb", "Ice Cream Sandwich", "JellyBean", "Kitkat", "Lollipop"};
     static String[] versionArray = {"1.5", "1.6", "2.0-2.1", "2.2-2.2.3", "2.3-2.3.7", "3.0-3.2.6", "4.0-4.0.4", "4.1-4.3.1", "4.4-4.4.4", "5.0-5.1.1"};
     static Integer[] imageArray = {R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal};
@@ -51,16 +53,8 @@ public class Leaderboard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadLeaderboard();
-        LeaderboardAdapter adapter = new LeaderboardAdapter(leaderList);
         setContentView(R.layout.activity_leaderboard);
-        RecyclerView recList = (RecyclerView) findViewById(R.id.rank_recycler_view);
-        recList.setHasFixedSize(true);
-        recList.setAdapter(adapter);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
-        recList.setNestedScrollingEnabled(false);
+        loadLeaderboard();
         //getData();
 
     }
@@ -87,15 +81,29 @@ public class Leaderboard extends AppCompatActivity {
     }*/
 
     public void loadLeaderboard() {
-        int rankSize = 10;
+        int rankSize = 3;
 
         String month = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
 
 
-        ref.child(month).orderByKey().orderByChild("ooo").addValueEventListener(new ValueEventListener() {
+        ref.child(month).orderByChild("accSteps").limitToFirst(3).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println("abcde  " + dataSnapshot.getValue());
+                for(DataSnapshot rankSnapShot : dataSnapshot.getChildren()){
+                    System.out.println(rankSnapShot.getValue(StepsRanking.class));
+                    StepsRanking ranker = rankSnapShot.getValue(StepsRanking.class);
+                    System.out.println("TEST" + ranker);
+                    rankList.add(ranker);
+                }
+
+                LeaderboardAdapter adapter = new LeaderboardAdapter(Leaderboard.this, rankList);
+                RecyclerView recList = (RecyclerView) findViewById(R.id.rank_recycler_view);
+                recList.setHasFixedSize(true);
+                recList.setAdapter(adapter);
+                LinearLayoutManager llm = new LinearLayoutManager(Leaderboard.this);
+                llm.setOrientation(LinearLayoutManager.VERTICAL);
+                recList.setLayoutManager(llm);
+                recList.setNestedScrollingEnabled(false);
             }
 
             @Override
@@ -104,11 +112,9 @@ public class Leaderboard extends AppCompatActivity {
             }
         });
 
-
-        for (int i = 0; i < rankSize; i++) {
-            LeaderInfo li = new LeaderInfo(imageArray[i], nameArray[i], 1000);
-            leaderList.add(li);
-        }
+/*        for (int i = 0; i < rankSize; i++) {
+            System.out.println(rankList.get(i).getName());
+        }*/
     }
 
 
