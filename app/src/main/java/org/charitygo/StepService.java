@@ -70,7 +70,7 @@ public class StepService extends Service implements SensorEventListener {
         try {
             uid = currentUser.getUid();
         } catch (Exception e) {
-            
+
         }
 
         mSensorManager = (SensorManager)
