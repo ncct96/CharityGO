@@ -85,7 +85,6 @@ public class RegisterActivity extends AppCompatActivity{
     private String usern;
     private String phone;
     private String genStr;
-    private String uriImage;
 
     private ProgressDialog progressDialog;
 
@@ -205,7 +204,7 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     public void registerAccount(View view) {
-        boolean notValid = false;
+        boolean notValid = false; boolean genderNotValid = true;
         View focusView = null;
         usern = username.getText().toString();
         phone = contactNum.getText().toString();
@@ -218,7 +217,6 @@ public class RegisterActivity extends AppCompatActivity{
         int index = gender.indexOfChild(radiobtn);
 
         //Get Uri of Image
-        uriImage = imagetoUpload.getTag().toString();
 
         //Get the text of radio button in radio group
         RadioButton gend = (RadioButton) gender.getChildAt(index);
@@ -226,8 +224,8 @@ public class RegisterActivity extends AppCompatActivity{
             genStr = gend.getText().toString();
         }
 
-        if(uriImage.equals(null)){
-            focusView = imagetoUpload;
+        if(imagetoUpload.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.clicktoupload).getConstantState()){
+            Toast.makeText(RegisterActivity.this, "Please Upload Your Profile Picture !",Toast.LENGTH_LONG).show();
             notValid = true;
         }
 
@@ -272,10 +270,10 @@ public class RegisterActivity extends AppCompatActivity{
         } else if(gen >= 1){
             maleRadioBtn.setError(null);
             femaleRadioBtn.setError(null);
-            notValid = false;
+            genderNotValid = false;
         }
 
-        if(notValid){
+        if(notValid || genderNotValid){
             if(focusView!=null){
                 focusView.requestFocus();
             }
