@@ -170,7 +170,6 @@ public class StepService extends Service implements SensorEventListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         startServiceForeground(intent, flags, startId);
         initSteps();
-        notification.number = stepCounts;
         Log.e("Steps", String.valueOf(stepCounts));
         Toast.makeText(this, "Background service starting", Toast.LENGTH_SHORT).show();
         return START_STICKY;
@@ -219,7 +218,6 @@ public class StepService extends Service implements SensorEventListener {
             stepCounts++;
         }
 
-        notification.number = stepCounts;
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         stepsRef = ref.child("stepHistory");
         rankRef = ref.child("stepRanking");
