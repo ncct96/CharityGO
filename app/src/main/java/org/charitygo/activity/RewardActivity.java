@@ -1,8 +1,10 @@
 package org.charitygo.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +29,7 @@ public class RewardActivity extends AppCompatActivity {
     private DatabaseReference ref = database.getReference();
     private DatabaseReference rewardRef = ref.child("rewards");
     static ArrayList<Reward> rewardList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +49,24 @@ public class RewardActivity extends AppCompatActivity {
         rewardRef.push().setValue(new Reward("Nya!", "Nya", "Nya nya nya nya nya nya nya nya nya nya nya nya nya nya!", "NYA", 1, R.drawable.borger, 0));
     }
 
-    private void createViews(){
+    private void createViews() {
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                } else {
+                    setErrorMessage();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         rewardList.clear();
         rewardRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -76,5 +96,19 @@ public class RewardActivity extends AppCompatActivity {
         Intent intent = new Intent(this, VoucherActivity.class);
         intent.putExtra("EXTRA_ID", String.valueOf(view.getId()));
         startActivity(intent);
+    }
+
+    private void setErrorMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RewardActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        builder.setTitle("Unable to contact server");
+        builder.setMessage("Please check your internet settings and try again");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                RewardActivity.this.finish();
+            }
+        });
+        builder.show();
     }
 }
