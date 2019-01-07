@@ -48,7 +48,6 @@ import com.master.glideimageview.GlideImageView;
 
 import org.charitygo.Constants;
 import org.charitygo.DateFormat;
-import org.charitygo.GraphActivity;
 import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.StepHistory;
@@ -642,7 +641,7 @@ public class MainUI extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
-                    StepHistory steps = new StepHistory(0, 0);
+                    StepHistory steps = new StepHistory(0, 0, dayDatePath);
                     ref.child(dayDatePath).child(uid).setValue(steps);
 
                 }

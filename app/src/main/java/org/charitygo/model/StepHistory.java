@@ -13,12 +13,14 @@ import java.util.Date;
 
 public class StepHistory {
     public int steps, point;
+    public String key;
 
     public StepHistory() {
     }
 
-    public StepHistory(int steps, int point) {
+    public StepHistory(int steps, int point, String key) {
         this.steps = steps;
+        this.key = key;
         this.point = point;
     }
 
@@ -40,5 +42,13 @@ public class StepHistory {
     @Exclude
     public void setPoint(int point) {
         this.point = point;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
