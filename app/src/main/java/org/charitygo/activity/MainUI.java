@@ -244,22 +244,19 @@ public class MainUI extends AppCompatActivity
         monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
         dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
 
-        checkExistDate();
-        checkExistRank();
+        dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
 
-        initSteps();
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        intent.putExtra("steps", savedNumSteps);
+        stopService(intent);
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference stepsRef = ref.child(dayDatePath);
+
+/*        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
-                if (steps != null) {
-                    savedNumSteps = steps.getSteps();
-                    Log.e("ResumeTesting", String.valueOf(savedNumSteps));
-                    retrieveData(steps.getSteps());
-                    goal = (savedNumSteps * 100) / 100;
-                    txtProgress.setText(savedNumSteps + "\nSTEPS");
-                    progressBar.setProgress(Math.round(goal));
+                if(!dataSnapshot.hasChild(dayDatePath)){
+
                 }
             }
 
@@ -267,11 +264,67 @@ public class MainUI extends AppCompatActivity
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+        });*/
+
+        stepsRef.orderByKey().equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
+                    StepHistory steps = new StepHistory(0, 0, dayDatePath);
+                    ref.child(dayDatePath).child(uid).setValue(steps);
+
+                }
+
+                monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
+
+                DatabaseReference rankStepsRef = rankRef.child(monthYearPath);
+
+                rankStepsRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
+                            StepsRanking rank = new StepsRanking(0, currentUser.getDisplayName(), dataSnapshot.getKey());
+                            rankRef.child(monthYearPath).child(uid).setValue(rank);
+                        }
+                        initSteps();
+
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                StepHistory steps = dataSnapshot.child(dayDatePath).child(currentUser.getUid()).getValue(StepHistory.class);
+                                if (steps != null) {
+                                    savedNumSteps = steps.getSteps();
+                                    Log.e("ResumeTesting", String.valueOf(savedNumSteps));
+                                    retrieveData(steps.getSteps());
+                                    goal = (savedNumSteps * 100) / 100;
+                                    txtProgress.setText(savedNumSteps + "\nSTEPS");
+                                    progressBar.setProgress(Math.round(goal));
+                                }
+
+                                Log.e("Rsume", String.valueOf(savedNumSteps));
+
+                                txtProgress.setText(savedNumSteps + "\nSTEPS");
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
         });
-
-        Log.e("Rsume", String.valueOf(savedNumSteps));
-
-        txtProgress.setText(savedNumSteps + "\nSTEPS");
 
         if (isSensorPresent) {
             mSensorManager.registerListener(this, mSensor,
