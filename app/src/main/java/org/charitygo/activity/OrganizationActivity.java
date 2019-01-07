@@ -1,5 +1,6 @@
 package org.charitygo.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,12 +28,13 @@ public class OrganizationActivity extends AppCompatActivity {
     private DatabaseReference ref = database.getReference();
     private DatabaseReference organizationRef = ref.child("organizations");
     static ArrayList<Organization> organizationList = new ArrayList<>();
-
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organization);
 
+        context = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -83,7 +85,7 @@ public class OrganizationActivity extends AppCompatActivity {
                 LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(OrganizationActivity.this);
                 mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 list.setLayoutManager(mLinearLayoutManager);
-                OrganizationAdapter organizationAdapter = new OrganizationAdapter(OrganizationActivity.this, organizationList);
+                OrganizationAdapter organizationAdapter = new OrganizationAdapter(context, organizationList);
                 list.setAdapter(organizationAdapter);
             }
 
