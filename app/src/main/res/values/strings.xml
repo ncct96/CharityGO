@@ -76,7 +76,7 @@
     <string name="verify_btn">Verify</string>
     <string name="recreate_label">Recreate Password</string>
     <string name="save_btn">Save</string>
-    <string name="welcome_message">Welcome To Charity Go !</string>
+    <string name="welcome_message">Welcome to Charity Go !</string>
 
     <!--Organization Info-->
     <string name="title_activity_organization_info">Organization Info</string>
