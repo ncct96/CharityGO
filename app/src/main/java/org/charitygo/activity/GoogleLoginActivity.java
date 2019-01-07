@@ -172,15 +172,19 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         }
         if(checkExist && currentUser != null){
             //Redirect to Main Page
-            progressDialog.dismiss();
             Intent intent = new Intent(this, MainUI.class);
             startActivity(intent);
         }else if (!checkExist && currentUser != null){
             //Redirect to Register Page
-            progressDialog.dismiss();
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        progressDialog.dismiss();
     }
 
     private void signIn() {

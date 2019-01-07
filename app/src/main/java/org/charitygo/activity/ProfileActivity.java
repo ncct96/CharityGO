@@ -76,6 +76,12 @@ public class ProfileActivity extends AppCompatActivity {
     private String url; private String path; private String name; private String points; private String gender; private String email; private String number;
     private Uri uriImg; private Uri selectedImage; private String uploadURL;
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        progressDialog.dismiss();
+    }
+
     public String getFileExtension(Uri uri){
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -106,7 +112,6 @@ public class ProfileActivity extends AppCompatActivity {
                             userData.child("photoURL").setValue(uploadURL);
                             userData.child("photoPath").setValue(photoPath);
                             Toast.makeText(ProfileActivity.this, "Image Changed",Toast.LENGTH_LONG).show();
-                            progressDialog.dismiss();
                         }
                     }
                 });
@@ -115,7 +120,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(ProfileActivity.this, "Image Unable To be Upload", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override

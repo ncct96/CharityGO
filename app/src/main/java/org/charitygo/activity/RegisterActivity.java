@@ -90,6 +90,12 @@ public class RegisterActivity extends AppCompatActivity{
     private String dayDatePath = String.valueOf(df.longToYearMonthDay(timestamp));
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        progressDialog.dismiss();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
