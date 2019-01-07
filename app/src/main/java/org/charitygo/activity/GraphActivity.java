@@ -141,7 +141,7 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
 
                 XAxis xAxis = chart.getXAxis();
                 xAxis.setValueFormatter(new MyXValueFormatter(month));
-                xAxis.setGranularity(0f);
+                xAxis.setGranularity(1f);
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
             }
