@@ -219,6 +219,7 @@ public class ProfileActivity extends AppCompatActivity {
                     url = dataSnapshot.child("photoURL").getValue().toString();
                     path = dataSnapshot.child("photoPath").getValue().toString();
                     name = dataSnapshot.child("name").getValue().toString();
+                    points = dataSnapshot.child("points").getValue().toString();
                     gender = dataSnapshot.child("gender").getValue().toString();
                     number = dataSnapshot.child("contactNumber").getValue().toString();
                     email = currentUser.getEmail();
