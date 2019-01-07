@@ -24,7 +24,7 @@
             android:foreground="?android:attr/selectableItemBackground"
             android:onClick="navigateSponsor"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/valkyria" />
+            android:src="@drawable/valkyria" />
         <!--Swap this in for a gradient overlay instead-->
         <!--android:foreground="@drawable/gradient_overlay_gray"-->
 
@@ -40,7 +40,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:padding="18dp"
-                android:text="Card"
+                android:text="McDonald"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorTextPrimary"
                 android:textSize="20sp"
