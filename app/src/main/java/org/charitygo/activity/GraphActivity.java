@@ -54,6 +54,7 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_graph);
 
         final LineChart chart = (LineChart) findViewById(R.id.chart);
@@ -63,14 +64,19 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
         chart.setDragEnabled(true);
         chart.setTouchEnabled(true);
         chart.setScaleEnabled(true);
+        chart.getDescription().setText(df.getMonthString(timestamp));
+        chart.getDescription().setTextSize(40f);
+        chart.getDescription().setPosition(1300f,100f);
+        chart.getDescription().setTextColor(R.color.orange);
+        chart.getAxisRight().setDrawLabels(false);
 
-        LimitLine upper_limit = new LimitLine(10000f, "Healthy");
+        LimitLine upper_limit = new LimitLine(3000f, "Healthy");
         upper_limit.setLineWidth(4f);
         upper_limit.enableDashedLine(10f,10f,0f);
         upper_limit.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
         upper_limit.setTextSize(15f);
 
-        LimitLine lower_limit = new LimitLine(10000f, "Unhealthy");
+        LimitLine lower_limit = new LimitLine(1000f, "Unhealthy");
         lower_limit.setLineWidth(4f);
         lower_limit.enableDashedLine(10f,10f,0f);
         lower_limit.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
@@ -79,8 +85,8 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(upper_limit);
-        leftAxis.setAxisMinimum(25f);
-        leftAxis.setAxisMaximum(100f);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(4000f);
         leftAxis.enableGridDashedLine(10f,10f,0);
         leftAxis.setDrawLimitLinesBehindData(true);
 
@@ -89,7 +95,6 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
 
         Log.e("1", firstday);
         Log.e("1", lastday);
-
 
         ref.orderByKey().startAt(firstday).endAt(lastday).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -110,12 +115,17 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
                 for (int i = 0; i < stepsList.size(); i++) {
                     System.out.println("LOL" + stepsList.get(i).getSteps());
                     yValues.add(new Entry(i, stepsList.get(i).getSteps()));
-                    month[i] = stepsList.get(i).getKey();
+                    int date = Integer.parseInt(stepsList.get(i).getKey());
+                    int day = date % 100;
+                    if(day < 10){
+                        day = day % 10;
+                    }
+                    month[i] = String.valueOf(day);
                 }
 
                 System.out.println("TEST" + month);
 
-                LineDataSet set1 = new LineDataSet(yValues, "Monthly History");
+                LineDataSet set1 = new LineDataSet(yValues, "Daily Steps");
 
                 set1.setFillAlpha(110);
                 set1.setLineWidth(7f);
@@ -126,10 +136,12 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
                 LineData data = new LineData(dataSets);
 
                 chart.setData(data);
+                chart.invalidate();
 
                 XAxis xAxis = chart.getXAxis();
                 xAxis.setValueFormatter(new MyXValueFormatter(month));
                 xAxis.setGranularity(1f);
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
             }
 
@@ -138,6 +150,7 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
 
             }
         });
+
     }
 
     @Override

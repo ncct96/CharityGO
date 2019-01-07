@@ -186,7 +186,8 @@
             android:label="@string/title_activity_setting"
             android:parentActivityName=".activity.MainUI"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.GraphActivity"></activity>
+        <activity android:name=".activity.GraphActivity"
+            android:label="Monthly Graph"></activity>
 
         <receiver android:name=".NotifyBroadcast"/>
     </application>

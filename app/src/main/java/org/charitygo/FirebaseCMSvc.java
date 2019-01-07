@@ -9,6 +9,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONObject;
+
 public class FirebaseCMSvc extends FirebaseMessagingService {
     private Context mCtx;
 
@@ -17,7 +19,6 @@ public class FirebaseCMSvc extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
 
         if (remoteMessage.getData().size() > 0) {
-
         }
         String title = remoteMessage.getNotification().getTitle();
         String message = remoteMessage.getNotification().getBody();
@@ -31,6 +32,7 @@ public class FirebaseCMSvc extends FirebaseMessagingService {
             PowerManager.WakeLock wl_cpu = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "APP:SCREENLOCK");
             wl_cpu.acquire(10000);
         }
+
 
     }
 }
