@@ -38,6 +38,10 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:padding="18dp"
+                android:shadowColor="@android:color/black"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="1.5"
                 android:text="Card"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorTextPrimary"
@@ -52,12 +56,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="18dp"
+                android:shadowColor="@android:color/black"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="1.5"
                 android:text="0 points more"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorTextPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold"
-
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent" />
 
