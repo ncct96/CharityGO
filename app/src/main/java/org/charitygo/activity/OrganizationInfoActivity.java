@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -61,6 +62,9 @@ public class OrganizationInfoActivity extends AppCompatActivity {
 
                 TextView email = (TextView) findViewById(R.id.info_email);
                 email.setText(organization.getEmail());
+
+                ImageView imageView = findViewById(R.id.backdrop);
+                imageView.setImageResource(organization.getDrawable());
 
                 FloatingActionButton sendMail = (FloatingActionButton) findViewById(R.id.info_sendMail);
                 sendMail.setOnClickListener(new View.OnClickListener() {
