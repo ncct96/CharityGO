@@ -71,7 +71,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView userProfileEmail;
     private TextView userProfileNumber;
     private TextView userProfileUsername;
-    private TextView userProfilePointsAccu;
     private TextView getUserProfileGender;
     private String url; private String path; private String name; private String points; private String gender; private String email; private String number;
     private Uri uriImg; private Uri selectedImage; private String uploadURL;
@@ -172,7 +171,6 @@ public class ProfileActivity extends AppCompatActivity {
         userProfileEmail = (TextView) findViewById(R.id.email);
         userProfileNumber = (TextView) findViewById(R.id.contactnum);
         userProfileUsername = (TextView) findViewById(R.id.username);
-        userProfilePointsAccu = (TextView) findViewById(R.id.points);
         getUserProfileGender = (TextView) findViewById(R.id.gender);
 
         userProfile.setOnClickListener(new View.OnClickListener() {
@@ -221,7 +219,6 @@ public class ProfileActivity extends AppCompatActivity {
                     url = dataSnapshot.child("photoURL").getValue().toString();
                     path = dataSnapshot.child("photoPath").getValue().toString();
                     name = dataSnapshot.child("name").getValue().toString();
-                    points = dataSnapshot.child("points").getValue().toString();
                     gender = dataSnapshot.child("gender").getValue().toString();
                     number = dataSnapshot.child("contactNumber").getValue().toString();
                     email = currentUser.getEmail();
@@ -233,7 +230,6 @@ public class ProfileActivity extends AppCompatActivity {
                     userProfileNumber.setText(number);
                     getUserProfileGender.setText(gender);
                     userProfileUsername.setText(name);
-                    userProfilePointsAccu.setText(points);
                     Glide.with(getApplicationContext()).load(url).into(userProfile);
                     changeUI();
                 }
@@ -296,9 +292,11 @@ public class ProfileActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!Gender.getText().toString().equals(getUserProfileGender.getText().toString())){
                     String genderChg = Gender.getText().toString();
-                    GenderView.setText(genderChg);
                     if(!genderChg.equals("") && (genderChg.equals("Male")|| genderChg.equals("Female"))){
+                        GenderView.setText(genderChg);
                         userData.child("gender").setValue(genderChg);
+                    }else {
+                        Toast.makeText(ProfileActivity.this, "Please only enter either 'Male' or 'Female'", Toast.LENGTH_LONG);
                     }
                 }
             }
