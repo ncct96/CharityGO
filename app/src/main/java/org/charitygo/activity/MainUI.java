@@ -1,8 +1,10 @@
 package org.charitygo.activity;
 
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,6 +12,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -55,6 +58,8 @@ import org.charitygo.model.StepHistory;
 import org.charitygo.model.StepsRanking;
 import org.charitygo.model.User;
 
+import java.net.InetAddress;
+
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
 
@@ -98,9 +103,39 @@ public class MainUI extends AppCompatActivity
     private String name;
     private String points;
 
+    public boolean isNetworkConnected(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+    public boolean isInternatAvailable(){
+        try{
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+        }catch(Exception e){
+            return false;
+        }
+    }
+
+    public AlertDialog.Builder buildDialog (Context c){
+        AlertDialog.Builder build = new AlertDialog.Builder(c);
+        build.setTitle("No Internet Connection");
+        build.setMessage("Please Ensure You Have an Internet Connection");
+        build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        return build;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!isNetworkConnected() && !isInternatAvailable()){
+            buildDialog(MainUI.this);
+        }
 
         setContentView(R.layout.activity_main_ui);
         navView = (NavigationView) findViewById(R.id.nav_view);
@@ -124,7 +159,7 @@ public class MainUI extends AppCompatActivity
                     name = dataSnapshot.child("name").getValue().toString();
                     points = dataSnapshot.child("points").getValue().toString();
                     userProfileName.setText(name);
-                    userProfilePoints.setText(points);
+                    userProfilePoints.setText("Current Points : " + points);
                     Glide.with(getApplicationContext()).load(url).into(userProfile);
                 }
 
