@@ -61,6 +61,7 @@ public class RedemptionFragment extends Fragment {
 
             }
         });
+
         return view;
     }
 
