@@ -3,9 +3,13 @@ package org.charitygo.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -44,6 +48,7 @@ import org.charitygo.R;
 import org.charitygo.model.User;
 
 import java.lang.reflect.Field;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,39 +70,35 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     private String UID; private boolean checkExist;
     private View progressView; private View loginView; private ProgressDialog progressDialog;
 
-//    private void showProgress(final boolean show) {
-//        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-//        // for very easy animations. If available, use these APIs to fade-in
-//        // the progress spinner.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-//
-//            //Progress Dialog
-//            int shortAnimTime = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-//
-//            loginView.setVisibility(show ? View.GONE : View.VISIBLE);
-//            loginView.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    loginView.setVisibility(show ? View.GONE : View.VISIBLE);
-//                }
-//            });
-//
-//            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            progressView.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//                }
-//            });
-//        } else {
-//            // The ViewPropertyAnimator APIs are not available, so simply show
-//            // and hide the relevant UI components.
-//            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            loginView.setVisibility(show ? View.GONE : View.VISIBLE);
-//        }
-//    }
+    public boolean isNetworkConnected(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+    public boolean isInternatAvailable(){
+        try{
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+        }catch(Exception e){
+            return false;
+        }
+    }
+
+    public Dialog buildDialog (Context c){
+        AlertDialog.Builder build = new AlertDialog.Builder(c);
+        build.setTitle("No Internet Connection");
+        build.setMessage("This app require internet. \nPlease retry your connections.");
+        build.setCancelable(false);
+        build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        Dialog dialog = build.create();
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
+    }
 
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
         // Find the TextView that is inside of the SignInButton and set its text
@@ -127,7 +128,8 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         //Set Progress Dialog
         progressDialog = new ProgressDialog(GoogleLoginActivity.this);
         progressDialog.setTitle("Signing In");
-        progressDialog.setMessage("Please Wait For A Moment");
+        progressDialog.setMessage("Please wait for a moment");
+        progressDialog.setCancelable(false); progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
@@ -193,14 +195,18 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onStart() {
         super.onStart();
-        //Start initialize authentication
         fireAuth = FirebaseAuth.getInstance();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = fireAuth.getInstance().getCurrentUser();
-        if(currentUser != null){
-            progressDialog.show();
-        }
         fireAuth.addAuthStateListener(authListener);
+        if(!isNetworkConnected() && !isInternatAvailable()){
+            buildDialog(GoogleLoginActivity.this).show();
+        }else{
+            if(currentUser != null){
+                //Start initialize authentication
+                progressDialog.show();
+            }
+        }
     }
 
     @Override
