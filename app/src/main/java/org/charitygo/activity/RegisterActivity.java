@@ -270,7 +270,7 @@ public class RegisterActivity extends AppCompatActivity{
         }
     }
 
-    public void cancelRegister(View view) {
+    private void signOut(){
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -281,6 +281,10 @@ public class RegisterActivity extends AppCompatActivity{
             @Override
             public void onComplete(@NonNull Task<Void> task) { }
         });
+    }
+
+    public void cancelRegister(View view) {
+        signOut();
         startActivity(new Intent(this, GoogleLoginActivity.class));
     }
 
@@ -302,5 +306,12 @@ public class RegisterActivity extends AppCompatActivity{
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        signOut();
+        startActivity(new Intent(this, GoogleLoginActivity.class));
     }
 }
