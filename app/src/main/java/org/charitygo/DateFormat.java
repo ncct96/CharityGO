@@ -22,7 +22,7 @@ public class DateFormat {
 
         cal.setTimeInMillis(timestamp);
 
-        return (cal.get(Calendar.YEAR) * 10000) + (cal.get(Calendar.MONTH) + 1 * 100) + cal.get(Calendar.DAY_OF_MONTH);
+        return (cal.get(Calendar.YEAR) * 10000) + ((cal.get(Calendar.MONTH) + 1)  * 100) + cal.get(Calendar.DAY_OF_MONTH);
     }
 
     public int getLastDayofMonth(long timestamp) {

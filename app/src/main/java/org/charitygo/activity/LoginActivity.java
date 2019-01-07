@@ -23,11 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.charitygo.R;
+import org.charitygo.StepService;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -53,8 +54,11 @@ public class LoginActivity extends AppCompatActivity{
     public static final String IsLogin = "Logged in";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        stopService(intent);
 
         setContentView(R.layout.activity_login_ui);
 
@@ -63,7 +67,7 @@ public class LoginActivity extends AppCompatActivity{
         initializeOnClick();
     }
 
-    protected void initializeOnClick(){
+    protected void initializeOnClick() {
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.usernameBtn);
         /*populateAutoComplete();*/
@@ -126,8 +130,7 @@ public class LoginActivity extends AppCompatActivity{
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
-        }
-        else if(!password.equals("abcdef123")){
+        } else if (!password.equals("abcdef123")) {
             mPasswordView.setError(getString(R.string.error_incorrect_password));
             focusView = mPasswordView;
             cancel = true;
@@ -151,12 +154,12 @@ public class LoginActivity extends AppCompatActivity{
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            setLoggedIn(getApplicationContext(),true);
+            setLoggedIn(getApplicationContext(), true);
             /*SharedPreferences sp = getSharedPreferences(MyPreferences,0);
             sp.edit().putBoolean(IsLogin,true).apply();*/
             showProgress(true);
             Intent logintent = new Intent(getApplicationContext(), MainUI.class);
-            Toast.makeText(LoginActivity.this, "Welcome Back Admin !",Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "Welcome Back Admin !", Toast.LENGTH_LONG).show();
             startActivity(logintent);
             finish();
         }
@@ -172,11 +175,14 @@ public class LoginActivity extends AppCompatActivity{
         moveTaskToBack(true);
     }
 
-    static SharedPreferences getPreference(Context context) { return PreferenceManager.getDefaultSharedPreferences(context); }
+    static SharedPreferences getPreference(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
     public static final String Logged_IN = "logged_in_status";
 
     //Set logged in status
-    public static void setLoggedIn(Context context, boolean loggedin){
+    public static void setLoggedIn(Context context, boolean loggedin) {
         SharedPreferences.Editor editor = getPreference(context).edit();
         editor.putBoolean(Logged_IN, loggedin).apply();
     }
@@ -194,9 +200,12 @@ public class LoginActivity extends AppCompatActivity{
     }
     */
 
-    /** Shows the progress UI and hides the login form.*/
+    /**
+     * Shows the progress UI and hides the login form.
+     */
     private View mProgressView;
     private View mLoginFormView;
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow

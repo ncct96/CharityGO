@@ -223,8 +223,8 @@ public class MainUI extends AppCompatActivity
         {
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+            int importance = NotificationManager.IMPORTANCE_MAX;
+            NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
             mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
             mChannel.enableLights(true);
             mChannel.setLightColor(Color.RED);
@@ -241,8 +241,6 @@ public class MainUI extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         setGoal();
-        monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
-        dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
 
         dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
 
@@ -286,6 +284,7 @@ public class MainUI extends AppCompatActivity
                             StepsRanking rank = new StepsRanking(0, currentUser.getDisplayName(), dataSnapshot.getKey());
                             rankRef.child(monthYearPath).child(uid).setValue(rank);
                         }
+
                         initSteps();
 
                         ref.addListenerForSingleValueEvent(new ValueEventListener() {

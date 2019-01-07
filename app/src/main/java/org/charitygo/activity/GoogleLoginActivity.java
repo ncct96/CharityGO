@@ -45,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.charitygo.R;
+import org.charitygo.StepService;
 import org.charitygo.model.User;
 
 import java.lang.reflect.Field;
@@ -52,7 +53,7 @@ import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GoogleLoginActivity extends BaseActivity implements View.OnClickListener{
+public class GoogleLoginActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "GoogleActivity";
     private GoogleSignInClient googleSignClient;
@@ -66,25 +67,29 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     private DatabaseReference dataRef;
 
     private SignInButton googleSignIn;
-    private TextView usernameDisplay; private TextView emailDisplay;
-    private String UID; private boolean checkExist;
-    private View progressView; private View loginView; private ProgressDialog progressDialog;
+    private TextView usernameDisplay;
+    private TextView emailDisplay;
+    private String UID;
+    private boolean checkExist;
+    private View progressView;
+    private View loginView;
+    private ProgressDialog progressDialog;
 
-    public boolean isNetworkConnected(){
+    public boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
 
-    public boolean isInternatAvailable(){
-        try{
+    public boolean isInternatAvailable() {
+        try {
             InetAddress ipAddr = InetAddress.getByName("google.com");
             return !ipAddr.equals("");
-        }catch(Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public Dialog buildDialog (Context c){
+    public Dialog buildDialog(Context c) {
         AlertDialog.Builder build = new AlertDialog.Builder(c);
         build.setTitle("No Internet Connection");
         build.setMessage("This app require internet. \nPlease retry your connections.");
@@ -122,6 +127,8 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
                 .requestEmail()
                 .build();
 
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        stopService(intent);
         googleSignIn = findViewById(R.id.signInBtn);
         setGooglePlusButtonText(googleSignIn, "Sign In With Google");
 
@@ -129,7 +136,8 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         progressDialog = new ProgressDialog(GoogleLoginActivity.this);
         progressDialog.setTitle("Signing In");
         progressDialog.setMessage("Please wait for a moment");
-        progressDialog.setCancelable(false); progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
@@ -147,7 +155,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 currentUser = firebaseAuth.getCurrentUser();
-                if(currentUser != null){
+                if (currentUser != null) {
                     UID = currentUser.getUid();
                     dataRef = ref.child("users").child(UID);
                     dataRef.addValueEventListener(new ValueEventListener() {
@@ -166,15 +174,15 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
         };
     }
 
-    private void showData(DataSnapshot dataSnapshot){
-        if(dataSnapshot.exists()){
+    private void showData(DataSnapshot dataSnapshot) {
+        if (dataSnapshot.exists()) {
             checkExist = true;
         }
-        if(checkExist && currentUser != null){
+        if (checkExist && currentUser != null) {
             //Redirect to Main Page
             Intent intent = new Intent(this, MainUI.class);
             startActivity(intent);
-        }else if (!checkExist && currentUser != null){
+        } else if (!checkExist && currentUser != null) {
             //Redirect to Register Page
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
@@ -188,25 +196,34 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void signIn() {
-        if(currentUser != null){
+        if (currentUser != null) {
 
-        }else{
+        } else {
             Intent signInIntent = googleSignClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
         }
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        stopService(intent);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
+        Intent intent = new Intent(getApplicationContext(), StepService.class);
+        stopService(intent);
         fireAuth = FirebaseAuth.getInstance();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = fireAuth.getInstance().getCurrentUser();
         fireAuth.addAuthStateListener(authListener);
-        if(!isNetworkConnected() && !isInternatAvailable()){
+        if (!isNetworkConnected() && !isInternatAvailable()) {
             buildDialog(GoogleLoginActivity.this).show();
-        }else{
-            if(currentUser != null){
+        } else {
+            if (currentUser != null) {
                 //Start initialize authentication
                 progressDialog.show();
             }
@@ -257,7 +274,7 @@ public class GoogleLoginActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if( i == R.id.signInBtn){
+        if (i == R.id.signInBtn) {
             signIn();
         }
     }
