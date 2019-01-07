@@ -215,10 +215,9 @@ public class StepService extends Service implements SensorEventListener {
         }*/
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        stepsRef = ref.child("stepHistory/" + dayDatePath + "/" + uid);
 
         if (user != null) {
-            stepsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            ref.child("stepHistory/" + dayDatePath + "/" + uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     System.out.println(dataSnapshot.getValue());
