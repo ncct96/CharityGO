@@ -192,7 +192,7 @@ public class StepService extends Service implements SensorEventListener {
     }
 
     @Override
-    public void onSensorChanged(SensorEvent event) {
+    public void onSensorChanged(final SensorEvent event) {
 
 /*        user = firebaseAuth.getCurrentUser();
         if (user != null) {
@@ -214,19 +214,49 @@ public class StepService extends Service implements SensorEventListener {
             });
         }*/
 
-        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-            stepCounts++;
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        stepsRef = ref.child("stepHistory/" + dayDatePath + "/" + uid);
+
+        if (user != null) {
+            stepsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    System.out.println(dataSnapshot.getValue());
+                    initStepCounts = dataSnapshot.child("steps").getValue(Integer.class);
+                    retrieveData(initStepCounts);
+                    if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+                        stepCounts++;
+                    }
+
+                    final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    stepsRef = ref.child("stepHistory");
+                    rankRef = ref.child("stepRanking");
+
+                    stepsRef.child(dayDatePath).child(uid).child("steps").setValue(stepCounts);
+                    rankRef.child(monthYearPath).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            accSteps = dataSnapshot.child("accSteps").getValue(Integer.class);
+                            retrieveAccSteps(accSteps);
+
+                            ++accSteps;
+                            rankRef.child(monthYearPath).child(uid).child("accSteps").setValue(accSteps);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
-
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        stepsRef = ref.child("stepHistory");
-        rankRef = ref.child("stepRanking");
-
-        stepsRef.child(dayDatePath).child(uid).child("steps").setValue(stepCounts);
-        getAccSteps();
-        ++accSteps;
-        rankRef.child(monthYearPath).child(uid).child("accSteps").setValue(accSteps);
-
     }
 
     @Override
@@ -244,7 +274,6 @@ public class StepService extends Service implements SensorEventListener {
                     System.out.println(dataSnapshot.getValue());
                     initStepCounts = dataSnapshot.child("steps").getValue(Integer.class);
                     retrieveData(initStepCounts);
-                    notification.number = initStepCounts;
                 }
 
                 @Override
@@ -301,7 +330,7 @@ public class StepService extends Service implements SensorEventListener {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists() || dataSnapshot.getValue().equals(null)) {
-                    StepHistory steps = new StepHistory(0, 0);
+                    StepHistory steps = new StepHistory(0, 0, dayDatePath);
                     ref.child(dayDatePath).child(uid).setValue(steps);
                 }
             }
