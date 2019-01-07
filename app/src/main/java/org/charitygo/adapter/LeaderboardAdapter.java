@@ -19,7 +19,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     private Context context;
     private List<StepsRanking> rankList;
-    private static Integer[] imageArray = {R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.bronze_medal,R.drawable.bronze_medal};
+    private static Integer[] imageArray = {R.drawable.silver_medal, R.drawable.bronze_medal,R.drawable.steel_medal, R.drawable.rock_medal};
 
     public LeaderboardAdapter(Context context, List<StepsRanking> rankList) {
         this.context = context;

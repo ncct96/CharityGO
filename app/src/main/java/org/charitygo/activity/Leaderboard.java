@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
@@ -28,6 +29,7 @@ import org.charitygo.R;
 import org.charitygo.adapter.LeaderboardAdapter;
 import org.charitygo.model.LeaderInfo;
 import org.charitygo.model.StepsRanking;
+import org.charitygo.model.User;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -41,16 +43,16 @@ public class Leaderboard extends AppCompatActivity {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = firebaseAuth.getCurrentUser();
     private DatabaseReference ref = mDatabase.getReference("stepRanking");
+    private DatabaseReference usersRef = mDatabase.getReference("users");
 
     private long timestamp = System.currentTimeMillis();
     private DateFormat df = new DateFormat();
     private int dayDatePath = df.longToYearMonthDay(timestamp);
 
-    private List<LeaderInfo> leaderList = new ArrayList<>();
     private List<StepsRanking> rankList = new ArrayList<>();
     static String[] nameArray = {"Cupcake", "Donut", "Eclair", "Froyo", "Gingerbread", "Honeycomb", "Ice Cream Sandwich", "JellyBean", "Kitkat", "Lollipop"};
     static String[] versionArray = {"1.5", "1.6", "2.0-2.1", "2.2-2.2.3", "2.3-2.3.7", "3.0-3.2.6", "4.0-4.0.4", "4.1-4.3.1", "4.4-4.4.4", "5.0-5.1.1"};
-    static Integer[] imageArray = {R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal};
+    static Integer[] imageArray = {R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.gold_medal};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +86,13 @@ public class Leaderboard extends AppCompatActivity {
     }*/
 
     public void loadLeaderboard() {
-        int rankSize = 3;
+        final int rankSize = 3;
 
         String month = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
+
+        final ImageView top1Image = findViewById(R.id.lb_pic_1);
+        final TextView top1Name = findViewById(R.id.lb_name_1);
+        final TextView top1Steps = findViewById(R.id.lb_points_1);
 
 
         ref.child(month).orderByChild("accSteps").limitToLast(4).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -100,6 +106,24 @@ public class Leaderboard extends AppCompatActivity {
                 }
 
                 Collections.reverse(rankList);
+
+                String first = rankList.get(0).getKey();
+
+                usersRef.child(first).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        top1Name.setText(user.getName());
+                        top1Steps.setText(rankList.get(0).getAccSteps());
+                        rankList.remove(0);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 LeaderboardAdapter adapter = new LeaderboardAdapter(Leaderboard.this, rankList);
                 RecyclerView recList = (RecyclerView) findViewById(R.id.rank_recycler_view);
                 recList.setHasFixedSize(true);
