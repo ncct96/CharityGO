@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -58,27 +59,26 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
         setContentView(R.layout.activity_graph);
 
         final LineChart chart = (LineChart) findViewById(R.id.chart);
+        TextView lblMonth = findViewById(R.id.lblMonth);
+
 
         chart.setOnChartGestureListener(GraphActivity.this);
         chart.setOnChartValueSelectedListener(GraphActivity.this);
         chart.setDragEnabled(true);
         chart.setTouchEnabled(true);
         chart.setScaleEnabled(true);
-        chart.getDescription().setText(df.getMonthString(timestamp));
-        chart.getDescription().setTextSize(40f);
-        chart.getDescription().setPosition(1300f,100f);
-        chart.getDescription().setTextColor(R.color.orange);
-        chart.getAxisRight().setDrawLabels(false);
+        lblMonth.setText(df.getMonthString(timestamp));
+        chart.getDescription().setText("");
 
-        LimitLine upper_limit = new LimitLine(3000f, "Healthy");
+        LimitLine upper_limit = new LimitLine(10000f, "Healthy");
         upper_limit.setLineWidth(4f);
-        upper_limit.enableDashedLine(10f,10f,0f);
+        upper_limit.enableDashedLine(10f, 10f, 0f);
         upper_limit.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
         upper_limit.setTextSize(15f);
 
-        LimitLine lower_limit = new LimitLine(1000f, "Unhealthy");
+        LimitLine lower_limit = new LimitLine(3000f, "Unhealthy");
         lower_limit.setLineWidth(4f);
-        lower_limit.enableDashedLine(10f,10f,0f);
+        lower_limit.enableDashedLine(10f, 10f, 0f);
         lower_limit.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
         lower_limit.setTextSize(15f);
 
@@ -86,9 +86,12 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
         leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(upper_limit);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(4000f);
-        leftAxis.enableGridDashedLine(10f,10f,0);
+        leftAxis.setAxisMaximum(20000f);
+        leftAxis.enableGridDashedLine(10f, 10f, 0);
         leftAxis.setDrawLimitLinesBehindData(true);
+
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setEnabled(false);
 
         String firstday = String.valueOf(df.getFirstDayofMonth(timestamp));
         String lastday = String.valueOf(df.getLastDayofMonth(timestamp));
@@ -117,13 +120,11 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
                     yValues.add(new Entry(i, stepsList.get(i).getSteps()));
                     int date = Integer.parseInt(stepsList.get(i).getKey());
                     int day = date % 100;
-                    if(day < 10){
+                    if (day < 10) {
                         day = day % 10;
                     }
                     month[i] = String.valueOf(day);
                 }
-
-                System.out.println("TEST" + month);
 
                 LineDataSet set1 = new LineDataSet(yValues, "Daily Steps");
 
@@ -140,7 +141,7 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
 
                 XAxis xAxis = chart.getXAxis();
                 xAxis.setValueFormatter(new MyXValueFormatter(month));
-                xAxis.setGranularity(1f);
+                xAxis.setGranularity(0f);
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
             }
@@ -213,7 +214,16 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
 
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
-            return xValues[(int) value];
+            if (value >= 0) {
+                if (xValues.length > (int) value) {
+                    return xValues[(int) value];
+                } else {
+                    axis.setGranularityEnabled(false);
+                    return "";
+                }
+            } else {
+                return "";
+            }
         }
     }
 }
