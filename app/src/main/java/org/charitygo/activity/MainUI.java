@@ -1,8 +1,11 @@
 package org.charitygo.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,6 +13,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -53,6 +57,8 @@ import org.charitygo.StepService;
 import org.charitygo.model.StepHistory;
 import org.charitygo.model.StepsRanking;
 import org.charitygo.model.User;
+
+import java.net.InetAddress;
 
 public class MainUI extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
@@ -123,7 +129,7 @@ public class MainUI extends AppCompatActivity
                     name = dataSnapshot.child("name").getValue().toString();
                     points = dataSnapshot.child("points").getValue().toString();
                     userProfileName.setText(name);
-                    userProfilePoints.setText(points);
+                    userProfilePoints.setText("Current Points : " + points);
                     Glide.with(getApplicationContext()).load(url).into(userProfile);
                 }
 
@@ -197,20 +203,6 @@ public class MainUI extends AppCompatActivity
             Intent intent = new Intent(this, GoogleLoginActivity.class);
             startActivity(intent);
         }
-//        fireAuth = FirebaseAuth.getInstance();
-//        fireAuth.addAuthStateListener(authListener);
-//        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-//        if(acct != null){
-//            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-//            currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    if(task.isSuccessful()){
-//                        Toast.makeText(MainUI.this, "Reauthenticated.", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            });
-//        }
     }
 
     @Override
