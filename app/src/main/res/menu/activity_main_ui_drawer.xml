@@ -29,7 +29,7 @@
         android:title="Rewards" />
     <item
         android:id="@+id/nav_history"
-        android:icon="@drawalble/ic_history"
+        android:icon="@drawable/ic_history"
         android:onClick="goToHistory"
         android:title="History" />
     <item
