@@ -39,7 +39,6 @@ public class GraphActivity extends AppCompatActivity implements OnChartGestureLi
 
         yValues.add(new Entry(0, 6000));
         yValues.add(new Entry(1, 5000));
-        yValues.add(new Entry(3, 4000));
         yValues.add(new Entry(2, 3000));
         yValues.add(new Entry(3, 2000));
         yValues.add(new Entry(4, 1000));
