@@ -2,10 +2,8 @@ package org.charitygo.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -130,11 +128,22 @@ public class DonateActivity extends AppCompatActivity implements View.OnClickLis
                             Donation donation = dataSnapshot1.getValue(Donation.class);
                             if (donation.getUserID().equals(firebaseUser.getUid())) {
                                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                                if (sdf.format(donation.getTransactionDate()).equals(sdf.format(new Date())))
+                                if (sdf.format(donation.getTransactionDate()).equals(sdf.format(new Date()))) {
                                     userPoints = userPoints - donation.getPoints();
+
+                                    if (userPoints > orgPoints)
+                                        maxPoints = orgPoints;
+                                    else
+                                        maxPoints = userPoints;
+
+                                    EditText setPoints = (EditText) findViewById(R.id.donate_editText_amount);
+                                    setPoints.setFilters(new InputFilter[]{new MinMaxFilter(minPoints, maxPoints)});
+
+                                    TextView textUserPoints = (TextView) findViewById(R.id.donate_points_user);
+                                    textUserPoints.setText(userPoints + " points");
+                                }
                             }
-                            TextView textUserPoints = (TextView) findViewById(R.id.donate_points_user);
-                            textUserPoints.setText(userPoints + " points");
+
                         }
                     }
 
