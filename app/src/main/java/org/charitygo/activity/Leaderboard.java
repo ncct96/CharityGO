@@ -15,6 +15,7 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.master.glideimageview.GlideImageView;
 
 import org.charitygo.DateFormat;
 import org.charitygo.R;
@@ -90,12 +92,12 @@ public class Leaderboard extends AppCompatActivity {
 
         String month = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
 
-        final ImageView top1Image = findViewById(R.id.lb_pic_1);
+        final GlideImageView top1Image = findViewById(R.id.lb_pic_1);
         final TextView top1Name = findViewById(R.id.lb_name_1);
         final TextView top1Steps = findViewById(R.id.lb_points_1);
 
 
-        ref.child(month).orderByChild("accSteps").limitToLast(4).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.child(month).orderByChild("accSteps").limitToLast(5).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot rankSnapShot : dataSnapshot.getChildren()){
@@ -109,13 +111,15 @@ public class Leaderboard extends AppCompatActivity {
 
                 String first = rankList.get(0).getKey();
 
+                System.out.println("KET" + first);
+
                 usersRef.child(first).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
+                        System.out.println("Name" + user.getName());
                         top1Name.setText(user.getName());
-                        top1Steps.setText(rankList.get(0).getAccSteps());
-                        rankList.remove(0);
+                        Glide.with(getApplicationContext()).load(user.getphotoURL()).into(top1Image);
                     }
 
                     @Override
@@ -124,6 +128,8 @@ public class Leaderboard extends AppCompatActivity {
                     }
                 });
 
+                top1Steps.setText(String.valueOf(rankList.get(0).getAccSteps()) + " Steps");
+                rankList.remove(0);
                 LeaderboardAdapter adapter = new LeaderboardAdapter(Leaderboard.this, rankList);
                 RecyclerView recList = (RecyclerView) findViewById(R.id.rank_recycler_view);
                 recList.setHasFixedSize(true);
