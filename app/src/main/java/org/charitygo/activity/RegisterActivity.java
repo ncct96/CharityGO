@@ -259,7 +259,7 @@ public class RegisterActivity extends AppCompatActivity{
         }
 
         //Username Validations
-        for(int i = 0; i <= usernameList.size(); i++){
+        for(int i = 0; i < usernameList.size(); i++){
             if(usern.equals(usernameList.get(i))){
                 loopValid = true; break;
             }else {
