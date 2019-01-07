@@ -1,6 +1,7 @@
 package org.charitygo.activity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -103,39 +104,9 @@ public class MainUI extends AppCompatActivity
     private String name;
     private String points;
 
-    public boolean isNetworkConnected(){
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null;
-    }
-
-    public boolean isInternatAvailable(){
-        try{
-            InetAddress ipAddr = InetAddress.getByName("google.com");
-            return !ipAddr.equals("");
-        }catch(Exception e){
-            return false;
-        }
-    }
-
-    public AlertDialog.Builder buildDialog (Context c){
-        AlertDialog.Builder build = new AlertDialog.Builder(c);
-        build.setTitle("No Internet Connection");
-        build.setMessage("Please Ensure You Have an Internet Connection");
-        build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        return build;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!isNetworkConnected() && !isInternatAvailable()){
-            buildDialog(MainUI.this);
-        }
 
         setContentView(R.layout.activity_main_ui);
         navView = (NavigationView) findViewById(R.id.nav_view);
@@ -233,20 +204,6 @@ public class MainUI extends AppCompatActivity
             Intent intent = new Intent(this, GoogleLoginActivity.class);
             startActivity(intent);
         }
-//        fireAuth = FirebaseAuth.getInstance();
-//        fireAuth.addAuthStateListener(authListener);
-//        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-//        if(acct != null){
-//            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-//            currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    if(task.isSuccessful()){
-//                        Toast.makeText(MainUI.this, "Reauthenticated.", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            });
-//        }
     }
 
     @Override

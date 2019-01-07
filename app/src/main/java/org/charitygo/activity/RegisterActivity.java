@@ -32,8 +32,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -47,6 +50,8 @@ import org.charitygo.model.User;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity{
 
@@ -63,7 +68,7 @@ public class RegisterActivity extends AppCompatActivity{
     private GoogleSignInClient googleSignClient;
 
     private DatabaseReference dataRefStore = ref.child("users");
-    private DatabaseReference stepRefStore, rankRefStore;
+    private DatabaseReference stepRefStore, rankRefStore, usernameRefStore1, usernameRefStore2;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
 
@@ -73,6 +78,7 @@ public class RegisterActivity extends AppCompatActivity{
     private String usern;
     private String phone;
     private String genStr;
+    private List<String> usernameList = new ArrayList<>();
 
     private ProgressDialog progressDialog;
 
@@ -88,9 +94,26 @@ public class RegisterActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        usernameRefStore1 = FirebaseDatabase.getInstance().getReference().child("users");
+        usernameRefStore1.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    usernameList.add(ds.child("name").getValue().toString());
+                    System.out.println("\nTEST : "+usernameList + "\n");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         progressDialog = new ProgressDialog(RegisterActivity.this);
-        progressDialog.setTitle("Creating New Account");
-        progressDialog.setMessage("Please Wait For A Moment");
+        progressDialog.setTitle("Creating new account");
+        progressDialog.setMessage("Please wait for a moment");
+        progressDialog.setCancelable(false); progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
@@ -192,8 +215,11 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     public void registerAccount(View view) {
-        boolean notValid = false; boolean genderNotValid = true;
+        boolean notValid = false;
+        boolean genderNotValid = true;
+        boolean loopValid = false;
         View focusView = null;
+
         usern = username.getText().toString();
         phone = contactNum.getText().toString();
 
@@ -233,7 +259,15 @@ public class RegisterActivity extends AppCompatActivity{
         }
 
         //Username Validations
-        if(usern.equals("Admin")){
+        for(int i = 0; i <= usernameList.size(); i++){
+            if(usern.equals(usernameList.get(i))){
+                loopValid = true; break;
+            }else {
+                loopValid = false;
+            }
+        }
+
+        if(loopValid){
             username.setError("Username Taken, Please Try Other");
             focusView = username;
             notValid = true;
