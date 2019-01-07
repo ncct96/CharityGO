@@ -13,6 +13,7 @@
             android:key="goalSetting"
             android:defaultValue="10000"
             android:inputType="number"
+            android:autoSizeMaxTextSize="20dp"
             android:inputMethod="@string/hint_phone"
             android:numeric="integer"
             android:title="Set Goal" />
