@@ -184,7 +184,7 @@ public class RegisterActivity extends AppCompatActivity{
 
                             //Create new step history for newly registered user
                             String uid = currentUser.getUid();
-                            StepHistory steps = new StepHistory(0, 0);
+                            StepHistory steps = new StepHistory(0, 0, dayDatePath);
                             stepRefStore = ref.child("stepHistory");
                             stepRefStore.child(dayDatePath).child(uid).setValue(steps);
                           

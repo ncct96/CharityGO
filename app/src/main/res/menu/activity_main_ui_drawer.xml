@@ -8,6 +8,26 @@
         android:onClick="profile"
         android:title="Profile" />
     <item
+        android:id="@+id/nav_rewards"
+        android:icon="@drawable/ic_voucher"
+        android:onClick="goToRewards"
+        android:title="Rewards" />
+    <item
+        android:id="@+id/nav_leaderBoard"
+        android:icon="@drawable/ic_star"
+        android:onClick="goToLeaderBoard"
+        android:title="Leaderboard" />
+    <item
+        android:id="@+id/nav_history"
+        android:icon="@drawable/ic_history"
+        android:onClick="goToHistory"
+        android:title="Transaction History" />
+    <item
+        android:id="@+id/steps_history"
+        android:icon="@drawable/ic_graph"
+        android:onClick="goToGraph"
+        android:title="Step History" />
+    <item
         android:id="@+id/nav_organizations"
         android:icon="@drawable/ic_organizations"
         android:onClick="goToOrganizations"
@@ -17,28 +37,6 @@
         android:icon="@drawable/ic_sponsors"
         android:onClick="goToSponsors"
         android:title="Sponsors" />
-    <item
-        android:id="@+id/nav_leaderBoard"
-        android:icon="@drawable/ic_star"
-        android:onClick="goToLeaderBoard"
-        android:title="Leaderboard" />
-
-    <item
-        android:id="@+id/nav_rewards"
-        android:icon="@drawable/ic_voucher"
-        android:onClick="goToRewards"
-        android:title="Rewards" />
-
-    <item
-        android:id="@+id/nav_history"
-        android:icon="@drawable/ic_history"
-        android:onClick="goToHistory"
-        android:title="History" />
-    <item
-        android:id="@+id/steps_history"
-        android:icon="@drawable/ic_info"
-        android:onClick="goToGraph"
-        android:title="Step History" />
     <item
         android:id="@+id/nav_about"
         android:icon="@drawable/ic_info"

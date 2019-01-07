@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -34,12 +36,15 @@ public class MyNotificationManager {
 
     public void displayNotification(String title, String body) {
 
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setColor(mCtx.getResources().getColor(R.color.colorPrimary))
                         .setContentTitle(title)
                         .setAutoCancel(true)
+                        .setSound(alarmSound)
                         .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                         .setContentText(body).setPriority(NotificationCompat.PRIORITY_HIGH);
