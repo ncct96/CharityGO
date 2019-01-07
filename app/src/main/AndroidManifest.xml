@@ -37,7 +37,7 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activity.GoogleLoginActivity"
-            android:label="@string/title_activity_login"
+            android:label="Charity GO!"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -187,6 +187,8 @@
             android:parentActivityName=".activity.MainUI"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".GraphActivity"></activity>
+
+        <receiver android:name=".NotifyBroadcast"/>
     </application>
 
 </manifest>

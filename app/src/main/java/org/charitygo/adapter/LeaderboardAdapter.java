@@ -19,6 +19,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     private Context context;
     private List<StepsRanking> rankList;
+    private static Integer[] imageArray = {R.drawable.gold_medal, R.drawable.silver_medal, R.drawable.bronze_medal, R.drawable.bronze_medal,R.drawable.bronze_medal};
 
     public LeaderboardAdapter(Context context, List<StepsRanking> rankList) {
         this.context = context;
@@ -40,7 +41,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     @Override
     public void onBindViewHolder(LeaderboardHolder leaderboardHolder, int i) {
         final StepsRanking lb = rankList.get(i);
-        leaderboardHolder.leaderRank.setImageResource(R.drawable.circle);
+        leaderboardHolder.leaderRank.setImageResource(imageArray[i]);
         leaderboardHolder.leaderName.setText(lb.getName());
         leaderboardHolder.leaderSteps.setText(String.valueOf(lb.getAccSteps()));
     }

@@ -57,6 +57,7 @@ import com.master.glideimageview.GlideImageView;
 
 import org.charitygo.Constants;
 import org.charitygo.DateFormat;
+import org.charitygo.GraphActivity;
 import org.charitygo.R;
 import org.charitygo.StepService;
 import org.charitygo.model.Reward;
@@ -165,6 +166,7 @@ public class MainUI extends AppCompatActivity
 
         checkExistDate();
         checkExistRank();
+        setGoal();
         initSteps();
 
         mSensorManager = (SensorManager)
@@ -196,15 +198,6 @@ public class MainUI extends AppCompatActivity
             }
         });
 
-        SharedPreferences goalSetting = PreferenceManager.getDefaultSharedPreferences(this);
-
-        userGoal = goalSetting.getInt("goal", 3000);
-
-        goal = (savedNumSteps * 100) / userGoal;
-
-        Log.e("goal", String.valueOf(userGoal));
-
-        progressBar.setProgress(Math.round(goal));
 
     }
 
@@ -235,6 +228,7 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onRestart() {
         super.onRestart();
+        setGoal();
         checkExistRank();
         checkExistDate();
         Log.e("hihi", "restart");
@@ -266,7 +260,7 @@ public class MainUI extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-
+        setGoal();
         monthYearPath = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
         dayDatePath = String.valueOf(df.longToYearMonthDay(System.currentTimeMillis()));
 
@@ -536,8 +530,18 @@ public class MainUI extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void goToGraph(MenuItem item) {
+        Intent intent = new Intent(this, GraphActivity.class);
+        startActivity(intent);
+    }
+
     public void goToOrganizations(View view) {
         Intent intent = new Intent(this, OrganizationActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToGraph(View view) {
+        Intent intent = new Intent(this, GraphActivity.class);
         startActivity(intent);
     }
 
@@ -757,4 +761,20 @@ public class MainUI extends AppCompatActivity
         return accSteps;
     }
 
+    public void setGoal() {
+        SharedPreferences goalSetting = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String goalString = goalSetting.getString("goalSetting", "10000");
+
+        userGoal = Integer.parseInt(goalString);
+
+        if (userGoal != 0) {
+            goal = (savedNumSteps * 100) / userGoal;
+        }
+
+        Log.e("goal", String.valueOf(userGoal));
+
+        progressBar.setMax(userGoal);
+        progressBar.setProgress(Math.round(goal));
+    }
 }

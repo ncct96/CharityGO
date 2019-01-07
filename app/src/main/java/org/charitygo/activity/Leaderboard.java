@@ -31,6 +31,8 @@ import org.charitygo.model.StepsRanking;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class Leaderboard extends AppCompatActivity {
@@ -54,6 +56,7 @@ public class Leaderboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
+        rankList.clear();
         loadLeaderboard();
         //getData();
 
@@ -86,7 +89,7 @@ public class Leaderboard extends AppCompatActivity {
         String month = String.valueOf(df.longToYearMonth(System.currentTimeMillis()));
 
 
-        ref.child(month).orderByChild("accSteps").limitToFirst(3).addValueEventListener(new ValueEventListener() {
+        ref.child(month).orderByChild("accSteps").limitToLast(4).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot rankSnapShot : dataSnapshot.getChildren()){
@@ -96,6 +99,7 @@ public class Leaderboard extends AppCompatActivity {
                     rankList.add(ranker);
                 }
 
+                Collections.reverse(rankList);
                 LeaderboardAdapter adapter = new LeaderboardAdapter(Leaderboard.this, rankList);
                 RecyclerView recList = (RecyclerView) findViewById(R.id.rank_recycler_view);
                 recList.setHasFixedSize(true);

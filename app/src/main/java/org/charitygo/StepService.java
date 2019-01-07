@@ -98,20 +98,38 @@ public class StepService extends Service implements SensorEventListener {
 
         Intent notificationIntent = new Intent(this, MainUI.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        notificationIntent.setAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent dismissIntent = new Intent(getApplicationContext(), NotifyBroadcast.class);
+        dismissIntent.putExtra("dismiss", "dismiss");
+        PendingIntent actionIntent = PendingIntent.getBroadcast(this,0,dismissIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         createNotificationChannel();
 
-        notification = new NotificationCompat.Builder(this, "fg01")
+        NotificationCompat.Builder mb = new NotificationCompat.Builder(this, "fg01");
+
+        mb.setSmallIcon(R.drawable.ic_launcher)
+                .setBadgeIconType(R.drawable.ic_launcher)
+                .setContentTitle("Pedometer Running")
+                .setColor(R.drawable.gradient_blue)
+                .setColorized(true)
+                .setContentText("Total Steps: " + stepCounts)
+                .addAction(R.color.white, "Stop", actionIntent)
+                .setContentIntent(pendingIntent)
+                .setOngoing(true);
+
+        notification = mb.build();
+
+/*        notification = new NotificationCompat.Builder(this, "fg01")
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Pedometer Running")
                 .setColor(R.drawable.gradient_blue)
                 .setColorized(true)
                 .setContentText("Total Steps: " + stepCounts)
-                .setContentInfo("Total Steps : ")
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
-                .build();
+                .build();*/
+
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(300, notification);
