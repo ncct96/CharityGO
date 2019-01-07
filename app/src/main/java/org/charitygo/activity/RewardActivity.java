@@ -41,7 +41,7 @@ public class RewardActivity extends AppCompatActivity {
 
     public void initRewards() {
         rewardRef.push().setValue(new Reward("Mc Ronalds", "Free Borger", "Redeem a free borger upon a purchase of RM30 and above at any Mc Ronalds outlet in Malaysia", "MR2003", 10, R.drawable.borger, 200));
-        rewardRef.push().setValue(new Reward("Zarora", "10% discount", "Get a 10% discount when purchasing above RM100 in a single receipt", "ZLR34B23", 7200, R.drawable.borger, 50));
+        rewardRef.push().setValue(new Reward("Zarora", "10% discount", "Get a 10% discount when purchasing above RM100 in a single receipt", "ZLR34B23", 7200, R.drawable.zalora, 50));
         rewardRef.push().setValue(new Reward("Mc Ronalds", "Extra Dog Food", "Get a free 500g bag of Kibbles Dog Food upon a purchase of a 2kg bag of Kibbles Dog Food", "KB23-B-53", 7200, R.drawable.borger, 20));
         rewardRef.push().setValue(new Reward("Nya!", "Nya", "Nya nya nya nya nya nya nya nya nya nya nya nya nya nya!", "NYA", 1, R.drawable.borger, 0));
     }

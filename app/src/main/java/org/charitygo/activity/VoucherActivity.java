@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,6 +86,9 @@ public class VoucherActivity extends AppCompatActivity {
 
                 Button button = findViewById(R.id.voucher_redeem);
                 button.setText(reward.getPrice() + " points");
+
+                ImageView image = findViewById(R.id.backdrop);
+                image.setImageResource(reward.getDrawable());
             }
 
             @Override
@@ -113,22 +117,6 @@ public class VoucherActivity extends AppCompatActivity {
                         }
                     }
                 }
-//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-//                    Redeems redeem = dataSnapshot1.getValue(Redeems.class);
-//                    String UID = firebaseUser.getUid();
-//                    if (redeem.getRewardsID().equals(rewardID) && redeem.getUserID().equals(UID)) {
-//                        Button button = findViewById(R.id.voucher_redeem);
-//                        button.setText(reward.getCode());
-//                        button.setEnabled(false);
-//                        button.setBackgroundColor(Color.RED);
-//                        eligible = false;
-//
-//                        if(redeem.getExpiryDate().before(new Date())){
-//                            button.setText("Redeemed");
-//                            button.setBackgroundColor(Color.LTGRAY);
-//                        }
-//                    }
-//                }
             }
 
             @Override
